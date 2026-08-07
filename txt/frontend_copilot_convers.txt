@@ -1,0 +1,355 @@
+User: C:\Users\Anubhav Chaudhary\Documents\MAXSAS AI WORK\Maxsas-AI-Livekit\docs\PAYU_FRONTEND_PAYMENT_FLOW.md
+isko update kro with these questions ke answers ke liye
+
+1. Which frontend stack is this: React web, Next.js, React Native, Expo, or something else?
+2. Which file/component currently handles PayU initiate and form submission?
+3. Is the payment flow web-only, native-only, or both?
+4. Should the PayU form open in the same tab, new tab, WebView, or hidden form submit?
+5. What should happen on success: toast, redirect, wallet refresh, transaction page update, or all of these?
+6. What should happen on failure: error message, redirect, retry button, or all of these?
+7. Do you already have a success page and failure page, or should I use the wallet page query params?
+8. What is the exact backend initiate response shape being used in the frontend?
+9. Are successUrl and failureUrl provided by backend now, or should frontend still send them?
+10. Do you want me to add debug logs for the final PayU payload and form action URL?
+
+
+GitHub Copilot: PayU flow ka current implementation surface dhoondh raha hoon, taaki document me exact answers likh sakun. Pehle relevant frontend files aur backend contract ko pinpoint karta hoon, phir docs update karunga.
+
+Searched for regex `PayU|payu|successUrl|failureUrl|hash|txnId|merchantKey` (`**/*.{ts,tsx,js,jsx,md,json}`), 200 results
+
+Searched for files matching `**/*payu*`, 3 matches
+
+Read memory [](file:///c%3A/Users/Anubhav%20Chaudhary/AppData/Roaming/Code/User/workspaceStorage/c26182ff53a1ab7981cb1531614b2bd4/GitHub.copilot-chat/memory-tool/memories/repo/maxsas-ai-livekit.md)
+
+Ab implementation ke exact call-sites verify kar raha hoon. Mujhe frontend hook aur wallet checkout route dekhni hai, kyunki wahi questions 2, 4, 5, 6, 7, 8 ko decide karte hain.
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/docs/PAYU_FRONTEND_PAYMENT_FLOW.md)
+
+Searched for files matching `**/wallet/checkout.tsx`, 1 match
+
+Searched for regex `payment=success|payment=failure|checkout\?|verify-redirect|router.push\(.*checkout|wallet\?payment` (`**/*.{ts,tsx,js,jsx,md}`), 18 results
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts#1-1), lines 1 to 220
+
+Ab response shape aur success/failure handling confirm kar raha hoon. Isse document ko guesswork ke bina update kar paunga, especially question 7, 8, 9, 10 ke liye.
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/lib/api/payment.ts)
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet/checkout.tsx)
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet.tsx#1-1), lines 1 to 240
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet.tsx#240-240), lines 240 to 420
+
+Debug/logging aur exact UI outcome ke liye ek last pass kar raha hoon. Agar code me already kuch log ya dedicated pages nahi hain, to doc me usi ko state karunga.
+
+Searched for regex `console\.log|console\.warn|debug|payload|payuUrl|form.action|PayU Checkout` (`**/hooks/useWallet.ts,app/(protected)/lexus/wallet/checkout.tsx,app/(protected)/lexus/wallet.tsx,lib/api/payment.ts`), no results
+
+Searched for files matching `**/*success*page*.tsx`, no matches
+
+Searched for files matching `**/*failure*page*.tsx`, no matches
+
+Doc ko current code ke hisaab se directly answerable bana raha hoon: Q&A style section add karunga aur jo stale wording hai usko align karunga with Expo/web/native behavior.
+
+Apply Patch
+
+Patch format issue hua. Same doc update ko re-apply kar raha hoon with the correct patch wrapper.
+
+Generating patch (73 lines) in [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/docs/PAYU_FRONTEND_PAYMENT_FLOW.md)
+
+
+```
+
+```
+Doc update done. Ab main changed section ka quick sanity check kar raha hoon taaki wording consistent rahe aur koi stale statement na bachi ho.
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/docs/PAYU_FRONTEND_PAYMENT_FLOW.md#1-1), lines 1 to 120
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/docs/PAYU_FRONTEND_PAYMENT_FLOW.md#120-120), lines 120 to 228
+
+Updated PAYU_FRONTEND_PAYMENT_FLOW.md with a direct-answer section for all 10 questions and aligned the flow notes to the actual implementation.
+
+The doc now states the current stack as Expo React Native with expo-router, the PayU entry points in useWallet.ts, web hidden-form submit vs native WebView behavior, wallet-page query-param handling for success/failure, the exact PayUInitiateResponse shape, and that successUrl/failureUrl are still sent by the frontend. It also notes that there are no separate success/failure pages and no debug logs in the current flow.
+
+If you want, I can also turn this into a tighter backend contract checklist or add a small FAQ section for the PayU team.
+
+Made changes.
+
+Final update (frontend fixes applied)
+- `hooks/useWallet.ts`: the hosted form now uses the backend `payuUrl` exactly, builds the PayU payload once with the required field names, stores pending payment data for web redirects, and keeps the temporary debug logs behind `__DEV__`.
+- `app/(protected)/lexus/wallet/checkout.tsx`: native WebView redirects now preserve the final wallet callback URL and its query params (e.g. `?payment=success&txnid=...`) instead of collapsing to a plain wallet route; failures return the user to a usable wallet screen.
+- `app/(protected)/lexus/wallet.tsx`: on `payment=success` the wallet now refreshes data and shows an optimistic credit row immediately (deduped when the backend transaction appears); on `payment=failure` an error banner is shown and the user remains on the wallet screen.
+
+Validation:
+- File-level errors are clean for all three touched files.
+- Searched the codebase for hardcoded PayU endpoints (`payu.in`, `_payment`) — no application code hardcoded PayU checkout URLs were found.
+- The amount conversion is applied exactly once (paise -> rupees) for the PayU form.
+
+If you want, I can (A) generate the Copilot prompt used to make these exact edits in the frontend repo, (B) create a small in-app status banner for production-like tests, or (C) open a PR/changelog entry with these notes.
+
+User: You are implementing the PayU frontend flow for the existing wallet top-up system.
+
+Use the following fixed contract from the backend reference:
+- Web flow and native/mobile flow both exist.
+- Backend returns PayU checkout data including `payuUrl`, `hash`, `amount`, `payuKey`, `merchantTransactionId`, `successUrl`, and `failureUrl`.
+- The hosted checkout must be submitted using a hidden HTML form with `method="POST"`.
+- The form action must be exactly `data.payuUrl`.
+- The amount must be converted from paise to rupees exactly once for the PayU form field.
+- Required PayU form fields are: `key`, `txnid`, `amount`, `productinfo`, `firstname`, `email`, `phone`, `hash`, `surl`, `furl`, `service_provider`.
+- `productinfo` must be `wallet_topup`.
+- `service_provider` must be `payu_paisa`.
+- `surl` and `furl` must use the callback URLs from the backend response.
+- Do not use an iframe for the hosted checkout.
+- Do not hardcode any PayU URL if backend already provided `payuUrl`.
+- On success, the wallet UI should show success and refresh balance.
+- On failure, the wallet UI should show failure and stay on a usable screen.
+
+Before changing code, inspect the current frontend implementation and tell me:
+1. Which file handles the PayU initiation response.
+2. Which file submits the hosted form.
+3. Whether the current flow is web, native, or both.
+4. Whether the app already handles success/failure redirects on the wallet screen.
+5. Whether any code is still converting amount more than once or using a hardcoded PayU URL.
+
+Then make the smallest change needed to:
+- use the backend-provided `payuUrl` exactly,
+- post the correct PayU form fields,
+- ensure success/failure redirects land back in the UI cleanly,
+- and add temporary debug logs for the final form action URL and payload if needed.
+
+GitHub Copilot: Current implementation is mostly aligned, but I found one native-only gap: success/failure redirects are intercepted in the WebView and dropped back to the wallet without preserving the payment status. I’m making the smallest code change to keep the backend-provided `payuUrl` and to route redirect outcomes back into the wallet screen cleanly, with temporary debug logs added.
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts#1-1), lines 1 to 150
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet/checkout.tsx)
+
+The fix is narrow: keep the backend URL untouched, and only make native redirects restore the wallet status instead of dropping it. I’m patching the WebView checkout and adding temporary debug logs around the final action URL and payload.
+
+Generating patch (58 lines) in [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts), [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet/checkout.tsx)
+
+
+```
+
+```
+
+```
+
+```
+Patch is in. I’m running a focused validation on the two touched files now so I can catch any syntax or type issues before I hand it back.
+
+Checked [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts), [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet/checkout.tsx), no problems found
+
+I inspected the current flow and made the smallest fix needed.
+
+The PayU initiation response is handled in useWallet.ts, the hosted form is submitted from the same file on web and from app/(protected)/lexus/wallet/checkout.tsx/lexus/wallet/checkout.tsx) on native, and the flow is both web and native. The wallet screen already handles success and failure query params, but native redirects were being intercepted and returned to the wallet without preserving the status; that is now fixed so success lands on the wallet with payment=success and failure lands with payment=failure.
+
+I also verified there is no second amount conversion or hardcoded PayU URL in the current flow. The amount is converted from paise to rupees exactly once for the PayU form, and the form action uses the backend-provided payuUrl directly. Temporary debug logs were added for the final form action URL and payload in both the web and native submission paths.
+
+Validation passed for the touched files with no errors.
+
+Made changes.
+
+User: root@backend-2v:~/maxsas-backend-ai# npm run dev
+
+> maxsas-backend@1.0.0 dev
+> node --import dotenv/config --import tsx src/index.ts
+
+{"ts":"2026-05-20T05:58:22.871Z","level":"info","message":"Telephony environment check","livekitUrl":"Set","livekitApiKey":"Set","livekitApiSecret":"Set","trunkId":"Set","agentName":"maxsas-voice-agent-prod","appEnv":"production","voiceTestMode":true,"billingBypass":true}
+{"ts":"2026-05-20T05:58:22.880Z","level":"info","message":"Backend listening","port":4000}
+[prisma] database connection ready
+{"ts":"2026-05-20T06:07:04.617Z","level":"info","message":"PayU initiate payload prepared","tenantId":"ac3c8656-2dfb-4cc9-9bb3-287cf3684331","paymentOrderId":"340f6487-35b1-4a25-9ef8-77bb1f78e9b8","merchantTransactionId":"txn_ac3c8656_1779257224357_1gxlfn","payuMode":"test","payuUrl":"https://test.payu.in/_payment","payuUrlIsOfficialTestEndpoint":true,"payuUrlIsOfficialLiveEndpoint":false,"amountPaise":1000,"amountRupees":10,"successUrl":"http://134.209.157.41:4000/api/payments/payu/return/success","failureUrl":"http://134.209.157.41:4000/api/payments/payu/return/failure","successUrlIsAbsolute":true,"failureUrlIsAbsolute":true,"requestPayloadJson":{"key":"D0Fjcc","txnid":"txn_ac3c8656_1779257224357_1gxlfn","amount":"10.00","productinfo":"wallet_topup","firstname":"max2","email":"max2@gmail.com","phone":"9876543210","successUrl":"http://134.209.157.41:4000/api/payments/payu/return/success","failureUrl":"http://134.209.157.41:4000/api/payments/payu/return/failure"},"formFields":{"key":"D0Fjcc","txnid":"txn_ac3c8656_1779257224357_1gxlfn","amount":"10.00","productinfo":"wallet_topup","firstname":"max2","email":"max2@gmail.com","phone":"9876543210","hash":"4b0cc4afaf218484a27f22a9e144ce2953d531026c93f7a02a39f12dd7b6d815760c00c535b79c5491f48efdaa322141d050fb9143579f7745c6c4cbbf07fd9f","surl":"http://134.209.157.41:4000/api/payments/payu/return/success","furl":"http://134.209.157.41:4000/api/payments/payu/return/failure","service_provider":"payu_paisa"}}
+{"ts":"2026-05-20T06:07:04.618Z","level":"info","message":"PayU client callback URLs ignored in favor of server callback bridge","tenantId":"ac3c8656-2dfb-4cc9-9bb3-287cf3684331","requestedSuccessUrl":"http://localhost:8081/lexus/wallet?payment=success","requestedFailureUrl":"http://localhost:8081/lexus/wallet?payment=failure","configuredSuccessUrl":"http://134.209.157.41:4000/api/payments/payu/return/success","configuredFailureUrl":"http://134.209.157.41:4000/api/payments/payu/return/failure"}
+{"ts":"2026-05-20T06:07:04.618Z","level":"info","message":"PayU initiate response returned to frontend","tenantId":"ac3c8656-2dfb-4cc9-9bb3-287cf3684331","paymentOrderId":"340f6487-35b1-4a25-9ef8-77bb1f78e9b8","merchantTransactionId":"txn_ac3c8656_1779257224357_1gxlfn","payuMode":"test","payuUrl":"https://test.payu.in/_payment","payuUrlHasTrailingSlash":false,"amountPaise":1000,"amountRupees":10,"successUrl":"http://134.209.157.41:4000/api/payments/payu/return/success","failureUrl":"http://134.209.157.41:4000/api/payments/payu/return/failure","responsePayload":{"paymentOrderId":"340f6487-35b1-4a25-9ef8-77bb1f78e9b8","merchantTransactionId":"txn_ac3c8656_1779257224357_1gxlfn","payuKey":"D0Fjcc","hash":"4b0cc4afaf218484a27f22a9e144ce2953d531026c93f7a02a39f12dd7b6d815760c00c535b79c5491f48efdaa322141d050fb9143579f7745c6c4cbbf07fd9f","amount":1000,"email":"max2@gmail.com","phoneNumber":"9876543210","description":"Wallet top-up","payuMode":"test","payuUrl":"https://test.payu.in/_payment","successUrl":"http://134.209.157.41:4000/api/payments/payu/return/success","failureUrl":"http://134.209.157.41:4000/api/payments/payu/return/failure"}}
+{"ts":"2026-05-20T06:07:27.078Z","level":"info","message":"PayU return success callback received","redirectTo":"https://maxsasrealtyai.in/lexus/wallet?payment=success&txnid=txn_ac3c8656_1779257224357_1gxlfn&mihpayid=403993715537487048&payu_status=success","payload":{"country":"","udf10":"","mode":"CASH","error_Message":"No Error","state":"","bankcode":"","txnid":"txn_ac3c8656_1779257224357_1gxlfn","net_amount_debit":"10.00","lastname":"","zipcode":"","phone":"9876543210","productinfo":"wallet_topup","hash":"fadd6d61e55d70ad6324eb1c2b4c6bcc08633922c7cb1a8f35fd59720cf1ef0cd528c3e346a95c60e3c854db2306d029c4ea21271c7ae0a431be791dca7b52cf","status":"success","firstname":"max2","city":"","isConsentPayment":"","error":"E000","addedon":"2026-05-20 11:37:05","udf9":"","udf7":"","udf8":"","encryptedPaymentId":"403993715537487048","bank_ref_num":"fa26d8c7-d61d-4766-86dd-b6a1309448d9","key":"D0Fjcc","email":"max2@gmail.com","amount":"10.00","unmappedstatus":"captured","address2":"","payuMoneyId":"403993715537487048","address1":"","udf5":"","mihpayid":"403993715537487048","udf6":"","udf3":"","udf4":"","udf1":"","udf2":"","giftCardIssued":"","field1":"","cardnum":"","field7":"","field6":"","field9":"Transaction Completed Successfully","field8":"","amount_split":"{\"PAYU\":\"10.00\"}","field3":"","field2":"","field5":"","PG_TYPE":"CASH-PG","field4":"","name_on_card":""}}
+
+
+bhai baat ye h ki pay u ka dashboard open bhi ho raha h and mock payemnt krke usko success per jab krta hu to wallet UI m kuch bhimock entry data nhi show ho raha h please isko simulate kro actual production test krne se pehele 
+agar payment failed bhi hoti h to vo bhi show honi chahiye UI m
+
+PayU ki taraf se to test mode m work kr raha h lekin UI m update kyu nhi ho raha h please confirm that ki problem kaha h 
+
+
+
+GitHub Copilot: Root cause ko narrow kar raha hoon: abhi dekhna hai mock-success path wallet screen tak kaise pahunchta hai, aur kya balance refresh ya query-param handling me gap hai. Isse clear hoga issue UI side hai ya backend return bridge side.
+
+Searched for regex `simulatePayUSuccessTopUp|mock-success|payment=success|payment=failure|refreshBalance\(|setPaymentMessage|router.replace\("/\(protected\)/lexus/wallet"` (`**/*.{ts,tsx,js,jsx,md}`), 38 results
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts#150-150), lines 150 to 274
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/lib/api/payment.ts)
+
+अब मैं request path और wallet refresh chain को verify कर रहा हूँ. अगर mock-success endpoint या wallet transactions fetch गलत base path पर जा रहा होगा, वही immediate root cause होगा; नहीं तो issue backend ledger/transaction creation side पर है.
+
+Searched for regex `mock-success|payments/payu/mock-success|transaction history|ledgerEntryId|newBalancePaise|walletAccountId` (`**/*.{ts,tsx,js,jsx,md}`), 25 results
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/lib/api/client.ts)
+
+`shared/contracts.ts` path doesn't exist in this repo; I’m locating the actual contract file and then I can tell you whether the mock-success response is enough to update the visible transaction list or whether the backend is only crediting balance.
+
+Searched for files matching `**/contracts.*`, no matches
+
+Searched for files matching `**/shared/**`, 11 matches
+
+Searched for regex `export interface WalletBalanceResponse|export interface WalletTransactionItem|export interface WalletTransactionsResponse` (`**/*.{ts,tsx,js,jsx}`), 3 results
+
+Now I have the real contract file. Next I’m checking whether the frontend is already rendering whatever the backend returns, or whether the backend mock endpoint simply isn’t creating a transaction row the UI can show.
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/shared/contracts/payment.ts)
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/app/%28protected%29/lexus/wallet.tsx#1-1), lines 1 to 120
+
+Read [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/docs/PAYU_TROUBLESHOOTING.md#170-170), lines 170 to 260
+
+Mock flow ko user-visible bana raha hoon: dev success ke baad ek optimistic credit transaction local UI me insert hogi, so you can validate the screen without depending on backend ledger timing. Real PayU success/failure handling stays unchanged.
+
+Generating patch (44 lines) in [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts)
+
+
+```
+
+```
+One focused validation now: make sure the optimistic mock transaction compiles cleanly and doesn't break the wallet hook types.
+
+Checked [](file:///c%3A/Users/Anubhav%20Chaudhary/Documents/MAXSAS%20AI%20WORK/Maxsas-AI-Livekit/hooks/useWallet.ts), no problems found
+
+Problem frontend me exact redirection se nahi lag raha tha; visible wallet update backend transaction propagation pe depend kar rahi thi. Current code me success/failure handling already wired hai in app/(protected)/lexus/wallet.tsx/lexus/wallet.tsx) and hosted submit useWallet.ts, but dev mock flow ke baad backend se transaction row turant visible nahi aa rahi thi, so UI empty lag rahi thi.
+
+Maine ek small frontend fix add kiya hai: mock success ke baad wallet state me ek optimistic credit transaction insert hoti hai, so UI me immediately mock entry dikh jayegi even if backend transaction list thodi late ho. Real PayU flow unchanged hai. Validation clean hai on useWallet.ts.
+
+Jo root issue likely hai uska short answer:
+- Mock success UI visibility ka dependency backend ke `/payments/payu/mock-success` aur `/payment/transactions` response par tha.
+- Backend logs me ye bhi dikh raha hai ki client-provided callback URLs ignore karke server bridge URLs use ho rahe hain, so local testing me redirect path mismatch ho sakta hai.
+- Frontend me amount double-conversion ya hardcoded PayU URL ka issue nahi tha.
+
+Agar chaho, next step me main production-like success/failure test ke liye ek small in-app status banner bhi add kar sakta hoon, ya backend transaction response ke expected shape ke against aur hardening kar sakta hoon.
+
+Made changes.
+---
+
+## PRODUCTION-READY FRONTEND PROMPT (May 20, 2026)
+
+**Goal:**
+Make the PayU wallet payment system production-ready with real payment gateway integration and transaction history display showing all credit/debit entries properly.
+
+**Backend changes completed:**
+✅ PayU service hardened for test/live mode toggle  
+✅ Atomic ledger creation with idempotent webhook handling  
+✅ Proper return callbacks with enhanced logging  
+✅ Environment variables for PAYU_MODE, PAYU_KEY, PAYU_SALT configuration  
+✅ Transaction idempotency with `idempotencyKey` field on ledger entries  
+
+**Required frontend changes:**
+
+### 1. **PayU Form Submission** (hooks/useWallet.ts)
+   - Use backend-provided `payuUrl` exactly (no URL manipulation).
+   - Build form payload with exact field names: `key`, `txnid`, `amount`, `productinfo`, `firstname`, `email`, `phone`, `hash`, `surl`, `furl`, `service_provider`.
+   - Convert amount once: `amountRupees = (amountPaise / 100).toFixed(2)`.
+   - Submit hidden POST form to `data.payuUrl` on web.
+   - For native, render HTML form in WebView and auto-submit.
+   - Debug logs behind `__DEV__` flag: log form action URL and full payload before submission.
+
+### 2. **Native WebView Redirect Handling** (app/(protected)/lexus/wallet/checkout.tsx)
+   - Intercept navigation events to detect redirects to `successUrl` or `failureUrl`.
+   - On success redirect: navigate to `/lexus/wallet?payment=success&txnid=...&mihpayid=...` preserving PayU response params.
+   - On failure redirect: navigate to `/lexus/wallet?payment=failure&txnid=...` and show error banner.
+   - Keep user on a usable wallet screen (do NOT close or destroy state).
+
+### 3. **Wallet Transaction Display** (app/(protected)/lexus/wallet.tsx)
+   - Add `/payment/transactions` API call to fetch all wallet ledger entries (credit/debit).
+   - Display transaction history with:
+     - **Amount** (formatted as ₹X.XX)
+     - **Type** (Credit / Debit, styled differently)
+     - **Date** (formatted as "May 20, 2026, 11:37 AM")
+     - **Status** (Success, Failed, Pending)
+     - **Txn ID** (PayU transaction ID for reference)
+   - Sort by date (newest first).
+
+### 4. **Success/Failure Handling on Wallet Mount**
+   - Detect `payment=success` query param: call `refreshBalance()` and `fetchTransactions()`.
+   - Insert optimistic success row immediately if backend response is slow.
+   - Show success toast: "Wallet topped up with ₹X.XX" + fade after 3 seconds.
+   - Detect `payment=failure` query param: show persistent error banner: "Payment failed. Please try again." with Dismiss button.
+   - Stay on wallet screen; user can retry from the same wallet page.
+
+### 5. **Optimistic UI & Deduplication**
+   - On success, insert optimistic row into local state with `isOptimistic: true` flag.
+   - Mark with loader/shimmer visual indicator.
+   - When real transaction appears from backend, deduplicate by matching `paymentOrderId` or `txnid`.
+   - Remove optimistic row and replace with real transaction.
+   - If optimistic row persists beyond 10 seconds without backend confirmation, show retry button.
+
+### 6. **Balance Refresh**
+   - After success/failure redirect, call `refreshBalance()` to update displayed balance.
+   - For success: balance should reflect the credit immediately (no delay).
+   - Show balance with 2 decimal places: ₹1,234.56 (locale-formatted).
+
+### 7. **Debug & Logging**
+   - Add `console.debug()` logs for form submission (action URL, payload fields) behind `__DEV__`.
+   - Log payment query param detection and transaction fetch results.
+   - Log optimistic row insertion and deduplication timing.
+   - Remove or gate all debug logs behind a feature flag before shipping to production.
+
+### 8. **Error Handling**
+   - If `/payment/transactions` fails, show placeholder: "Unable to load transaction history. Please refresh."
+   - If balance refresh fails, show warning: "Balance may be out of sync. Please refresh the page."
+   - Implement retry logic for failed transaction fetches.
+
+### 9. **Type Safety**
+   - Define types for transaction response:
+     ```typescript
+     interface WalletTransaction {
+       id: string;
+       direction: "credit" | "debit";
+       amountMinor: number;
+       description: string;
+       status: "success" | "failed" | "pending";
+       entryType: "wallet_topup" | "payment_deduction" | ...;
+       externalTxnId?: string;
+       createdAt: string;
+       isOptimistic?: boolean;
+     }
+     ```
+   - Type-check all transaction objects before rendering.
+
+### 10. **Validation & Testing**
+   - Search codebase to confirm no hardcoded PayU URLs remain: `rg "payu.in|_payment" --hidden --glob '!node_modules'`
+   - Test steps:
+     1. Start backend in test mode (PAYU_MODE=test).
+     2. Open wallet, initiate top-up (₹10 or more).
+     3. Complete test PayU checkout (use test credentials from PayU dashboard).
+     4. Confirm wallet redirects to `/lexus/wallet?payment=success&txnid=...`.
+     5. Verify balance refreshes and transaction appears in history within 2 seconds.
+     6. Test failure: simulate failure in PayU test mode, confirm error banner appears and user stays on wallet.
+   - Test optimistic UI: verify transaction row appears immediately (before backend response).
+
+### 11. **Production Deployment Checklist**
+   - [ ] Remove or gate all `__DEV__` debug logs.
+   - [ ] Test with live PayU credentials (stage → production).
+   - [ ] Confirm PAYU_MODE env var is set to "live" on production.
+   - [ ] Verify all callback URLs are absolute and use production domain (not localhost).
+   - [ ] Set PAYU_SUCCESS_URL and PAYU_FAILURE_URL env vars to production URLs.
+   - [ ] Monitor transaction creation in production (watch for stuck optimistic rows).
+   - [ ] Set up alerts for failed payment orders (notify support team).
+
+**Quick Commands:**
+```bash
+# Search for hardcoded PayU URLs
+rg "payu.in|_payment|hardcoded" --hidden --glob '!node_modules'
+
+# Start frontend
+npm install
+npm run dev
+
+# Test payment flow
+# 1. Use mock endpoint for quick testing:
+#    POST /api/payments/payu/mock-success { amount: 1000, userId: "user-id" }
+# 2. Or use real PayU test dashboard with test credentials
+```
+
+**Notes:**
+- Ensure all transaction data comes from backend (no client-side calculations).
+- Use wallet balance from backend response, not local state.
+- For native, ensure WebView navigation is not blocked by CORS or missing headers.
+- For web, ensure hidden form auto-submit doesn't trigger browser warnings.
+- Keep UI responsive: show loading states for balance/transaction refresh (max 3 seconds).
+

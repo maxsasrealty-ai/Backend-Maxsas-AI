@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maxsas Master Control OS</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Shared Global Theme -->
+<link rel="stylesheet" href="/globals.css">
+
+<!-- Design System -->
+<link rel="stylesheet" href="/mc-assets/core/mc-tokens.css">
+<link rel="stylesheet" href="/mc-assets/core/mc-base.css">
+<link rel="stylesheet" href="/mc-assets/core/mc-components.css">
+</head>
+<body>
+
+<div id="mc-shell">
+  <aside id="mc-sidebar"><!-- mc-sidebar.js --></aside>
+  <header id="mc-topbar"><!-- mc-topbar.js --></header>
+  <main id="mc-content"><!-- mc-router.js mounts modules here --></main>
+</div>
+<div id="mc-toast-root"></div>
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<!-- Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Animations -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+<!-- Core (order matters) -->
+<script src="/mc-assets/core/mc-state.js"></script>
+<script src="/mc-assets/core/mc-auth.js"></script>
+<script src="/mc-assets/core/mc-api.js"></script>
+<script src="/mc-assets/core/mc-sse.js"></script>
+<script src="/mc-assets/core/mc-router.js"></script>
+
+<!-- Layout -->
+<script src="/mc-assets/layout/mc-sidebar.js"></script>
+<script src="/mc-assets/layout/mc-topbar.js"></script>
+
+<!-- Components -->
+<script src="/mc-assets/components/mc-toast.js"></script>
+<script src="/mc-assets/components/mc-modal.js"></script>
+<script src="/mc-assets/components/mc-kpi-card.js"></script>
+<script src="/mc-assets/components/mc-data-table.js"></script>
+<script src="/mc-assets/components/mc-chart.js"></script>
+<script src="/mc-assets/components/mc-activity-feed.js"></script>
+
+<!-- Modules -->
+<script src="/mc-assets/modules/command-center.js"></script>
+<script src="/mc-assets/modules/voice-ops.js"></script>
+<script src="/mc-assets/modules/monitor.js"></script>
+<script src="/mc-assets/modules/dev-tools.js"></script>
+<script src="/mc-assets/modules/tenant-control.js"></script>
+<script src="/mc-assets/modules/finance.js"></script>
+<script src="/mc-assets/modules/dev-tools.js"></script>
+<script src="/mc-assets/modules/analytics.js"></script>
+<script src="/mc-assets/modules/system.js"></script>
+<script src="/mc-assets/modules/agent-runtime.js"></script>
+
+<!-- Boot -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    MCSidebar.init();
+    MCTopbar.init();
+    MCRouter.init();
+    MCSSE.connect();
+  });
+</script>
+</body>
+</html>

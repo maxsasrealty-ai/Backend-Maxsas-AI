@@ -1,0 +1,831 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id                      String                   @id @default(uuid())
+  name                    String?
+  plan                    PlanKey                  @default(basic)
+  workspaceConfigJson     Json?
+  featuresJson            Json?
+  walletBalancePaise      Int                      @default(0)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  deletionStatus          String                   @default("active")
+  deletionRequestedAt     DateTime?
+  deletionScheduledAt     DateTime?
+  deletionRestoreUntil    DateTime?
+  deletedAt               DateTime?
+  deletionCompletedAt     DateTime?
+  deletionReason          String?
+  capabilitiesJson        Json?
+  deletionRequests        AccountDeletionRequest[]
+  callBillingTransactions CallBillingTransaction[]
+  callEvents              CallEvent[]
+  callSessions            CallSession[]
+  campaigns               Campaign[]
+  campaignCalls           CampaignCall[]
+  campaignContacts        CampaignContact[]
+  leadExtractions         LeadExtraction[]
+  outboundCallRequests    OutboundCallRequest[]
+  paymentAttempts         PaymentAttempt[]
+  paymentOrders           PaymentOrder[]
+  paymentReconciliations  PaymentReconciliation[]
+  paymentWebhooks         PaymentWebhookEvent[]
+  transcriptSegments      TranscriptSegment[]
+  usageRecords            UsageRecord[]
+  users                   User[]
+  walletAccounts          WalletAccount[]
+  walletTransactions      WalletTransaction[]
+
+  @@index([createdAt])
+  @@index([deletionStatus, deletedAt])
+}
+
+model User {
+  id                  String         @id @default(uuid())
+  tenantId            String
+  email               String         @unique
+  fullName            String
+  passwordHash        String
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  deletionStatus      String         @default("active")
+  deletedAt           DateTime?
+  deletionRequestedAt DateTime?
+  authRevokedAt       DateTime?
+  role                String         @default("member")
+  avatar              String?
+  googleId            String?        @unique
+  provider            String         @default("local")
+  authSessions        AuthSession[]
+  refreshTokens       RefreshToken[]
+  tenant              Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+  @@index([deletionStatus, deletedAt])
+}
+
+model EmailOtp {
+  id                    String    @id @default(uuid())
+  email                 String
+  otpHash               String
+  expiresAt             DateTime
+  attempts              Int       @default(0)
+  verified              Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  ipAddress             String?
+  userAgent             String?
+  verifiedAt            DateTime?
+  verificationIpAddress String?
+  verificationUserAgent String?
+
+  @@index([email, createdAt])
+  @@index([email, verified, expiresAt])
+}
+
+model MagicToken {
+  id            String    @id @default(uuid())
+  email         String
+  tokenHash     String    @unique
+  expiresAt     DateTime
+  used          Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  usedAt        DateTime?
+  usedIpAddress String?
+  usedUserAgent String?
+
+  @@index([email, createdAt])
+  @@index([email, used, expiresAt])
+}
+
+model AuthSession {
+  id               String         @id @default(uuid())
+  userId           String
+  refreshTokenHash String
+  deviceInfo       String?
+  ipAddress        String?
+  userAgent        String?
+  lastUsedAt       DateTime?
+  expiresAt        DateTime
+  revoked          Boolean        @default(false)
+  revokedAt        DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens    RefreshToken[]
+
+  @@index([userId, revoked])
+  @@index([expiresAt])
+}
+
+model RefreshToken {
+  id                  String      @id @default(uuid())
+  sessionId           String
+  userId              String
+  tokenHash           String      @unique
+  expiresAt           DateTime
+  revoked             Boolean     @default(false)
+  revokedAt           DateTime?
+  replacedByTokenHash String?
+  createdAt           DateTime    @default(now())
+  session             AuthSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([sessionId, revoked])
+}
+
+model CallSession {
+  id                      String                   @id @default(uuid())
+  tenantId                String
+  externalCallId          String?
+  roomId                  String
+  phoneNumber             String?
+  agentName               String?
+  direction               String?
+  status                  CallLifecycleStatus      @default(initiated)
+  initiatedAt             DateTime                 @default(now())
+  connectedAt             DateTime?
+  completedAt             DateTime?
+  failedAt                DateTime?
+  durationSec             Int?
+  transcriptTurns         Int?
+  recordingUrl            String?
+  estimatedCost           Decimal?                 @db.Decimal(10, 2)
+  lastError               String?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  /// CRM outcome label from call_analysis_completed (e.g. "qualified_lead_buy", "not_interested")
+  callOutcome             String?
+  /// Confidence score 0.0–1.0 from call_analysis_completed
+  confidence              Float?
+  /// How the call ended, from call_completed.ended_by (e.g. "participant_disconnected")
+  endedBy                 String?
+  callBillingTransactions CallBillingTransaction[]
+  events                  CallEvent[]
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  campaignLinks           CampaignCall[]
+  sourceContacts          CampaignContact[]        @relation("CampaignContactSourceCall")
+  leadExtraction          LeadExtraction?
+  outboundRequests        OutboundCallRequest[]
+  transcriptSegments      TranscriptSegment[]
+  usageRecords            UsageRecord[]
+
+  @@unique([tenantId, externalCallId])
+  @@index([tenantId, status])
+  @@index([tenantId, initiatedAt])
+  @@index([tenantId, createdAt])
+  @@index([tenantId, callOutcome])
+}
+
+model CallEvent {
+  id             String         @id @default(uuid())
+  callId         String
+  tenantId       String
+  eventType      VoiceEventType
+  occurredAt     DateTime
+  eventId        String         @unique
+  payloadJson    Json?
+  rawEnvelope    Json?
+  rawHeaders     Json?
+  normalizedJson Json?
+  createdAt      DateTime       @default(now())
+  callSession    CallSession    @relation(fields: [callId], references: [id], onDelete: Cascade)
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, callId, eventType, occurredAt])
+  @@index([tenantId, createdAt])
+}
+
+model TranscriptSegment {
+  id                String      @id @default(uuid())
+  callId            String
+  tenantId          String
+  speaker           Speaker
+  text              String
+  isFinal           Boolean     @default(false)
+  sequenceNo        Int
+  providerMessageId String?
+  rawJson           Json?
+  occurredAt        DateTime
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  callSession       CallSession @relation(fields: [callId], references: [id], onDelete: Cascade)
+  tenant            Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([callId, sequenceNo])
+  @@index([tenantId, callId, sequenceNo])
+  @@index([tenantId, createdAt])
+}
+
+model LeadExtraction {
+  id                String      @id @default(uuid())
+  callId            String      @unique
+  tenantId          String
+  extractedAt       DateTime
+  /// Agent sends no name field; kept nullable for future use
+  name              String?
+  /// Agent sends no phone field; kept nullable for future use
+  phone             String?
+  /// Nullable — agent's lead_extracted event does not include a summary
+  summary           String?
+  confidence        Float?
+  propertyType      String?
+  /// From lead_extracted.purchase_timeline / call_analysis_completed.lead.timeline
+  timeline          String?
+  rawJson           Json?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  /// From lead_extracted.budget_range / call_analysis_completed.lead.budget
+  budgetRange       String?     @map("budget_range")
+  /// From lead_extracted.preferred_location / call_analysis_completed.lead.location
+  preferredLocation String?     @map("preferred_location")
+  callSession       CallSession @relation(fields: [callId], references: [id], onDelete: Cascade)
+  tenant            Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+}
+
+model Campaign {
+  id          String            @id @default(uuid())
+  tenantId    String
+  name        String
+  description String?
+  status      CampaignStatus    @default(draft)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  tenant      Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  calls       CampaignCall[]
+  contacts    CampaignContact[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+}
+
+model CampaignCall {
+  id         String      @id @default(uuid())
+  campaignId String
+  callId     String
+  tenantId   String
+  createdAt  DateTime    @default(now())
+  call       CallSession @relation(fields: [callId], references: [id], onDelete: Cascade)
+  campaign   Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, callId])
+  @@index([tenantId, createdAt])
+}
+
+model CampaignContact {
+  id           String       @id @default(uuid())
+  campaignId   String
+  tenantId     String
+  sourceCallId String?
+  name         String?
+  phone        String?
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  sourceCall   CallSession? @relation("CampaignContactSourceCall", fields: [sourceCallId], references: [id])
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+}
+
+model WalletTransaction {
+  id                String                  @id @default(uuid())
+  tenantId          String
+  type              WalletTransactionType
+  amountPaise       Int
+  description       String
+  provider          String?
+  providerOrderId   String?
+  providerPaymentId String?
+  referenceId       String?
+  status            WalletTransactionStatus @default(pending)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  tenant            Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, providerOrderId])
+  @@unique([tenantId, referenceId])
+  @@index([tenantId, createdAt])
+}
+
+model WalletAccount {
+  id                      String                   @id @default(uuid())
+  tenantId                String
+  userId                  String?
+  currency                String                   @default("INR")
+  status                  String                   @default("active")
+  currentBalanceMinor     BigInt                   @default(0)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  callBillingTransactions CallBillingTransaction[]
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  walletLedger            WalletLedger[]
+
+  @@unique([tenantId, userId])
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+}
+
+model WalletLedger {
+  id                     String                  @id @default(uuid())
+  tenantId               String
+  walletAccountId        String
+  direction              EntryDirection          @default(credit)
+  amountMinor            BigInt
+  currency               String                  @default("INR")
+  status                 LedgerEntryStatus       @default(pending)
+  entryType              EntryType               @default(wallet_topup)
+  paymentOrderId         String?
+  paymentAttemptId       String?
+  externalTxnId          String?
+  referenceType          String?
+  referenceId            String?
+  description            String
+  metaJson               Json?
+  idempotencyKey         String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  callBillingTransaction CallBillingTransaction?
+  paymentOrder           PaymentOrder?           @relation(fields: [paymentOrderId], references: [id])
+  walletAccount          WalletAccount           @relation(fields: [walletAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([walletAccountId, idempotencyKey])
+  @@index([tenantId, walletAccountId])
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+  @@index([paymentOrderId])
+  @@index([externalTxnId])
+}
+
+model CallBillingTransaction {
+  id                  String        @id @default(uuid())
+  tenantId            String
+  batchId             String?
+  leadId              String?
+  callId              String
+  walletAccountId     String
+  walletLedgerId      String?       @unique
+  callDurationSeconds Int           @default(0)
+  billedMinutes       Int           @default(0)
+  perMinuteRatePaise  Int           @default(540)
+  debitAmountPaise    Int           @default(0)
+  callStatus          String
+  transactionMetaJson Json?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  callSession         CallSession   @relation(fields: [callId], references: [id], onDelete: Cascade)
+  tenant              Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  walletAccount       WalletAccount @relation(fields: [walletAccountId], references: [id], onDelete: Cascade)
+  walletLedger        WalletLedger? @relation(fields: [walletLedgerId], references: [id])
+
+  @@unique([tenantId, callId])
+  @@index([tenantId, batchId, createdAt])
+  @@index([tenantId, callStatus, createdAt])
+}
+
+model PaymentOrder {
+  id                  String              @id @default(uuid())
+  tenantId            String
+  walletAccountId     String?
+  userId              String?
+  amountMinor         BigInt
+  currency            String              @default("INR")
+  purpose             String
+  provider            PaymentProvider     @default(payu)
+  providerMode        PaymentProviderMode @default(test)
+  status              PaymentOrderStatus  @default(created)
+  payuTxnId           String?
+  merchantTxnId       String?
+  redirectUrl         String?
+  successUrl          String?
+  failureUrl          String?
+  metaJson            Json?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  paymentAttempts     PaymentAttempt[]
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  walletLedgerEntries WalletLedger[]
+
+  @@unique([tenantId, merchantTxnId])
+  @@index([tenantId, status])
+  @@index([tenantId, payuTxnId])
+  @@index([tenantId, createdAt])
+}
+
+model PaymentAttempt {
+  id                  String               @id @default(uuid())
+  tenantId            String
+  paymentOrderId      String
+  provider            PaymentProvider      @default(payu)
+  providerMode        PaymentProviderMode  @default(test)
+  providerPaymentId   String?
+  providerTxnId       String?
+  requestPayloadJson  Json
+  responsePayloadJson Json?
+  status              PaymentAttemptStatus @default(initiated)
+  errorCode           String?
+  errorMessage        String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  paymentOrder        PaymentOrder         @relation(fields: [paymentOrderId], references: [id], onDelete: Cascade)
+  tenant              Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, paymentOrderId])
+  @@index([tenantId, status])
+  @@index([tenantId, providerTxnId])
+  @@index([tenantId, createdAt])
+}
+
+model PaymentWebhookEvent {
+  id                 String                  @id @default(uuid())
+  tenantId           String?
+  provider           PaymentProvider         @default(payu)
+  eventType          String
+  providerEventId    String?
+  providerTxnId      String?
+  rawHeadersJson     Json?
+  rawBodyJson        Json
+  normalizedBodyJson Json?
+  processingStatus   WebhookProcessingStatus @default(received)
+  processingError    String?
+  idempotencyKey     String                  @unique
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  tenant             Tenant?                 @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, processingStatus])
+  @@index([tenantId, createdAt])
+  @@index([provider, providerTxnId])
+}
+
+model PaymentReconciliation {
+  id             String                  @id @default(uuid())
+  tenantId       String
+  paymentOrderId String
+  provider       PaymentProvider         @default(payu)
+  checkType      ReconciliationCheckType
+  status         ReconciliationStatus    @default(matched)
+  detailsJson    Json?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  tenant         Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, paymentOrderId])
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+}
+
+model OutboundCallRequest {
+  id            String                @id @default(uuid())
+  tenantId      String
+  phoneNumber   String
+  roomId        String
+  agentName     String?
+  status        OutboundRequestStatus @default(queued)
+  payloadJson   Json?
+  errorMessage  String?
+  callSessionId String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  callSession   CallSession?          @relation(fields: [callSessionId], references: [id])
+  tenant        Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+}
+
+model UsageRecord {
+  id            String            @id @default(uuid())
+  tenantId      String
+  callId        String
+  usageType     UsageType
+  amountPaise   Int
+  status        UsageRecordStatus
+  sourceEventId String?
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  callSession   CallSession       @relation(fields: [callId], references: [id], onDelete: Cascade)
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, callId, usageType, sourceEventId])
+  @@index([tenantId, createdAt])
+}
+
+/// Audit log for all raw voice events received from the agent server.
+/// Populated by the voice webhook ingest pipeline for observability and debugging.
+model VoiceIngestAudit {
+  id          String   @id @default(uuid())
+  receivedAt  DateTime @default(now()) @map("received_at")
+  level       String?
+  message     String?
+  eventType   String?  @map("event_type")
+  callId      String?  @map("call_id")
+  tenantId    String?  @map("tenant_id")
+  payloadJson Json?    @map("payload_json")
+  source      String?
+
+  @@index([receivedAt])
+  @@index([tenantId, receivedAt])
+  @@index([callId])
+  @@map("voice_ingest_audit")
+}
+
+model AccountDeletionRequest {
+  id                      String                       @id @default(uuid())
+  tenantId                String
+  requestKind             AccountDeletionRequestKind
+  status                  AccountDeletionRequestStatus @default(pending)
+  requestedByUserId       String?
+  requestedByEmail        String?
+  reason                  String?
+  scopeJson               Json?
+  requestedAt             DateTime                     @default(now())
+  scheduledFor            DateTime?
+  restoreUntil            DateTime?
+  completedAt             DateTime?
+  cancelledAt             DateTime?
+  purgeExecutedAt         DateTime?
+  publicTrackingTokenHash String?
+  publicTrackingTokenHint String?
+  retentionDays           Int                          @default(30)
+  restoreWindowDays       Int                          @default(7)
+  auditJson               Json?
+  tenant                  Tenant                       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, requestedAt])
+  @@index([tenantId, status])
+  @@index([requestKind, status])
+}
+
+model AccountDeletionAuditEntry {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  requestId   String?
+  action      String
+  actor       String?
+  summary     String
+  detailsJson Json?
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([requestId, createdAt])
+  @@index([action, createdAt])
+}
+
+model WebinarRegistration {
+  id                  String                @id @default(uuid())
+  webinarId           String
+  name                String
+  email               String
+  phone               String
+  company             String?
+  city                String?
+  monthlyLeads        String?
+  status              RegistrationStatus    @default(REGISTERED)
+  razorpayOrderId     String?
+  razorpayPaymentId   String?
+  razorpaySignature   String?
+  utmSource           String?
+  utmMedium           String?
+  utmCampaign         String?
+  fbclid              String?
+  gclid               String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  WebinarPaymentEvent WebinarPaymentEvent[]
+  Webinar             Webinar               @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+
+  @@index([webinarId, status])
+}
+
+model Webinar {
+  id                  String                @id
+  slug                String                @unique
+  title               String
+  subtitle            String
+  date                DateTime
+  time                String
+  priceInPaise        Int
+  status              WebinarStatus         @default(DRAFT)
+  speakerName         String
+  speakerDesignation  String
+  speakerExperience   String
+  speakerImageUrl     String?
+  benefits            Json
+  agenda              Json
+  testimonials        Json
+  faqs                Json
+  whoShouldAttend     Json
+  whatsappGroupLink   String?
+  seoTitle            String?
+  seoDescription      String?
+  ogImageUrl          String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime
+  WebinarRegistration WebinarRegistration[]
+
+  @@index([status, date])
+}
+
+model WebinarPaymentEvent {
+  id                  String              @id
+  registrationId      String
+  razorpayEventId     String              @unique
+  eventType           String
+  rawPayload          Json
+  processedAt         DateTime            @default(now())
+  WebinarRegistration WebinarRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+}
+
+enum PlanKey {
+  basic
+  pro
+  enterprise
+}
+
+enum AccountDeletionRequestKind {
+  account
+  data
+}
+
+enum AccountDeletionRequestStatus {
+  pending
+  processing
+  scheduled
+  completed
+  cancelled
+  purged
+  failed
+  restored
+}
+
+enum CallLifecycleStatus {
+  queued
+  initiated
+  dispatching
+  ringing
+  connected
+  active
+  completed
+  failed
+}
+
+enum VoiceEventType {
+  /// Legacy — not sent by current agent
+  transcript_partial
+  /// Legacy — not sent by current agent
+  transcript_final
+  call_ringing
+  call_connected
+  call_started
+  lead_extracted
+  call_completed
+  call_failed
+  publisher_test
+  agent_log
+  /// Agent conversation is live (greeting queued)
+  call_active
+  /// Batch final transcript — array of all turns
+  call_transcript_final
+  /// Full CRM analysis result — contains call_outcome and final lead fields
+  call_analysis_completed
+}
+
+enum Speaker {
+  /// Legacy value — kept for backward compatibility
+  user
+  agent
+  /// Agent sends "person" for the callee / human participant
+  person
+}
+
+enum CampaignStatus {
+  draft
+  queued
+  active
+  completed
+  archived
+}
+
+enum WalletTransactionType {
+  credit
+  debit
+}
+
+enum WalletTransactionStatus {
+  pending
+  completed
+  failed
+}
+
+enum OutboundRequestStatus {
+  queued
+  dispatching
+  dispatched
+  failed
+}
+
+enum UsageType {
+  call_charge
+}
+
+enum UsageRecordStatus {
+  bypassed
+  rejected
+  charged
+}
+
+enum PaymentProvider {
+  payu
+  razorpay
+}
+
+enum PaymentProviderMode {
+  test
+  live
+}
+
+enum PaymentOrderStatus {
+  created
+  pending
+  initiated
+  success
+  failed
+  cancelled
+  expired
+}
+
+enum PaymentAttemptStatus {
+  initiated
+  pending
+  success
+  failed
+  declined
+}
+
+enum EntryDirection {
+  credit
+  debit
+}
+
+enum EntryType {
+  wallet_topup
+  usage_debit
+  manual_credit
+  manual_debit
+  refund
+  adjustment
+}
+
+enum LedgerEntryStatus {
+  pending
+  success
+  failed
+  reversed
+}
+
+enum WebhookProcessingStatus {
+  received
+  processed
+  failed
+  ignored
+}
+
+enum ReconciliationCheckType {
+  webhook_vs_verify
+  redirect_vs_webhook
+  manual_recheck
+}
+
+enum ReconciliationStatus {
+  matched
+  mismatched
+  resolved
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  PAYMENT_PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum WebinarStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

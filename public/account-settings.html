@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="description" content="Authenticated Maxsas AI account settings page for deletion requests, data deletion, and deletion status tracking." />
+  <meta name="theme-color" content="#0b1220" />
+  <title>Account Settings | Maxsas AI</title>
+  <style>
+    :root {
+      --bg: #08111d;
+      --bg2: #121c2f;
+      --panel: rgba(13, 21, 38, 0.9);
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #eef4ff;
+      --muted: #9fb0ca;
+      --accent: #6ee7b7;
+      --accent2: #60a5fa;
+      --danger: #fb7185;
+      --warn: #f59e0b;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.44);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top right, rgba(96, 165, 250, 0.16), transparent 30%), radial-gradient(circle at 20% 12%, rgba(110, 231, 183, 0.16), transparent 28%), linear-gradient(180deg, var(--bg), var(--bg2)); color: var(--text); }
+    body { font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif; }
+    a { color: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 18px 56px; }
+    .hero { display: grid; gap: 18px; padding: 28px; border: 1px solid var(--line); border-radius: 32px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(3, 7, 18, 0.92)); box-shadow: var(--shadow); }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), #34d399); }
+    .eyebrow { display: inline-flex; border: 1px solid rgba(110, 231, 183, 0.24); background: rgba(110, 231, 183, 0.08); color: #dcfce7; border-radius: 999px; padding: 7px 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; margin: 0; }
+    h1 { font-size: clamp(2.2rem, 4.8vw, 4.4rem); line-height: 0.96; letter-spacing: -0.05em; max-width: 14ch; }
+    .lede { color: var(--muted); max-width: 78ch; margin: 0; }
+    .grid { display: grid; gap: 18px; margin-top: 18px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .card { border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+    .span-7 { grid-column: span 7; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-12 { grid-column: 1 / -1; }
+    .stack { display: grid; gap: 12px; }
+    .form-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .field { display: grid; gap: 6px; }
+    label { font-size: 0.92rem; color: #d5e4fb; }
+    input, textarea, button { font: inherit; }
+    input, textarea { width: 100%; border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 16px; background: rgba(2, 6, 23, 0.62); color: var(--text); padding: 12px 14px; outline: none; }
+    input:focus, textarea:focus { border-color: rgba(110, 231, 183, 0.72); box-shadow: 0 0 0 4px rgba(110, 231, 183, 0.12); }
+    textarea { min-height: 108px; resize: vertical; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; }
+    button { border: 0; cursor: pointer; border-radius: 16px; padding: 12px 16px; font-weight: 700; transition: transform .15s ease, opacity .15s ease; }
+    button:hover { transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #34d399); color: #04111d; }
+    .btn-secondary { background: rgba(148, 163, 184, 0.14); color: var(--text); border: 1px solid rgba(148, 163, 184, 0.2); }
+    .btn-danger { background: linear-gradient(135deg, #fb7185, #ef4444); color: white; }
+    .btn-warn { background: linear-gradient(135deg, #f59e0b, #fb923c); color: #1f1300; }
+    .muted { color: var(--muted); }
+    .checkboxes { display: grid; gap: 10px; }
+    .check { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 16px; background: rgba(148, 163, 184, 0.08); border: 1px solid rgba(148, 163, 184, 0.12); }
+    .check input { width: auto; margin-top: 3px; }
+    .check strong { display: block; }
+    .check span { color: var(--muted); font-size: 0.92rem; }
+    .callout { border-left: 4px solid var(--warn); background: rgba(245, 158, 11, 0.09); color: #fff0cc; border-radius: 18px; padding: 14px 16px; }
+    .result { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92rem; border-radius: 18px; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(148, 163, 184, 0.2); padding: 14px; color: #d9e7f7; min-height: 180px; }
+    .footer { color: var(--muted); font-size: 0.92rem; margin-top: 18px; }
+    .tiny { font-size: 0.88rem; color: var(--muted); }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(148, 163, 184, 0.08); border-radius: 999px; padding: 8px 12px; }
+    .chip strong { color: var(--accent); }
+    @media (max-width: 920px) {
+      .grid, .form-grid { grid-template-columns: 1fr; }
+      .span-7, .span-5, .span-6 { grid-column: 1 / -1; }
+      .hero { padding: 20px; border-radius: 28px; }
+      h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <div class="eyebrow">Secure account settings</div>
+          <div class="muted">Maxsas AI / Maxsas Realty AI</div>
+        </div>
+      </div>
+      <h1>Delete Account and Delete My Data</h1>
+      <p class="lede">Use this page to submit authenticated deletion requests, manage consent, and track the purge status. Requests are soft-deleted first, then permanently purged after the restore window and retention period.</p>
+      <div class="chip-row">
+        <div class="chip"><strong>Default retention</strong> 30 days</div>
+        <div class="chip"><strong>Restore window</strong> 7 days</div>
+        <div class="chip"><strong>Support</strong> support@maxsas.ai</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card span-7">
+        <h2>Delete My Data</h2>
+        <p class="muted">This removes call sessions, transcripts, leads, campaign contacts, and related call artifacts while keeping billing records required for financial and legal purposes.</p>
+        <div class="callout" style="margin:12px 0 16px;">Before submitting, export anything you want to keep. Deleted data may not be recoverable after processing.</div>
+        <div class="checkboxes" id="data-scope-box">
+          <label class="check"><input type="checkbox" id="scope-calls" checked /><span><strong>Call data</strong> Call sessions, call events, recordings, transcript segments, and lead extraction data.</span></label>
+          <label class="check"><input type="checkbox" id="scope-contacts" checked /><span><strong>Campaign contacts</strong> Imported or generated lead/contact records tied to your workspace.</span></label>
+          <label class="check"><input type="checkbox" id="scope-outbound" checked /><span><strong>Outbound requests</strong> Outbound call request metadata linked to your account.</span></label>
+          <label class="check"><input type="checkbox" id="scope-usage" /><span><strong>Usage records</strong> Operational usage rows. Keep this off if you need billing continuity.</span></label>
+        </div>
+        <div class="form-grid" style="margin-top:16px;">
+          <div class="field"><label for="tenant-id">Tenant ID</label><input id="tenant-id" placeholder="workspace tenant id" /></div>
+          <div class="field"><label for="bearer-token">Bearer token</label><input id="bearer-token" placeholder="paste your authenticated API token" /></div>
+          <div class="field"><label for="user-id">User ID (optional)</label><input id="user-id" placeholder="optional" /></div>
+          <div class="field"><label for="email">Email (optional)</label><input id="email" placeholder="account email" /></div>
+          <div class="field"><label for="retention-days">Retention days</label><input id="retention-days" type="number" min="1" max="365" value="30" /></div>
+          <div class="field"><label for="reason">Reason (optional)</label><input id="reason" placeholder="why are you requesting deletion?" /></div>
+        </div>
+        <div class="row" style="margin-top:16px;">
+          <button class="btn-warn" id="save-settings">Save local settings</button>
+          <button class="btn-danger" id="delete-data">Delete My Data</button>
+        </div>
+      </article>
+
+      <article class="card span-5">
+        <h2>Delete Account</h2>
+        <p class="muted">This schedules a full account deletion, immediately revokes access, and starts the restore window before the permanent purge job runs.</p>
+        <div class="field"><label for="restore-window">Restore window days</label><input id="restore-window" type="number" min="0" max="30" value="7" /></div>
+        <div class="callout" style="margin:12px 0 16px;">Account deletion is irreversible once the purge window expires. A support agent can restore the workspace only during the pending window.</div>
+        <div class="stack">
+          <div class="tiny">Consent warnings</div>
+          <ul class="muted" style="margin:0; padding-left:18px;">
+            <li>You will lose access to the workspace immediately after the request is accepted.</li>
+            <li>Billing, tax, and security records may be retained temporarily where legally required.</li>
+            <li>The request returns a tracking token. Keep it if you want to check status later.</li>
+          </ul>
+          <div class="row">
+            <button class="btn-secondary" id="check-status">Check current status</button>
+            <button class="btn-danger" id="delete-account">Delete Account</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-12">
+        <h2>Status</h2>
+        <div class="result" id="status-output">No request has been submitted yet.</div>
+        <p class="tiny" style="margin-top:10px;">Status updates are returned by the backend in a standard success/error envelope. The latest request token is stored locally so you can re-check without re-entering it.</p>
+      </article>
+    </section>
+
+    <p class="footer">If you need help, email support@maxsas.ai and include your tenant ID, request ID, and the reason for your deletion request. This page is safe to use as a Google Play account deletion URL.</p>
+  </main>
+
+  <script>
+    const state = {
+      tenantId: localStorage.getItem('maxsas.delete.tenantId') || '',
+      token: localStorage.getItem('maxsas.delete.token') || '',
+      email: localStorage.getItem('maxsas.delete.email') || '',
+      userId: localStorage.getItem('maxsas.delete.userId') || '',
+      requestId: localStorage.getItem('maxsas.delete.requestId') || '',
+      trackingToken: localStorage.getItem('maxsas.delete.trackingToken') || '',
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const output = $('status-output');
+
+    function setOutput(value) {
+      output.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    }
+
+    function hydrateForm() {
+      $('tenant-id').value = state.tenantId;
+      $('bearer-token').value = state.token;
+      $('email').value = state.email;
+      $('user-id').value = state.userId;
+    }
+
+    function saveForm() {
+      state.tenantId = $('tenant-id').value.trim();
+      state.token = $('bearer-token').value.trim();
+      state.email = $('email').value.trim();
+      state.userId = $('user-id').value.trim();
+      localStorage.setItem('maxsas.delete.tenantId', state.tenantId);
+      localStorage.setItem('maxsas.delete.token', state.token);
+      localStorage.setItem('maxsas.delete.email', state.email);
+      localStorage.setItem('maxsas.delete.userId', state.userId);
+    }
+
+    function buildScope() {
+      return {
+        includeCalls: $('scope-calls').checked,
+        includeTranscripts: $('scope-calls').checked,
+        includeLeads: $('scope-calls').checked,
+        includeCampaignContacts: $('scope-contacts').checked,
+        includeCampaignLinks: $('scope-contacts').checked,
+        includeOutboundRequests: $('scope-outbound').checked,
+        includeUsageRecords: $('scope-usage').checked,
+      };
+    }
+
+    async function postJson(path, body) {
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` };
+      const response = await fetch(path, { method: 'POST', headers, body: JSON.stringify(body) });
+      return response.json();
+    }
+
+    async function fetchStatus() {
+      if (state.requestId && state.trackingToken) {
+        const response = await fetch(`/api/account/delete-status?requestId=${encodeURIComponent(state.requestId)}&trackingToken=${encodeURIComponent(state.trackingToken)}`);
+        return response.json();
+      }
+
+      const response = await fetch(`/api/account/delete-status`, {
+        headers: {
+          Authorization: `Bearer ${state.token}`,
+          'x-tenant-id': state.tenantId,
+        },
+      });
+      return response.json();
+    }
+
+    async function submitDeleteAccount() {
+      saveForm();
+      if (!state.tenantId || !state.token) {
+        setOutput({ error: 'tenantId and bearer token are required' });
+        return;
+      }
+
+      const confirmed = window.confirm('This will immediately revoke access and schedule permanent account deletion. Continue?');
+      if (!confirmed) return;
+
+      setOutput('Submitting account deletion request...');
+      const payload = {
+        tenantId: state.tenantId,
+        email: state.email || undefined,
+        userId: state.userId || undefined,
+        reason: $('reason').value.trim() || undefined,
+        retentionDays: Number($('retention-days').value || 30),
+        restoreWindowDays: Number($('restore-window').value || 7),
+        scope: {
+          includeCalls: true,
+          includeTranscripts: true,
+          includeLeads: true,
+          includeCampaignContacts: true,
+          includeCampaignLinks: true,
+          includeOutboundRequests: true,
+          includeUsageRecords: true,
+        },
+      };
+
+      const payloadResponse = await postJson('/api/account/delete-request', payload);
+      setOutput(payloadResponse);
+      if (payloadResponse && payloadResponse.success && payloadResponse.data) {
+        state.requestId = payloadResponse.data.requestId;
+        state.trackingToken = payloadResponse.data.trackingToken;
+        localStorage.setItem('maxsas.delete.requestId', state.requestId);
+        localStorage.setItem('maxsas.delete.trackingToken', state.trackingToken);
+      }
+    }
+
+    async function submitDeleteData() {
+      saveForm();
+      if (!state.tenantId || !state.token) {
+        setOutput({ error: 'tenantId and bearer token are required' });
+        return;
+      }
+
+      const confirmed = window.confirm('This will permanently remove your call and lead data while keeping billing records. Continue?');
+      if (!confirmed) return;
+
+      setOutput('Submitting data deletion request...');
+      const payloadResponse = await postJson('/api/account/delete-data', {
+        tenantId: state.tenantId,
+        email: state.email || undefined,
+        userId: state.userId || undefined,
+        reason: $('reason').value.trim() || undefined,
+        retentionDays: Number($('retention-days').value || 30),
+        scope: buildScope(),
+      });
+      setOutput(payloadResponse);
+      if (payloadResponse && payloadResponse.success && payloadResponse.data) {
+        state.requestId = payloadResponse.data.requestId;
+        state.trackingToken = payloadResponse.data.trackingToken;
+        localStorage.setItem('maxsas.delete.requestId', state.requestId);
+        localStorage.setItem('maxsas.delete.trackingToken', state.trackingToken);
+      }
+    }
+
+    async function refreshStatus() {
+      if (!state.token && !state.requestId) {
+        setOutput({ error: 'No token or request ID available' });
+        return;
+      }
+
+      setOutput('Loading deletion status...');
+      try {
+        const payload = await fetchStatus();
+        setOutput(payload);
+      } catch (error) {
+        setOutput({ error: error instanceof Error ? error.message : String(error) });
+      }
+    }
+
+    $('save-settings').addEventListener('click', () => {
+      saveForm();
+      setOutput({ saved: true, tenantId: state.tenantId });
+    });
+    $('delete-account').addEventListener('click', () => void submitDeleteAccount());
+    $('delete-data').addEventListener('click', () => void submitDeleteData());
+    $('check-status').addEventListener('click', () => void refreshStatus());
+
+    hydrateForm();
+    if (state.requestId || state.token) {
+      void refreshStatus();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "name": "maxsas-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --import dotenv/config --import tsx src/index.ts",
+    "dev:local": "docker compose -f infra/postgres/docker-compose.yml up -d && npm run prisma:generate && npm run prisma:deploy && node --import dotenv/config --import tsx src/index.ts",
+    "start": "node --import dotenv/config --import tsx src/index.ts",
+    "ui": "echo \"Open Master Control: http://134.209.157.41:4000/admin/master-control\"",
+    "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
+    "prisma:deploy": "npx prisma migrate deploy --schema=./prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema=./prisma/schema.prisma",
+    "prisma:pull": "npx prisma db pull --schema=./prisma/schema.prisma",
+    "test:lead-normalization": "npx tsx scripts/test-lead-normalization.ts",
+    "test:voice-webhook": "node ./scripts/test-voice-webhook.mjs",
+    "test:outbound-call": "node ./scripts/test-outbound-call.mjs",
+    "test:dispatch-contract": "node --import dotenv/config --import tsx ./scripts/test-dispatch-contract-wiring.ts",
+    "test:e2e": "node ./scripts/test-e2e.mjs",
+    "reset:payments": "node --import dotenv/config --import tsx ./scripts/reset-payments.ts",
+    "monitor:call": "powershell -NoProfile -Command \"while ($true) { $call = Invoke-RestMethod -Uri 'http://localhost:4000/api/calls/2ce4fd30-0908-4b7c-a465-77d89fb4edb7' -Method Get -Headers @{ 'x-tenant-id' = 'lexus-demo' }; $duration = if ($null -ne $call.data.durationSec) { $call.data.durationSec } else { 'N/A' }; $state = if ($call.data.state) { $call.data.state } else { $call.data.status }; Write-Host \"$(Get-Date): $state - Duration: $duration\" -ForegroundColor Yellow; Start-Sleep 5 }\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "bullmq": "^5.16.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.3",
+    "livekit-server-sdk": "^2.15.0",
+    "nodemailer": "^8.0.7",
+    "prisma": "^6.19.3",
+    "rate-limiter-flexible": "^11.1.0",
+    "razorpay": "^2.9.6",
+    "xlsx": "^0.18.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.8.0",
+    "@types/nodemailer": "^8.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
+}

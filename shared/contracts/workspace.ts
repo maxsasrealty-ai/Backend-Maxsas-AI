@@ -1,0 +1,1 @@
+export type { PlanName, WorkspaceTenantConfig } from "./plans";

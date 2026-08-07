@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maxsas Admin Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(circle at 20% 20%, #eef6ff 0%, #f8fbff 35%, #f7fafc 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-900">
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useEffect, useMemo, useState } = React;
+
+      const API_BASE = window.location.origin;
+      const TENANT_ID = "lexus-demo";
+      const POLL_MS = 4000;
+
+      function AdminApp() {
+        const [phoneNumber, setPhoneNumber] = useState("+918588837040");
+        const [calls, setCalls] = useState([]);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState("");
+        const [selectedCall, setSelectedCall] = useState(null);
+        const [transcript, setTranscript] = useState([]);
+        const [lead, setLead] = useState(null);
+
+        const totalCalls = useMemo(() => calls.length, [calls]);
+
+        async function fetchJson(url, options = {}) {
+          const ADMIN_KEY = "dev-admin-key"; // For local dev, matches backend default
+          const response = await fetch(url, {
+            ...options,
+            headers: {
+              "content-type": "application/json",
+              "x-tenant-id": TENANT_ID,
+              "x-admin-key": ADMIN_KEY,
+              ...(options.headers || {}),
+            },
+          });
+          const text = await response.text();
+          const payload = text ? JSON.parse(text) : {};
+          if (!response.ok || payload.success === false) {
+            throw new Error(payload?.error?.message || `Request failed: ${response.status}`);
+          }
+          return payload;
+        }
+
+        async function loadCalls() {
+          try {
+            const payload = await fetchJson(`${API_BASE}/api/calls`);
+            setCalls(payload.data || []);
+          } catch (err) {
+            setError(err.message || "Failed to load calls");
+          }
+        }
+
+        async function openCallDetail(call) {
+          try {
+            setError("");
+            setSelectedCall(call);
+            const [transcriptRes, leadsRes] = await Promise.all([
+              fetchJson(`${API_BASE}/api/calls/${call.id}/transcript`),
+              fetchJson(`${API_BASE}/api/leads`),
+            ]);
+            setTranscript(transcriptRes.data || []);
+            const linkedLead = (leadsRes.data || []).find((item) => item.callId === call.id);
+            setLead(linkedLead || null);
+          } catch (err) {
+            setError(err.message || "Failed to load call details");
+          }
+        }
+
+        async function triggerCall(e) {
+          e.preventDefault();
+          setLoading(true);
+          setError("");
+          try {
+            await fetchJson(`${API_BASE}/api/calls/outbound`, {
+              method: "POST",
+              body: JSON.stringify({
+                tenant_id: TENANT_ID,
+                phone_number: phoneNumber,
+              }),
+            });
+            await loadCalls();
+          } catch (err) {
+            setError(err.message || "Failed to trigger outbound call");
+          } finally {
+            setLoading(false);
+          }
+        }
+
+        useEffect(() => {
+          loadCalls();
+          const id = setInterval(loadCalls, POLL_MS);
+          return () => clearInterval(id);
+        }, []);
+
+        return (
+          <main className="mx-auto max-w-7xl p-4 md:p-8">
+            <header className="mb-6 rounded-2xl bg-white/90 p-6 shadow-sm ring-1 ring-slate-200">
+              <h1 className="text-2xl font-semibold md:text-3xl">Maxsas Admin Console</h1>
+              <p className="mt-1 text-sm text-slate-600">
+                Trigger calls, monitor lifecycle, and inspect transcript and lead extraction data.
+              </p>
+              <p className="mt-2 text-xs text-slate-500">Tenant: {TENANT_ID}</p>
+            </header>
+
+            <section className="mb-6 rounded-2xl bg-white/90 p-5 shadow-sm ring-1 ring-slate-200">
+              <form className="grid gap-3 md:grid-cols-3" onSubmit={triggerCall}>
+                <input
+                  className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+91xxxxxxxxxx"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {loading ? "Triggering..." : "Trigger Outbound Call"}
+                </button>
+                <button
+                  type="button"
+                  onClick={loadCalls}
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                >
+                  Refresh
+                </button>
+              </form>
+              <p className="mt-3 text-xs text-slate-500">Agent dispatch target is fixed to my-agent for one-click runtime.</p>
+              {error ? <p className="mt-3 text-sm text-rose-600">{error}</p> : null}
+            </section>
+
+            <section className="rounded-2xl bg-white/90 p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Calls ({totalCalls})</h2>
+                <span className="text-xs text-slate-500">Auto-refresh every {POLL_MS / 1000}s</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-slate-200 text-sm">
+                  <thead>
+                    <tr className="text-left text-slate-600">
+                      <th className="py-2 pr-3">Call ID</th>
+                      <th className="py-2 pr-3">Phone</th>
+                      <th className="py-2 pr-3">State</th>
+                      <th className="py-2 pr-3">Duration</th>
+                      <th className="py-2 pr-3">Updated</th>
+                      <th className="py-2">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {calls.map((call) => (
+                      <tr key={call.id}>
+                        <td className="py-2 pr-3 font-mono text-xs">{call.id}</td>
+                        <td className="py-2 pr-3">{call.phoneNumber || "-"}</td>
+                        <td className="py-2 pr-3">
+                          <span className="rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700">
+                            {call.state || call.status || "unknown"}
+                          </span>
+                        </td>
+                        <td className="py-2 pr-3">{call.durationSec ?? "N/A"}</td>
+                        <td className="py-2 pr-3">{new Date(call.updatedAt).toLocaleString()}</td>
+                        <td className="py-2">
+                          <button
+                            type="button"
+                            onClick={() => openCallDetail(call)}
+                            className="rounded-md border border-slate-300 px-2 py-1 text-xs hover:bg-slate-100"
+                          >
+                            Details
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {selectedCall ? (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+                <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl">
+                  <div className="mb-3 flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">Call Detail</h3>
+                      <p className="font-mono text-xs text-slate-600">{selectedCall.id}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCall(null)}
+                      className="rounded-md border border-slate-300 px-2 py-1 text-xs hover:bg-slate-100"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <div className="mb-4 grid gap-2 rounded-lg bg-slate-50 p-3 text-sm md:grid-cols-2">
+                    <p><strong>State:</strong> {selectedCall.state || selectedCall.status || "unknown"}</p>
+                    <p><strong>Phone:</strong> {selectedCall.phoneNumber || "-"}</p>
+                    <p><strong>Agent:</strong> {selectedCall.agentName || "-"}</p>
+                    <p><strong>Duration:</strong> {selectedCall.durationSec ?? "N/A"}</p>
+                  </div>
+
+                  <section className="mb-4">
+                    <h4 className="mb-2 text-sm font-semibold">Transcript</h4>
+                    <div className="max-h-64 overflow-y-auto rounded-lg border border-slate-200 p-3 text-sm">
+                      {transcript.length === 0 ? (
+                        <p className="text-slate-500">No transcript segments yet.</p>
+                      ) : (
+                        transcript.map((segment) => (
+                          <p key={segment.id} className="mb-2">
+                            <span className="font-semibold text-slate-700">[{segment.speaker}]</span> {segment.text}
+                          </p>
+                        ))
+                      )}
+                    </div>
+                  </section>
+
+                  <section>
+                    <h4 className="mb-2 text-sm font-semibold">Lead Extraction</h4>
+                    <div className="rounded-lg border border-slate-200 p-3 text-sm">
+                      {lead ? (
+                        <pre className="overflow-x-auto text-xs text-slate-700">{JSON.stringify(lead, null, 2)}</pre>
+                      ) : (
+                        <p className="text-slate-500">No lead extracted yet.</p>
+                      )}
+                    </div>
+                  </section>
+                </div>
+              </div>
+            ) : null}
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<AdminApp />);
+    </script>
+  </body>
+</html>

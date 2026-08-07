@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maxsas Payments · Dev Monitor</title>
+<style>
+  /* Reuse styles from admin_panel for a consistent look */
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+  :root{--bg:#0a0b0d;--bg2:#0f1114;--bg3:#141619;--border:#1e2127;--border2:#262b33;--green:#00e887;--green-dim:#00e88720;--green-mid:#00e88740;--amber:#f5a623;--amber-dim:#f5a62320;--red:#ff4d6d;--red-dim:#ff4d6d20;--blue:#4d9fff;--text:#e8eaed;--text2:#8b9099;--text3:#4a5060;--mono:'JetBrains Mono', monospace;--sans:'Syne', sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+  .topbar-left{display:flex;align-items:center;gap:16px}
+  .logo{font-family:var(--sans);font-size:15px;font-weight:700}
+  .logo span{color:var(--green)}
+  .badge-env{font-size:10px;font-weight:600;padding:3px 8px;border-radius:3px;text-transform:uppercase;background:var(--green-dim);color:var(--green);border:1px solid var(--green-mid)}
+  .btn-refresh{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer}
+  .main{display:flex;flex:1;overflow:hidden}
+  .panel-left{width:360px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column}
+  .panel-header{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:space-between}
+  .panel-title{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase}
+  .count-badge{font-size:10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:2px 8px;border-radius:10px}
+  .item-list{flex:1;overflow-y:auto}
+  .item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+  .item:hover{background:var(--bg2)}
+  .item.active{background:var(--green-dim);border-left:2px solid var(--green)}
+  .panel-mid{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 16px}
+  .tab{Padding:12px 16px 10px;font-size:12px;color:var(--text3);cursor:pointer}
+  .tab.active{color:var(--green);border-bottom:2px solid var(--green)}
+  .detail-area{flex:1;overflow-y:auto;padding:16px}
+  .json-block{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 14px;white-space:pre;overflow-x:auto}
+  .panel-right{width:320px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden}
+  .log-stream{flex:1;overflow-y:auto;padding:8px 0}
+  .log-entry{display:flex;gap:8px;align-items:flex-start;padding:5px 14px}
+  .log-ts{color:var(--text3);font-size:10px;width:72px}
+  .log-level{font-size:10px;font-weight:700;width:38px}
+  .log-msg{font-size:11px;color:var(--text2)}
+  .sec-label{font-size:10px;color:var(--text3);margin-top:16px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">Maxsas <span>Payments</span> · DevMonitor</div>
+    <div class="badge-env">dev</div>
+  </div>
+  <div class="topbar-right">
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="modeSelect" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:6px;border-radius:6px">
+        <option value="test">Test Mode</option>
+        <option value="live">Live Mode</option>
+      </select>
+      <button class="btn-refresh" onclick="simulateRefresh()">↺ Refresh</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="panel-left">
+    <div class="panel-header">
+      <span class="panel-title">Payments</span>
+      <span class="count-badge" id="paymentCount">0 payments</span>
+    </div>
+    <div class="item-list" id="paymentList"></div>
+  </div>
+
+  <div class="panel-mid">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('flow',this)">Flow</div>
+      <div class="tab" onclick="switchTab('events',this)">Events</div>
+      <div class="tab" onclick="switchTab('db',this)">DB</div>
+      <div class="tab" onclick="switchTab('raw',this)">Raw</div>
+    </div>
+    <div class="detail-area" id="detailArea"><div class="sec-label">Loading payments...</div></div>
+  </div>
+
+  <div class="panel-right">
+    <div class="panel-header"><span class="panel-title">Live Log</span><span class="count-badge" id="logCount">0 entries</span></div>
+    <div class="log-stream" id="logStream"></div>
+  </div>
+</div>
+
+<script>
+let PAYMENTS = [];
+let selectedPaymentId = null;
+let currentTab = 'flow';
+let logEntries = [];
+
+function getAdminKey(){const p=new URLSearchParams(window.location.search);const q=p.get('adminKey');if(q){localStorage.setItem('adminKey',q);return q}return localStorage.getItem('adminKey')||'dev-admin-key'}
+async function fetchJson(url){const res=await fetch(url,{headers:{'x-admin-key':getAdminKey()}});const p=await res.json();if(!res.ok||p.success===false)throw new Error(p?.error?.message||`Request failed: ${res.status}`);return p}
+
+function formatTime(ts){if(!ts) return '--:--:--';const d=new Date(ts);return isNaN(d.getTime())? '--:--:--' : d.toTimeString().slice(0,8)}
+
+function mapPayment(raw){
+  return {
+    id: raw.id,
+    amount: raw.amount || raw.value || 0,
+    currency: raw.currency || 'INR',
+    mode: raw.mode || (raw.test ? 'test' : 'live'),
+    status: (raw.status||'unknown').toLowerCase(),
+    tenant: raw.tenant_id || raw.tenant || 'unknown',
+    createdAt: raw.created_at || new Date().toISOString(),
+    raw
+  };
+}
+
+async function loadPayments(){
+  const mode = document.getElementById('modeSelect').value;
+  const payload = await fetchJson('/admin/dev-monitor/payments?mode='+encodeURIComponent(mode));
+  PAYMENTS = (payload.data||[]).map(mapPayment);
+  document.getElementById('paymentCount').textContent = `${PAYMENTS.length} payments`;
+  renderList();
+  if(!PAYMENTS.length){document.getElementById('detailArea').innerHTML = '<div class="sec-label">No payments found</div>';return}
+  if(!selectedPaymentId || !PAYMENTS.find(p => p.id===selectedPaymentId)) selectPayment(PAYMENTS[0].id); else renderDetail();
+}
+
+function renderList(){const list=document.getElementById('paymentList');list.innerHTML='';PAYMENTS.forEach(p=>{const el=document.createElement('div');el.className='item'+(p.id===selectedPaymentId?' active':'');el.id='pi-'+p.id;el.onclick=()=>selectPayment(p.id);el.innerHTML=`<div style="display:flex;justify-content:space-between"><div>${p.id} · ${p.currency} ${p.amount}</div><div style="color:var(--text3)">${formatTime(p.createdAt)}</div></div><div style="color:var(--text2);font-size:12px;margin-top:6px">${p.tenant} · ${p.mode} · ${p.status}</div>`;list.appendChild(el)})}
+
+function selectPayment(id){selectedPaymentId=id;document.querySelectorAll('.item').forEach(el=>el.classList.remove('active'));const el=document.getElementById('pi-'+id);if(el)el.classList.add('active');renderDetail();}
+
+function switchTab(tab, el){currentTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderDetail()}
+
+async function ensurePaymentEvents(id){try{const payload=await fetchJson('/admin/dev-monitor/payment-events/'+encodeURIComponent(id));const payment=PAYMENTS.find(p=>p.id===id);if(payment) payment.events = payload.data||[]; if(selectedPaymentId===id) renderDetail();}catch(e){console.error(e)} }
+
+function jsonBlock(obj){return `<div class="json-block">${JSON.stringify(obj,null,2)}</div>`}
+
+function renderDetail(){if(!selectedPaymentId) return;const p=PAYMENTS.find(x=>x.id===selectedPaymentId);if(!p) return;const area=document.getElementById('detailArea');if(currentTab==='flow'){area.innerHTML=`<div class="sec-label">Payment Flow</div><div class="json-block">${JSON.stringify({id:p.id,amount:p.amount,currency:p.currency,tenant:p.tenant,mode:p.mode,status:p.status},null,2)}</div><div class="sec-label">Gateway Payload</div>${jsonBlock(p.raw.gateway_payload||{})}<div class="sec-label">DB Record</div>${jsonBlock(p.raw.db_record||{saved:false})}`; void ensurePaymentEvents(p.id);}else if(currentTab==='events'){area.innerHTML=(p.events&&p.events.length)?`<div class="sec-label">Events</div>${p.events.map(e=>jsonBlock(e)).join('<hr/>')}`:'<div class="sec-label">No events</div>';}else if(currentTab==='db'){area.innerHTML=`<div class="sec-label">DB Record</div>${jsonBlock(p.raw.db_record||{saved:false})}`;}else{area.innerHTML=`<div class="sec-label">Raw Payload</div>${jsonBlock(p.raw)}`}}
+
+function addLog(level,msg,ts){const stream=document.getElementById('logStream');const now=ts?new Date(ts):new Date();const time=now.toTimeString().slice(0,8);const el=document.createElement('div');el.className='log-entry';el.innerHTML=`<span class="log-ts">${time}</span><span class="log-level">${level.toUpperCase()}</span><span class="log-msg">${msg}</span>`;stream.insertBefore(el,stream.firstChild);logEntries.push({ts:time,level,msg});document.getElementById('logCount').textContent=`${logEntries.length} entries`;if(stream.children.length>200) stream.removeChild(stream.lastChild)}
+
+function simulateRefresh(){void loadPayments();addLog('info','Manual refresh')}
+
+document.getElementById('modeSelect').addEventListener('change',()=>{void loadPayments()});
+
+async function init(){try{await loadPayments();}catch(e){document.getElementById('detailArea').innerHTML=`<div class="sec-label">${String(e)}</div>`;addLog('err',String(e))}}
+init();
+</script>
+</body>
+</html>

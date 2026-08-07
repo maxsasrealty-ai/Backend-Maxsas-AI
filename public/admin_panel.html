@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maxsas Voice · Dev Monitor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg:        #0a0b0d;
+    --bg2:       #0f1114;
+    --bg3:       #141619;
+    --border:    #1e2127;
+    --border2:   #262b33;
+    --green:     #00e887;
+    --green-dim: #00e88720;
+    --green-mid: #00e88740;
+    --amber:     #f5a623;
+    --amber-dim: #f5a62320;
+    --red:       #ff4d6d;
+    --red-dim:   #ff4d6d20;
+    --blue:      #4d9fff;
+    --blue-dim:  #4d9fff18;
+    --purple:    #9b7fff;
+    --purple-dim:#9b7fff18;
+    --text:      #e8eaed;
+    --text2:     #8b9099;
+    --text3:     #4a5060;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 52px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+  .logo span { color: var(--green); }
+  .badge-env {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+    background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid);
+  }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text2);
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot.green  { background: var(--green);  box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  .dot.red    { background: var(--red);    box-shadow: 0 0 6px var(--red); }
+  .dot.amber  { background: var(--amber);  box-shadow: 0 0 6px var(--amber); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  .btn-refresh {
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text2); padding: 6px 14px; border-radius: 6px;
+    cursor: pointer; font-family: var(--mono); font-size: 12px;
+    transition: all .15s;
+  }
+  .btn-refresh:hover { border-color: var(--green); color: var(--green); }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  .panel-left {
+    width: 300px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2);
+  }
+  .count-badge {
+    font-size: 10px; background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text2); padding: 2px 8px; border-radius: 10px;
+  }
+  .call-list { flex: 1; overflow-y: auto; }
+  .call-list::-webkit-scrollbar { width: 3px; }
+  .call-list::-webkit-scrollbar-track { background: transparent; }
+  .call-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .call-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .1s;
+    position: relative;
+  }
+  .call-item:hover { background: var(--bg2); }
+  .call-item.active { background: var(--green-dim); border-left: 2px solid var(--green); }
+  .call-item.active .ci-id { color: var(--green); }
+
+  .ci-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .ci-id { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: .3px; }
+  .ci-time { font-size: 10px; color: var(--text3); }
+
+  .ci-phone { font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+
+  .ci-bottom { display: flex; align-items: center; gap: 6px; }
+  .status-tag {
+    font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: .6px;
+  }
+  .st-completed  { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .st-failed     { background: var(--red-dim);   color: var(--red);   border: 1px solid #ff4d6d40; }
+  .st-active     { background: var(--blue-dim);  color: var(--blue);  border: 1px solid #4d9fff30; }
+  .st-ringing    { background: var(--amber-dim); color: var(--amber); border: 1px solid #f5a62330; }
+  .st-started    { background: var(--purple-dim);color: var(--purple);border: 1px solid #9b7fff30; }
+
+  .ci-events { font-size: 10px; color: var(--text3); margin-left: auto; }
+
+  .panel-mid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 0 16px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .tab {
+    padding: 12px 16px 10px;
+    font-size: 12px; color: var(--text3);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  .detail-area { flex: 1; overflow-y: auto; padding: 16px; }
+  .detail-area::-webkit-scrollbar { width: 3px; }
+  .detail-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .flow-container { display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px; }
+  .flow-node {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .flow-node-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .flow-node-header:hover { background: var(--bg3); }
+  .flow-icon { font-size: 14px; }
+  .flow-label { font-family: var(--sans); font-size: 12px; font-weight: 600; flex: 1; }
+  .flow-sublabel { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+  .flow-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+    border: 1px solid var(--border2);
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  .flow-status.pending { color: var(--amber); border-color: #f5a62340; background: var(--amber-dim); }
+  .flow-status.success { color: var(--green); border-color: var(--green-mid); background: var(--green-dim); }
+  .flow-status.failed { color: var(--red); border-color: #ff4d6d40; background: var(--red-dim); }
+  .flow-status.stalled { color: #ffb347; border-color: #ffb34740; background: rgba(255,179,71,.12); }
+  .flow-timestamp { font-size: 10px; color: var(--text3); margin-left: auto; }
+  .flow-chevron { color: var(--text3); font-size: 10px; transition: transform .2s; }
+  .flow-chevron.open { transform: rotate(180deg); }
+
+  .flow-connector {
+    display: flex; align-items: center; justify-content: center;
+    height: 24px; color: var(--text3); font-size: 18px;
+    position: relative;
+  }
+  .flow-connector::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px; height: 20px;
+    background: var(--border2);
+  }
+  .flow-connector span { background: var(--bg); padding: 0 4px; position: relative; z-index:1; font-size: 10px; color: var(--text3); }
+
+  .flow-body { padding: 12px 14px; }
+  .flow-body.hidden { display: none; }
+
+  .json-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 11.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+    position: relative;
+  }
+  .json-block::-webkit-scrollbar { height: 3px; }
+  .json-block::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  .json-key    { color: #79b8ff; }
+  .json-str    { color: #9ecbff; }
+  .json-num    { color: var(--green); }
+  .json-bool   { color: var(--amber); }
+  .json-null   { color: var(--text3); }
+
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text3); padding: 3px 8px; border-radius: 4px;
+    cursor: pointer; font-family: var(--mono); font-size: 10px;
+    transition: all .15s;
+  }
+  .copy-btn:hover { border-color: var(--green); color: var(--green); }
+
+  .direction-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 600; letter-spacing: .8px;
+    text-transform: uppercase; margin-bottom: 8px; padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .dir-incoming { background: var(--blue-dim); color: var(--blue); border: 1px solid #4d9fff30; }
+  .dir-outgoing { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-mid); }
+  .dir-response { background: var(--purple-dim); color: var(--purple); border: 1px solid #9b7fff30; }
+
+  .panel-right {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .log-stream { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .log-stream::-webkit-scrollbar { width: 3px; }
+  .log-stream::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .log-entry {
+    display: flex; gap: 8px; align-items: flex-start;
+    padding: 5px 14px;
+    border-bottom: 1px solid transparent;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(-4px); } to { opacity:1; transform: translateY(0); } }
+  .log-entry:hover { background: var(--bg2); }
+
+  .log-ts { color: var(--text3); font-size: 10px; white-space: nowrap; padding-top: 1px; width: 72px; flex-shrink: 0; }
+  .log-level { font-size: 10px; font-weight: 700; width: 38px; flex-shrink: 0; padding-top: 1px; }
+  .ll-info  { color: var(--blue); }
+  .ll-ok    { color: var(--green); }
+  .ll-warn  { color: var(--amber); }
+  .ll-err   { color: var(--red); }
+  .log-msg  { font-size: 11px; color: var(--text2); line-height: 1.5; word-break: break-all; }
+
+  .event-timeline { display: flex; flex-direction: column; gap: 8px; }
+  .evt-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .evt-item:hover { border-color: var(--border2); }
+  .evt-item.selected { border-color: var(--green); }
+  .evt-num { font-size: 10px; color: var(--text3); width: 20px; flex-shrink: 0; padding-top: 2px; }
+  .evt-info { flex: 1; }
+  .evt-type { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .evt-meta { font-size: 10px; color: var(--text3); }
+  .evt-arrow { font-size: 10px; color: var(--text3); padding-top: 3px; }
+
+  .transcript-block { display: flex; flex-direction: column; gap: 6px; }
+  .turn { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; background: var(--bg2); border: 1px solid var(--border); }
+  .turn-role { font-size: 10px; font-weight: 700; letter-spacing: .6px; width: 52px; flex-shrink: 0; padding-top: 2px; }
+  .role-agent { color: var(--green); }
+  .role-user  { color: var(--blue); }
+  .turn-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  .lead-card { background: var(--bg2); border: 1px solid var(--green-mid); border-radius: 8px; padding: 14px 16px; }
+  .lead-field { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .lead-field:last-child { border-bottom: none; }
+  .lf-key { color: var(--text3); font-size: 11px; }
+  .lf-val { color: var(--text); font-size: 11px; font-weight: 500; }
+
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 10px; color: var(--text3); }
+  .empty-state .icon { font-size: 32px; }
+  .empty-state .msg { font-size: 12px; }
+
+  .sec-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--text3);
+    margin-bottom: 8px; margin-top: 16px;
+  }
+  .sec-label:first-child { margin-top: 0; }
+
+  .kv-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-k { color: var(--text3); font-size: 11px; }
+  .kv-v { color: var(--text); font-size: 11px; text-align: right; max-width: 60%; word-break: break-all; }
+  .flow-step-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .flow-step {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: var(--bg);
+  }
+  .flow-step-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .flow-step-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .flow-step-meta { font-size: 10px; color: var(--text3); margin-left: auto; }
+  .flow-warning {
+    color: #ffb347;
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .flow-warning.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">Maxsas<span>Voice</span> · DevMonitor</div>
+    <div class="badge-env">dev</div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-pill"><div class="dot green"></div>agent.service</div>
+    <div class="status-pill"><div class="dot green"></div>webhook.service</div>
+    <div class="status-pill"><div class="dot amber"></div>admin-api</div>
+    <button class="btn-refresh" onclick="simulateRefresh()">↺ Refresh</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="panel-left">
+    <div class="panel-header">
+      <span class="panel-title">Call Sessions</span>
+      <span class="count-badge" id="callCount">0 calls</span>
+    </div>
+    <div class="call-list" id="callList"></div>
+  </div>
+
+  <div class="panel-mid">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('flow',this)">Data Flow</div>
+      <div class="tab" onclick="switchTab('events',this)">Events</div>
+      <div class="tab" onclick="switchTab('transcript',this)">Transcript</div>
+      <div class="tab" onclick="switchTab('leads',this)">Lead Extract</div>
+      <div class="tab" onclick="switchTab('raw',this)">Raw Events</div>
+    </div>
+    <div class="detail-area" id="detailArea">
+      <div class="empty-state">
+        <div class="icon">⬡</div>
+        <div class="msg">Loading calls...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div class="panel-header">
+      <span class="panel-title">Live Log</span>
+      <span class="count-badge" id="logCount">0 entries</span>
+    </div>
+    <div class="log-stream" id="logStream"></div>
+  </div>
+</div>
+
+<script>
+let CALLS = [];
+let selectedCallId = null;
+let currentTab = 'flow';
+let logEntries = [];
+let logPollTimer = null;
+let logSince = null;
+let stepEventSource = null;
+
+const PIPELINE = [
+  'incoming_request',
+  'processing',
+  'room_created',
+  'dispatch_attempt',
+  'dispatch_success',
+  'agent_active',
+  'webhook_received',
+  'sse_sent'
+];
+
+const STALL_THRESHOLD_MS = 7000;
+const CALL_STEP_CACHE = Object.create(null);
+
+function getAdminKey() {
+  const params = new URLSearchParams(window.location.search);
+  const fromQuery = params.get('adminKey');
+  if (fromQuery) {
+    localStorage.setItem('adminKey', fromQuery);
+    return fromQuery;
+  }
+  return localStorage.getItem('adminKey') || 'dev-admin-key';
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    headers: {
+      'x-admin-key': getAdminKey()
+    }
+  });
+  const payload = await response.json();
+  if (!response.ok || payload.success === false) {
+    throw new Error(payload?.error?.message || `Request failed: ${response.status}`);
+  }
+  return payload;
+}
+
+function mapStatus(status) {
+  const s = String(status || '').toLowerCase();
+  if (['completed'].includes(s)) return 'completed';
+  if (['failed'].includes(s)) return 'failed';
+  if (['ringing'].includes(s)) return 'ringing';
+  if (['connected', 'active', 'dispatching', 'queued', 'initiated'].includes(s)) return 'active';
+  return 'started';
+}
+
+function toIso(ts) {
+  const parsed = new Date(ts || Date.now());
+  return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+}
+
+function formatTime(ts, fallback = '--:--:--') {
+  if (!ts) return fallback;
+  const parsed = new Date(ts);
+  return Number.isNaN(parsed.getTime()) ? fallback : parsed.toTimeString().slice(0, 8);
+}
+
+function toMs(ts) {
+  const parsed = new Date(ts || 0).getTime();
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function sortByTsAsc(items) {
+  return [...items].sort((a, b) => toMs(a.ts) - toMs(b.ts));
+}
+
+function normalizeStepEvent(raw) {
+  if (!raw || !raw.stage) return null;
+  const status = String(raw.status || 'pending').toLowerCase();
+  return {
+    stage: String(raw.stage),
+    status: status === 'failed' ? 'failed' : status === 'success' ? 'success' : 'pending',
+    ts: toIso(raw.ts),
+    payload: raw.payload ?? null,
+    error: raw.error ?? null
+  };
+}
+
+function getCachedStepEvents(callId) {
+  return sortByTsAsc(CALL_STEP_CACHE[callId] || []);
+}
+
+function setCachedStepEvents(callId, events) {
+  CALL_STEP_CACHE[callId] = sortByTsAsc(
+    (events || [])
+      .map(normalizeStepEvent)
+      .filter(Boolean)
+  );
+}
+
+function baseStepState() {
+  const state = {};
+  PIPELINE.forEach((stage) => {
+    state[stage] = {
+      status: 'pending',
+      ts: null,
+      payload: null,
+      error: null,
+      note: ''
+    };
+  });
+  return state;
+}
+
+function latestEvent(events, stage) {
+  const matches = events.filter((event) => event.stage === stage);
+  return matches.length ? matches[matches.length - 1] : null;
+}
+
+function latestEventIn(events, stages) {
+  const matches = events.filter((event) => stages.includes(event.stage));
+  return matches.length ? matches[matches.length - 1] : null;
+}
+
+function firstEventIn(events, stages) {
+  const matches = events.filter((event) => stages.includes(event.stage));
+  return matches.length ? matches[0] : null;
+}
+
+function stepStateFromEvent(event, override) {
+  return {
+    status: override || event.status || 'pending',
+    ts: event.ts || null,
+    payload: event.payload ?? null,
+    error: event.error ?? null,
+    note: ''
+  };
+}
+
+function stepState(status, ts, payload, error = null, note = '') {
+  return {
+    status,
+    ts: ts || null,
+    payload: payload ?? null,
+    error,
+    note
+  };
+}
+
+function isStalledSince(ts) {
+  return ts && (Date.now() - toMs(ts)) >= STALL_THRESHOLD_MS;
+}
+
+function hasAgentActivityPayload(event) {
+  const type = String(event?.payload?.event_type || event?.payload?.eventType || '').toLowerCase();
+  return [
+    'call_started',
+    'call_ringing',
+    'call_connected',
+    'call_active',
+    'transcript_partial',
+    'transcript_final',
+    'call_transcript_final',
+    'lead_extracted',
+    'call_analysis_completed',
+    'call_completed'
+  ].includes(type);
+}
+
+function hasAgentActivityEvent(event) {
+  const type = String(event?.type || '').toLowerCase();
+  if (type) {
+    return [
+      'call_started',
+      'call_ringing',
+      'call_connected',
+      'call_active',
+      'call_transcript_final',
+      'lead_extracted',
+      'call_analysis_completed',
+      'call_completed'
+    ].includes(type);
+  }
+  return hasAgentActivityPayload(event);
+}
+
+function buildCallStepState(call) {
+  const events = sortByTsAsc(call.call_step_events || []);
+  const state = baseStepState();
+  const legacyWebhookEvents = sortByTsAsc(call.agent_to_backend_events || []);
+  const latestLegacyWebhook = legacyWebhookEvents.length ? legacyWebhookEvents[legacyWebhookEvents.length - 1] : null;
+  const latestLegacyActivity = [...legacyWebhookEvents].reverse().find((event) => hasAgentActivityEvent(event)) || null;
+  const createdAt = call.createdAt || null;
+  const updatedAt = call.updatedAt || createdAt;
+  const failureTs = call.failedAt || updatedAt;
+  const requestPayload = call.frontend_to_backend?.body || {};
+  const dispatchPayload = call.backend_to_agent?.dispatch_payload || {};
+  const lastError = call.lastError || call.latestOutboundRequest?.error || null;
+  const latestOutboundRequestStatus = String(call.latestOutboundRequest?.status || '').toLowerCase();
+  const lastErrorText = typeof lastError === 'string' ? lastError : '';
+
+  const incoming = latestEvent(events, 'incoming_request');
+  const roomCreated = latestEvent(events, 'room_created');
+  const dispatchAttempt = latestEvent(events, 'dispatch_attempt');
+  const dispatchResult = latestEventIn(events, ['dispatch_success', 'dispatch_failed']);
+  const webhookReceived = latestEvent(events, 'webhook_received');
+  const sseSent = latestEvent(events, 'sse_sent');
+  const firstProcessingProgress = firstEventIn(events, ['room_created', 'dispatch_attempt', 'dispatch_success', 'dispatch_failed']);
+  const activeWebhook = [...events].reverse().find((event) => event.stage === 'webhook_received' && hasAgentActivityPayload(event));
+
+  if (incoming) state.incoming_request = stepStateFromEvent(incoming, incoming.status);
+  if (roomCreated) state.room_created = stepStateFromEvent(roomCreated, roomCreated.status);
+  if (dispatchAttempt) state.dispatch_attempt = stepStateFromEvent(dispatchAttempt, dispatchAttempt.status);
+  if (dispatchResult) {
+    state.dispatch_success = stepStateFromEvent(
+      dispatchResult,
+      dispatchResult.stage === 'dispatch_failed' ? 'failed' : dispatchResult.status
+    );
+  }
+  if (webhookReceived) state.webhook_received = stepStateFromEvent(webhookReceived, webhookReceived.status);
+  if (sseSent) state.sse_sent = stepStateFromEvent(sseSent, sseSent.status);
+
+  if (incoming && incoming.status === 'failed') {
+    state.processing = stepStateFromEvent(incoming, 'failed');
+  } else if (incoming && firstProcessingProgress) {
+    state.processing = {
+      status: 'success',
+      ts: firstProcessingProgress.ts,
+      payload: firstProcessingProgress.payload ?? incoming.payload,
+      error: null,
+      note: ''
+    };
+  } else if (incoming && isStalledSince(incoming.ts)) {
+    state.processing = stepState('stalled', incoming.ts, incoming.payload, null, 'STALLED AFTER INCOMING');
+  } else if (incoming) {
+    state.processing = stepState('pending', incoming.ts, incoming.payload);
+  }
+
+  if (!dispatchAttempt && roomCreated && roomCreated.status === 'success' && isStalledSince(roomCreated.ts)) {
+    state.dispatch_attempt = stepState('stalled', roomCreated.ts, roomCreated.payload, null, 'dispatch not triggered');
+  }
+
+  if (!dispatchResult && dispatchAttempt && isStalledSince(dispatchAttempt.ts)) {
+    state.dispatch_success = stepState('stalled', dispatchAttempt.ts, dispatchAttempt.payload, null, 'dispatch result missing');
+  }
+
+  if (activeWebhook) {
+    state.agent_active = stepState('success', activeWebhook.ts, activeWebhook.payload);
+  } else if (webhookReceived) {
+    state.agent_active = stepState('success', webhookReceived.ts, webhookReceived.payload);
+  } else if (latestLegacyActivity) {
+    state.agent_active = stepState('success', latestLegacyActivity.ts, latestLegacyActivity.payload);
+  } else if (dispatchResult && state.dispatch_success.status === 'success' && isStalledSince(dispatchResult.ts)) {
+    state.agent_active = stepState('stalled', dispatchResult.ts, dispatchResult.payload, null, 'agent did not become active');
+  }
+
+  if (webhookReceived) {
+    state.webhook_received = stepStateFromEvent(webhookReceived, webhookReceived.status);
+  } else if (latestLegacyWebhook) {
+    state.webhook_received = stepState('success', latestLegacyWebhook.ts, latestLegacyWebhook.payload);
+  } else if (dispatchResult && state.dispatch_success.status === 'success' && isStalledSince(dispatchResult.ts)) {
+    state.webhook_received = stepState('stalled', dispatchResult.ts, dispatchResult.payload, null, 'no webhook events');
+  }
+
+  if (!sseSent && webhookReceived && isStalledSince(webhookReceived.ts)) {
+    state.sse_sent = stepState('stalled', webhookReceived.ts, webhookReceived.payload, null, 'sse not emitted');
+  }
+
+  if (!events.length) {
+    if (state.incoming_request.status === 'pending') {
+      state.incoming_request = stepState('success', createdAt, requestPayload);
+    }
+
+    if (state.processing.status === 'pending' && createdAt) {
+      state.processing = stepState(isStalledSince(createdAt) ? 'success' : 'pending', createdAt, requestPayload);
+    }
+
+    if (state.room_created.status === 'pending' && call.room) {
+      state.room_created = stepState('success', createdAt, dispatchPayload);
+    }
+
+    if ((call.rawStatus === 'dispatching' || call.rawStatus === 'queued' || call.rawStatus === 'initiated') && isStalledSince(updatedAt)) {
+      if (state.dispatch_attempt.status === 'pending') {
+        state.dispatch_attempt = stepState('stalled', updatedAt, dispatchPayload, lastError, 'legacy session stuck in dispatching');
+      }
+      if (state.dispatch_success.status === 'pending') {
+        state.dispatch_success = stepState('stalled', updatedAt, dispatchPayload, lastError, 'dispatch result missing');
+      }
+      if (state.webhook_received.status === 'pending') {
+        state.webhook_received = stepState('stalled', updatedAt, dispatchPayload, null, 'no webhook events');
+      }
+    }
+
+    if (call.rawStatus === 'failed' || latestOutboundRequestStatus === 'failed') {
+      if (state.dispatch_attempt.status === 'pending') {
+        const attemptStatus = lastErrorText.includes('sip_participant_create_failed') ? 'success' : 'failed';
+        const attemptNote = attemptStatus === 'success' ? '' : 'dispatch failed before webhook activity';
+        state.dispatch_attempt = stepState(attemptStatus, failureTs, dispatchPayload, attemptStatus === 'failed' ? lastError : null, attemptNote);
+      }
+
+      if (state.dispatch_success.status === 'pending') {
+        const failureNote = lastErrorText.includes('sip_participant_create_failed')
+          ? 'SIP participant creation failed'
+          : 'dispatch failed before webhook activity';
+        state.dispatch_success = stepState('failed', failureTs, dispatchPayload, lastError, failureNote);
+      }
+
+      if (state.webhook_received.status === 'pending') {
+        state.webhook_received = stepState('stalled', failureTs, dispatchPayload, null, 'no webhook events');
+      }
+    }
+  }
+
+  return state;
+}
+
+function applyCallStepEvents(call, events) {
+  setCachedStepEvents(call.id, events);
+  call.call_step_events = getCachedStepEvents(call.id);
+  call.call_step_state = buildCallStepState(call);
+  call.callStepLoaded = true;
+  return call;
+}
+
+function mergeCallStepEvent(call, event) {
+  const existing = getCachedStepEvents(call.id);
+  const normalized = normalizeStepEvent(event);
+  if (!normalized) return;
+  const alreadyPresent = existing.some((item) => item.stage === normalized.stage && item.status === normalized.status && item.ts === normalized.ts);
+  if (!alreadyPresent) existing.push(normalized);
+  applyCallStepEvents(call, existing);
+}
+
+function getCallById(callId) {
+  return CALLS.find((call) => call.id === callId) || null;
+}
+
+function mapCall(raw) {
+  const createdAt = raw.created_at || new Date().toISOString();
+  const time = formatTime(createdAt);
+  const transcript = (raw.transcript_turns || []).map((t) => ({
+    role: t.speaker === 'assistant' ? 'agent' : (t.speaker || 'user'),
+    text: t.text || ''
+  }));
+  const lead = raw.lead_extracted?.fields
+    ? {
+        type: raw.lead_extracted.fields.property_type || null,
+        location: raw.lead_extracted.fields.location || null,
+        budget: raw.lead_extracted.fields.budget || null,
+        timeline: raw.lead_extracted.fields.timeline || null
+      }
+    : null;
+
+  const call = {
+    id: raw.id,
+    phone: raw.phone_number || '-',
+    room: raw.room_id,
+    tenant: raw.tenant_id,
+    rawStatus: String(raw.status || '').toLowerCase(),
+    status: mapStatus(raw.status),
+    createdAt,
+    updatedAt: raw.updated_at || createdAt,
+    failedAt: raw.failed_at || null,
+    lastError: raw.last_error || null,
+    duration: typeof raw.duration_s === 'number' ? `${raw.duration_s}s` : '—',
+    time,
+    events: raw.event_count || 0,
+    outcome: raw.outcome || null,
+    lead,
+    transcript,
+    callStepLoaded: false,
+    call_step_events: getCachedStepEvents(raw.id),
+    call_step_state: baseStepState(),
+    frontend_to_backend: {
+      endpoint: 'POST /api/calls',
+      headers: { 'x-tenant-id': raw.tenant_id },
+      body: raw.frontend_request_body || {}
+    },
+    backend_to_agent: {
+      livekit_room: raw.room_id,
+      dispatch_payload: raw.backend_to_livekit_dispatch || {},
+      sip_participant: raw.sip_participant || {}
+    },
+    latestOutboundRequest: {
+      status: raw.latest_outbound_request_status || null,
+      error: raw.latest_outbound_request_error || null,
+      ts: raw.latest_outbound_request_at || null
+    },
+    agent_to_backend_events: (raw.agent_webhook_events || []).map((e) => ({
+      type: e.type,
+      ts: e.occurred_at,
+      time: formatTime(e.occurred_at),
+      payload: e.payload || {}
+    })),
+    backend_to_frontend_sse: raw.sse_event_last || { event: 'call_update', data: { call_id: raw.id, status: raw.status } }
+  };
+
+  applyCallStepEvents(call, call.call_step_events);
+  call.callStepLoaded = false;
+  return call;
+}
+
+async function loadCalls() {
+  const payload = await fetchJson('/admin/dev-monitor/calls');
+  CALLS = (payload.data || []).map(mapCall);
+  document.getElementById('callCount').textContent = `${CALLS.length} calls`;
+  renderCallList();
+
+  if (!CALLS.length) {
+    document.getElementById('detailArea').innerHTML = `<div class="empty-state"><div class="icon">⬡</div><div class="msg">No calls found</div></div>`;
+    return;
+  }
+
+  if (!selectedCallId || !CALLS.find((c) => c.id === selectedCallId)) {
+    selectCall(CALLS[0].id);
+  } else {
+    renderDetail();
+  }
+}
+
+async function ensureCallStepEvents(callId, force = false) {
+  const call = getCallById(callId);
+  if (!call || call.callStepLoading) return;
+  if (call.callStepLoaded && !force) return;
+
+  call.callStepLoading = true;
+  try {
+    const payload = await fetchJson(`/admin/dev-monitor/call-events/${encodeURIComponent(callId)}`);
+    applyCallStepEvents(call, payload.data || []);
+    if (selectedCallId === callId && currentTab === 'flow') renderDetail();
+  } catch (err) {
+    call.callStepError = err instanceof Error ? err.message : String(err);
+    if (selectedCallId === callId && currentTab === 'flow') renderDetail();
+  } finally {
+    call.callStepLoading = false;
+  }
+}
+
+function renderCallList() {
+  const list = document.getElementById('callList');
+  list.innerHTML = '';
+  CALLS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'call-item' + (c.id === selectedCallId ? ' active' : '');
+    el.id = 'ci-' + c.id;
+    el.onclick = () => selectCall(c.id);
+
+    const stMap = { completed:'st-completed', failed:'st-failed', active:'st-active', ringing:'st-ringing', started:'st-started' };
+    const statusLabel = { completed:'completed', failed:'failed', active:'active', ringing:'ringing', started:'started' };
+
+    el.innerHTML = `
+      <div class="ci-top">
+        <span class="ci-id">${c.id}</span>
+        <span class="ci-time">${c.time}</span>
+      </div>
+      <div class="ci-phone">${c.phone}</div>
+      <div class="ci-bottom">
+        <span class="status-tag ${stMap[c.status]}">${statusLabel[c.status]}</span>
+        <span class="ci-events">${c.events} events</span>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function selectCall(id) {
+  selectedCallId = id;
+  document.querySelectorAll('.call-item').forEach(el => el.classList.remove('active'));
+  const ci = document.getElementById('ci-' + id);
+  if (ci) ci.classList.add('active');
+  renderDetail();
+  void ensureCallStepEvents(id);
+  addLog('info', `Inspecting ${id}`);
+}
+
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderDetail();
+}
+
+function reRenderFlowIfSelected(callId) {
+  if (selectedCallId === callId && currentTab === 'flow') {
+    renderDetail();
+  }
+}
+
+function renderDetail() {
+  if (!selectedCallId) return;
+  const call = getCallById(selectedCallId);
+  if (!call) return;
+  const area = document.getElementById('detailArea');
+
+  if (currentTab === 'flow') {
+    area.innerHTML = renderFlowTab(call);
+    if (!call.callStepLoaded) void ensureCallStepEvents(call.id);
+  }
+  if (currentTab === 'events') area.innerHTML = renderEventsTab(call);
+  if (currentTab === 'transcript') area.innerHTML = renderTranscriptTab(call);
+  if (currentTab === 'leads') area.innerHTML = renderLeadsTab(call);
+  if (currentTab === 'raw') area.innerHTML = renderRawEventsTab(call);
+
+  document.querySelectorAll('.flow-node-header').forEach(h => {
+    h.onclick = () => {
+      const body = h.nextElementSibling;
+      const chev = h.querySelector('.flow-chevron');
+      body.classList.toggle('hidden');
+      chev.classList.toggle('open');
+    };
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function statusIcon(status) {
+  if (status === 'success') return '🟢';
+  if (status === 'failed') return '🔴';
+  if (status === 'stalled') return '🟠';
+  return '🟡';
+}
+
+function statusLabel(status) {
+  if (status === 'failed') return 'failed';
+  if (status === 'stalled') return 'stalled';
+  if (status === 'success') return 'success';
+  return 'pending';
+}
+
+function renderStatusChip(step) {
+  return `<span class="flow-status ${step.status}">${statusIcon(step.status)} ${statusLabel(step.status)}</span>`;
+}
+
+function renderObservedStep(label, step, fallbackPayload) {
+  const payload = step.payload ?? fallbackPayload ?? {};
+  const warning = step.note ? `<div class="flow-warning">${escapeHtml(step.note)}</div>` : '';
+  const error = step.error ? `<div class="flow-warning">${escapeHtml(typeof step.error === 'string' ? step.error : JSON.stringify(step.error))}</div>` : '';
+  return `
+    <div class="flow-step">
+      <div class="flow-step-top">
+        <span class="flow-step-name">${escapeHtml(label)}</span>
+        ${renderStatusChip(step)}
+        <span class="flow-step-meta">${step.ts ? escapeHtml(formatTime(step.ts)) : '—'}</span>
+      </div>
+      ${warning}
+      ${error}
+      ${jsonBlock(payload)}
+    </div>
+  `;
+}
+
+function blockState(steps) {
+  if (steps.some((step) => step.status === 'failed')) return steps.find((step) => step.status === 'failed');
+  if (steps.some((step) => step.status === 'stalled')) return steps.find((step) => step.status === 'stalled');
+  if (steps.some((step) => step.status === 'pending')) return steps.find((step) => step.status === 'pending');
+  return steps.find((step) => step.status === 'success') || { status: 'pending', ts: null };
+}
+
+function renderFlowTab(call) {
+  const state = call.call_step_state || baseStepState();
+  const frontendBlock = blockState([state.incoming_request, state.processing]);
+  const backendBlock = blockState([state.room_created, state.dispatch_attempt, state.dispatch_success]);
+  const agentBlock = blockState([state.agent_active, state.webhook_received]);
+  const frontendSseBlock = blockState([state.sse_sent]);
+
+  const flowFallback = call.callStepError
+    ? `<div class="flow-warning">step API unavailable, showing baseline flow only</div>`
+    : (!call.callStepLoaded ? `<div class="flow-warning">loading call step observability...</div>` : '');
+
+  return `<div class="flow-container">
+    ${flowFallback}
+    <div class="flow-node">
+      <div class="flow-node-header">
+        <span class="flow-icon">⬡</span>
+        <span class="flow-label">Frontend → Backend</span>
+        <span class="flow-sublabel">Client → Express API</span>
+        ${renderStatusChip(frontendBlock)}
+        <span class="flow-timestamp">${frontendBlock.ts ? formatTime(frontendBlock.ts) : call.time}</span>
+        <span class="flow-chevron open">▼</span>
+      </div>
+      <div class="flow-body">
+        <div class="direction-label dir-incoming">↓ incoming request</div>
+        <div class="sec-label">Observed Steps</div>
+        <div class="flow-step-list">
+          ${renderObservedStep('incoming_request', state.incoming_request, call.frontend_to_backend.body)}
+          ${renderObservedStep('processing', state.processing, call.frontend_to_backend.body)}
+        </div>
+        <div class="sec-label">Endpoint</div>
+        <div class="kv-row"><span class="kv-k">route</span><span class="kv-v" style="color:var(--green)">${call.frontend_to_backend.endpoint}</span></div>
+        <div class="sec-label">Headers</div>
+        ${jsonBlock(call.frontend_to_backend.headers)}
+        <div class="sec-label">Request Body</div>
+        ${jsonBlock(call.frontend_to_backend.body)}
+      </div>
+    </div>
+
+    <div class="flow-connector"><span>backend processes → creates LiveKit room → dispatches agent</span></div>
+
+    <div class="flow-node">
+      <div class="flow-node-header">
+        <span class="flow-icon">⬡</span>
+        <span class="flow-label">Backend → Agent Server</span>
+        <span class="flow-sublabel">Express → LiveKit + Python Agent</span>
+        ${renderStatusChip(backendBlock)}
+        <span class="flow-timestamp">${backendBlock.ts ? formatTime(backendBlock.ts) : '—'}</span>
+        <span class="flow-chevron open">▼</span>
+      </div>
+      <div class="flow-body">
+        <div class="direction-label dir-outgoing">↑ outgoing dispatch</div>
+        ${state.dispatch_attempt.note === 'dispatch not triggered' ? `<div class="flow-warning">dispatch not triggered</div>` : ''}
+        <div class="sec-label">Observed Steps</div>
+        <div class="flow-step-list">
+          ${renderObservedStep('room_created', state.room_created, call.backend_to_agent.dispatch_payload)}
+          ${renderObservedStep('dispatch_attempt', state.dispatch_attempt, call.backend_to_agent.dispatch_payload)}
+          ${renderObservedStep('dispatch_success', state.dispatch_success, call.backend_to_agent.dispatch_payload)}
+        </div>
+        <div class="sec-label">LiveKit Room</div>
+        <div class="kv-row"><span class="kv-k">room_name</span><span class="kv-v">${call.room}</span></div>
+        <div class="sec-label">Agent Dispatch Metadata (JSON)</div>
+        ${jsonBlock(call.backend_to_agent.dispatch_payload)}
+        <div class="sec-label">SIP Participant</div>
+        ${jsonBlock(call.backend_to_agent.sip_participant)}
+      </div>
+    </div>
+
+    <div class="flow-connector"><span>agent handles call → emits webhook events</span></div>
+
+    <div class="flow-node">
+      <div class="flow-node-header">
+        <span class="flow-icon">⬡</span>
+        <span class="flow-label">Agent Server → Backend</span>
+        <span class="flow-sublabel">Python Webhook → POST /api/webhooks/voice/events</span>
+        ${renderStatusChip(agentBlock)}
+        <span class="flow-timestamp">${agentBlock.ts ? formatTime(agentBlock.ts) : '—'}</span>
+        <span class="flow-chevron open">▼</span>
+      </div>
+      <div class="flow-body">
+        <div class="direction-label dir-response">↓ webhook events</div>
+        ${state.webhook_received.note ? `<div class="flow-warning">${escapeHtml(state.webhook_received.note)}</div>` : ''}
+        <div class="sec-label">Observed Steps</div>
+        <div class="flow-step-list">
+          ${renderObservedStep('agent_active', state.agent_active, call.agent_to_backend_events[0]?.payload || {})}
+          ${renderObservedStep('webhook_received', state.webhook_received, call.agent_to_backend_events[0]?.payload || {})}
+        </div>
+        ${call.agent_to_backend_events.length === 0 ?
+          '<div style="color:var(--text3);font-size:11px;padding:8px 0">No events recorded</div>' :
+          call.agent_to_backend_events.map((ev, i) => `
+            <div class="sec-label">${i+1}. ${ev.type} <span style="color:var(--text3);font-weight:400">${ev.time || formatTime(ev.ts)}</span></div>
+            ${jsonBlock(ev.payload)}
+          `).join('')
+        }
+      </div>
+    </div>
+
+    <div class="flow-connector"><span>backend fans out → SSE to frontend</span></div>
+
+    <div class="flow-node">
+      <div class="flow-node-header">
+        <span class="flow-icon">⬡</span>
+        <span class="flow-label">Backend → Frontend</span>
+        <span class="flow-sublabel">SSE /api/realtime/calls/stream</span>
+        ${renderStatusChip(frontendSseBlock)}
+        <span class="flow-timestamp">${frontendSseBlock.ts ? formatTime(frontendSseBlock.ts) : '—'}</span>
+        <span class="flow-chevron open">▼</span>
+      </div>
+      <div class="flow-body">
+        <div class="direction-label dir-outgoing">↑ SSE event emitted</div>
+        ${state.sse_sent.note ? `<div class="flow-warning">${escapeHtml(state.sse_sent.note)}</div>` : ''}
+        <div class="sec-label">Observed Steps</div>
+        <div class="flow-step-list">
+          ${renderObservedStep('sse_sent', state.sse_sent, call.backend_to_frontend_sse)}
+        </div>
+        ${jsonBlock(call.backend_to_frontend_sse)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEventsTab(call) {
+  if (!call.agent_to_backend_events.length) {
+    return `<div class="empty-state"><div class="icon">⬡</div><div class="msg">No events for this call</div></div>`;
+  }
+
+  const typeColors = {
+    call_started:'var(--purple)', call_ringing:'var(--amber)', call_connected:'var(--blue)',
+    call_transcript_final:'var(--text)', lead_extracted:'var(--green)',
+    call_analysis_completed:'var(--green)', call_completed:'var(--green)', call_failed:'var(--red)'
+  };
+
+  return `<div class="event-timeline">
+    ${call.agent_to_backend_events.map((ev, i) => `
+      <div class="evt-item" onclick="toggleEvtDetail('evtd-${i}',this)">
+        <div class="evt-num">#${i+1}</div>
+        <div class="evt-info">
+          <div class="evt-type" style="color:${typeColors[ev.type]||'var(--text)'}">${ev.type}</div>
+          <div class="evt-meta">${ev.time || formatTime(ev.ts)} · POST /api/webhooks/voice/events</div>
+          <div id="evtd-${i}" style="display:none;margin-top:10px">${jsonBlock(ev.payload)}</div>
+        </div>
+        <div class="evt-arrow">›</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function toggleEvtDetail(id, row) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  row.classList.toggle('selected');
+}
+
+function renderTranscriptTab(call) {
+  if (!call.transcript.length) {
+    return `<div class="empty-state"><div class="icon">⬡</div><div class="msg">No transcript for this call</div></div>`;
+  }
+  return `<div class="transcript-block">
+    ${call.transcript.map(t => `
+      <div class="turn">
+        <div class="turn-role ${t.role==='agent'?'role-agent':'role-user'}">${String(t.role || 'user').toUpperCase()}</div>
+        <div class="turn-text">${t.text || ''}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function renderLeadsTab(call) {
+  if (!call.lead) {
+    const msg = call.status === 'failed' ? 'Call failed — no lead extracted' : 'No lead data extracted for this call';
+    return `<div class="empty-state"><div class="icon">⬡</div><div class="msg">${msg}</div></div>`;
+  }
+
+  return `
+    <div class="sec-label">Extracted Lead Data</div>
+    <div class="lead-card">
+      <div class="lead-field"><span class="lf-key">call_id</span><span class="lf-val">${call.id}</span></div>
+      <div class="lead-field"><span class="lf-key">property_type</span><span class="lf-val">${call.lead.type || '-'}</span></div>
+      <div class="lead-field"><span class="lf-key">location</span><span class="lf-val">${call.lead.location || '-'}</span></div>
+      <div class="lead-field"><span class="lf-key">budget</span><span class="lf-val">${call.lead.budget || '-'}</span></div>
+      <div class="lead-field"><span class="lf-key">timeline</span><span class="lf-val">${call.lead.timeline || '-'}</span></div>
+      <div class="lead-field"><span class="lf-key">outcome</span><span class="lf-val" style="color:var(--green)">${call.outcome || '-'}</span></div>
+    </div>
+    <div class="sec-label" style="margin-top:16px">Raw lead_extracted Event</div>
+    ${jsonBlock(call.agent_to_backend_events.find(e=>e.type==='lead_extracted')?.payload || {})}
+  `;
+}
+
+function renderRawEventsTab(call) {
+  if (!call.agent_to_backend_events || !call.agent_to_backend_events.length) {
+    return `<div class="empty-state"><div class="icon">⬡</div><div class="msg">No agent webhook events received yet</div></div>`;
+  }
+
+  return `
+    <div class="sec-label">All Agent Webhook Events (${call.agent_to_backend_events.length})</div>
+    ${call.agent_to_backend_events.map((evt, idx) => `
+      <div style="margin-bottom: 20px; border-left: 3px solid var(--green-mid); padding-left: 12px;">
+        <div style="font-weight: 600; color: var(--green); margin-bottom: 8px;">${evt.type} @ ${evt.time}</div>
+        ${jsonBlock(evt.payload)}
+      </div>
+    `).join('')}
+  `;
+}
+
+function syntaxHighlight(obj) {
+  const safe = typeof obj === 'undefined' ? null : obj;
+  const json = JSON.stringify(safe, null, 2);
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) return `<span class="json-key">${match}</span>`;
+      return `<span class="json-str">${match}</span>`;
+    }
+    if (/true|false/.test(match)) return `<span class="json-bool">${match}</span>`;
+    if (/null/.test(match)) return `<span class="json-null">${match}</span>`;
+    return `<span class="json-num">${match}</span>`;
+  });
+}
+
+function jsonBlock(obj) {
+  const id = 'jb-' + Math.random().toString(36).slice(2,7);
+  return `<div class="json-block" id="${id}"><button class="copy-btn" onclick="copyJson('${id}')">copy</button>${syntaxHighlight(obj)}</div>`;
+}
+
+function copyJson(id) {
+  const text = document.getElementById(id).innerText.replace('copy','').trim();
+  navigator.clipboard.writeText(text).catch(() => {});
+  const btn = document.querySelector(`#${id} .copy-btn`);
+  btn.textContent = '✓ copied';
+  setTimeout(() => (btn.textContent = 'copy'), 1500);
+}
+
+function addLog(level, msg, ts) {
+  const stream = document.getElementById('logStream');
+  const now = ts ? new Date(ts) : new Date();
+  const time = Number.isNaN(now.getTime()) ? new Date().toTimeString().slice(0,8) : now.toTimeString().slice(0,8);
+
+  const el = document.createElement('div');
+  el.className = 'log-entry';
+  const levelMap = { ok:'ll-ok', info:'ll-info', warn:'ll-warn', err:'ll-err' };
+  el.innerHTML = `<span class="log-ts">${time}</span><span class="log-level ${levelMap[level]||'ll-info'}">${String(level).toUpperCase()}</span><span class="log-msg">${msg}</span>`;
+  stream.insertBefore(el, stream.firstChild);
+
+  logEntries.push({ts: time, level, msg});
+  document.getElementById('logCount').textContent = `${logEntries.length} entries`;
+  if (stream.children.length > 100) stream.removeChild(stream.lastChild);
+}
+
+function mapLogLevel(levelRaw) {
+  const value = String(levelRaw || '').toLowerCase();
+  if (value.includes('error') || value === 'err') return 'err';
+  if (value.includes('warn')) return 'warn';
+  if (value.includes('ok') || value.includes('success')) return 'ok';
+  return 'info';
+}
+
+function logLevelForStepStatus(status) {
+  if (status === 'failed') return 'err';
+  if (status === 'stalled') return 'warn';
+  if (status === 'success') return 'ok';
+  return 'info';
+}
+
+function updateCallStep(data) {
+  const call = getCallById(data.call_id);
+  if (!call) {
+    const cached = getCachedStepEvents(data.call_id);
+    cached.push(normalizeStepEvent(data));
+    setCachedStepEvents(data.call_id, cached);
+    return;
+  }
+
+  mergeCallStepEvent(call, data);
+}
+
+async function pollLogs() {
+  const q = logSince ? `?since=${encodeURIComponent(logSince)}` : '';
+  const payload = await fetchJson(`/admin/dev-monitor/logs${q}`);
+  const rows = payload.data || [];
+
+  if (!rows.length) return;
+
+  const sorted = [...rows].sort((a, b) => new Date(a.received_at) - new Date(b.received_at));
+  for (const row of sorted) {
+    const level = mapLogLevel(row.level);
+    const msg = row.message || row.event_type || 'voice_ingest_event';
+    addLog(level, msg, row.received_at);
+  }
+
+  const latest = sorted[sorted.length - 1];
+  logSince = latest.received_at;
+}
+
+function connectStepStream() {
+  if (stepEventSource) return;
+
+  const url = `/api/realtime/calls/stream?adminKey=${encodeURIComponent(getAdminKey())}`;
+  stepEventSource = new EventSource(url);
+
+  stepEventSource.addEventListener('call_step_update', (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      updateCallStep(data);
+      addLog(logLevelForStepStatus(data.status), `[${data.stage}] ${data.status} (${data.call_id})`, data.ts);
+      reRenderFlowIfSelected(data.call_id);
+    } catch (err) {
+      addLog('warn', `step update parse failed: ${err.message || err}`);
+    }
+  });
+
+  stepEventSource.addEventListener('error', () => {
+    addLog('warn', 'call step SSE reconnecting');
+  });
+}
+
+async function simulateRefresh() {
+  await loadCalls();
+  addLog('info', 'Manual refresh triggered');
+}
+
+async function init() {
+  try {
+    await loadCalls();
+    await pollLogs();
+    connectStepStream();
+    if (logPollTimer) clearInterval(logPollTimer);
+    logPollTimer = setInterval(() => {
+      pollLogs().catch((err) => addLog('warn', `log polling failed: ${err.message || err}`));
+    }, 2000);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    document.getElementById('detailArea').innerHTML = `<div class="empty-state"><div class="icon">⬡</div><div class="msg">${message}</div></div>`;
+    addLog('err', `init failed: ${message}`);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
