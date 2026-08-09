@@ -6,7 +6,7 @@ on:
       - main
 
 concurrency:
-  group: production-deploy
+  group: production-deployment
   cancel-in-progress: true
 
 jobs:
@@ -20,42 +20,61 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
-          script_stop: true
+          port: 22
+          timeout: 60s
+          command_timeout: 10m
           script: |
             set -e
 
+            echo "========================================="
+            echo "Starting Maxsas Backend Deployment"
+            echo "========================================="
+
             cd /root/maxsas-backend-ai
 
-            echo "==> Fetching latest code"
+            echo "==> Fetching latest code..."
             git fetch origin main
 
-            echo "==> Syncing production code"
+            echo "==> Syncing production code..."
             git reset --hard origin/main
 
-            echo "==> Installing dependencies"
+            echo "==> Verifying current commit..."
+            git log -1 --oneline
+
+            echo "==> Installing dependencies..."
             npm ci
 
-            echo "==> Generating Prisma Client"
+            echo "==> Generating Prisma Client..."
             npx prisma generate --schema=./prisma/schema.prisma
 
-            echo "==> Applying production migrations"
+            echo "==> Applying production database migrations..."
             npx prisma migrate deploy --schema=./prisma/schema.prisma
 
-            echo "==> Starting/restarting PM2 application"
+            echo "==> Checking PM2 process..."
 
             if pm2 describe maxsas-backend >/dev/null 2>&1; then
-              pm2 delete maxsas-backend || true
+              echo "==> Restarting existing PM2 process..."
+              pm2 restart maxsas-backend --update-env
+            else
+              echo "==> Starting new PM2 process..."
+              pm2 start npm --name maxsas-backend -- start
             fi
 
-            pm2 start npm --name maxsas-backend -- start
-
+            echo "==> Saving PM2 process list..."
             pm2 save
 
-            echo "==> Waiting for backend"
+            echo "==> Waiting for backend to start..."
             sleep 5
 
-            echo "==> Health check"
-            curl --fail --silent --show-error http://127.0.0.1:4000/health
+            echo "==> PM2 status..."
+            pm2 status
+
+            echo "==> Running health check..."
+            curl --fail --silent --show-error \
+              --max-time 15 \
+              http://127.0.0.1:4000/health
 
             echo ""
-            echo "==> Deployment successful"
+            echo "========================================="
+            echo "DEPLOYMENT SUCCESSFUL"
+            echo "========================================="
