@@ -3,3 +3,6 @@ dist/
 build/
 .env.local
 *.db
+.env
+.env.local
+.env.*.local
