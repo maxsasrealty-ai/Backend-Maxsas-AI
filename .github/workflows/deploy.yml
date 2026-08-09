@@ -1,0 +1,61 @@
+name: Deploy Backend to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -e
+
+            cd /root/maxsas-backend-ai
+
+            echo "==> Fetching latest code"
+            git fetch origin main
+
+            echo "==> Syncing production code"
+            git reset --hard origin/main
+
+            echo "==> Installing dependencies"
+            npm ci
+
+            echo "==> Generating Prisma Client"
+            npx prisma generate --schema=./prisma/schema.prisma
+
+            echo "==> Applying production migrations"
+            npx prisma migrate deploy --schema=./prisma/schema.prisma
+
+            echo "==> Starting/restarting PM2 application"
+
+            if pm2 describe maxsas-backend >/dev/null 2>&1; then
+              pm2 delete maxsas-backend || true
+            fi
+
+            pm2 start npm --name maxsas-backend -- start
+
+            pm2 save
+
+            echo "==> Waiting for backend"
+            sleep 5
+
+            echo "==> Health check"
+            curl --fail --silent --show-error http://127.0.0.1:4000/health
+
+            echo ""
+            echo "==> Deployment successful"
