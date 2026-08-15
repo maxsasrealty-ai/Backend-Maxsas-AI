@@ -1,10 +1,29 @@
 import { Router } from 'express';
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
-import { PrismaClient, RegistrationStatus, WebinarConfigStatus, WebinarStatus } from '../generated/prisma';
+import { PrismaClient } from '../generated/prisma';
 import { requireAdminAccess } from '../middleware/requireAdminAccess';
 import { sendMetaPurchaseEvent } from '../services/metaCapiService';
 import { sendWebinarEmail } from '../services/notificationService';
+
+const RegistrationStatus = {
+  REGISTERED: 'REGISTERED',
+  PAID: 'PAID',
+} as const;
+
+const WebinarStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+
+const WebinarConfigStatus = {
+  OPEN: 'OPEN',
+  SEATS_FULL: 'SEATS_FULL',
+  COMPLETED: 'COMPLETED',
+} as const;
+
+type WebinarConfigStatusValue = (typeof WebinarConfigStatus)[keyof typeof WebinarConfigStatus];
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -33,7 +52,7 @@ type WebinarConfigRecord = {
   ticketPrice: number;
   zoomLink: string;
   whatsappGroupLink: string;
-  status: WebinarConfigStatus;
+  status: WebinarConfigStatusValue;
   updatedAt?: Date;
 };
 
@@ -47,7 +66,7 @@ type WebinarConfigPayload = {
   ticketPrice: number;
   zoomLink: string;
   whatsappGroupLink: string;
-  status: WebinarConfigStatus;
+  status: WebinarConfigStatusValue;
   updatedAt: string;
 };
 
@@ -103,7 +122,7 @@ function parseTicketPrice(value: unknown, fallback: number): number {
   return fallback;
 }
 
-function parseStatus(value: unknown): WebinarConfigStatus {
+function parseStatus(value: unknown): WebinarConfigStatusValue {
   const raw = typeof value === 'string' ? value.trim().toUpperCase() : '';
   if (raw === WebinarConfigStatus.SEATS_FULL || raw === WebinarConfigStatus.COMPLETED) {
     return raw;
@@ -155,7 +174,7 @@ async function getWebinarConfigRecord(): Promise<WebinarConfigRecord | null> {
           ticketPrice: record.ticketPrice,
           zoomLink: record.zoomLink,
           whatsappGroupLink: record.whatsappGroupLink,
-          status: record.status as WebinarConfigStatus,
+          status: record.status as WebinarConfigStatusValue,
           updatedAt: record.updatedAt,
         }
       : null;

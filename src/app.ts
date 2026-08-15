@@ -68,7 +68,7 @@ function isSafeNullOriginPath(pathname: string): boolean {
 	);
 }
 
-function isAllowedOrigin(origin: string | undefined, pathname: string): boolean {
+function isAllowedOrigin(origin: string | undefined, pathname: string, requestOrigin?: string): boolean {
 	if (!origin) {
 		return true;
 	}
@@ -85,12 +85,24 @@ function isAllowedOrigin(origin: string | undefined, pathname: string): boolean 
 		return true;
 	}
 
+	if (requestOrigin && origin === requestOrigin) {
+		return true;
+	}
+
 	// Expo web can auto-pick different localhost ports when defaults are occupied.
 	if (config.APP_ENV !== "production" && /^http:\/\/localhost:\d+$/.test(origin)) {
 		return true;
 	}
 
     return false;
+}
+
+function resolveSameOrigin(req: Request): string | undefined {
+	try {
+		return new URL(resolveRequestBase(req)).origin;
+	} catch {
+		return undefined;
+	}
 }
 
 const corsOptions = {
@@ -111,6 +123,8 @@ const corsOptions = {
 // PayU return callbacks can arrive with Origin: null during top-level browser navigation,
 // so we skip CORS for those specific bridge routes.
 app.use((req, res, next) => {
+	const sameOrigin = resolveSameOrigin(req);
+
 	if (
 		req.path.startsWith("/api/payments/payu/return") ||
 		req.path.startsWith("/api/payments/payu/webhook")
@@ -122,7 +136,7 @@ app.use((req, res, next) => {
 	return cors({
 		...corsOptions,
 		origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
-			if (isAllowedOrigin(origin, req.path)) {
+			if (isAllowedOrigin(origin, req.path, sameOrigin)) {
 				callback(null, true);
 				return;
 			}
@@ -166,10 +180,12 @@ app.use("/api/webhooks", (req, _res, next) => {
 
 // Express v5 requires named wildcard, not bare *
 app.options("/{*path}", (req, res, next) => {
+	const sameOrigin = resolveSameOrigin(req);
+
 	return cors({
 		...corsOptions,
 		origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
-			if (isAllowedOrigin(origin, req.path)) {
+			if (isAllowedOrigin(origin, req.path, sameOrigin)) {
 				callback(null, true);
 				return;
 			}
