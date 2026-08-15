@@ -7,6 +7,7 @@ window.MCAuth = (function () {
     { id: 'finance',        label: 'Finance',        icon: 'credit-card', color: 'var(--mc-mod-finance)',    roles: ['ops','admin'] },
     { id: 'dev-tools',      label: 'Dev Tools',      icon: 'terminal',    color: 'var(--mc-mod-devtools)',   roles: ['developer','admin'] },
     { id: 'analytics',      label: 'Analytics',      icon: 'bar-chart-2', color: 'var(--mc-mod-analytics)',  roles: ['developer','ops','admin'] },
+    { id: 'webinar',        label: 'Webinar',        icon: 'calendar-days', color: 'var(--mc-mod-tenant)',  roles: ['developer','ops','admin'] },
     { id: 'system',         label: 'System',         icon: 'server',      color: 'var(--mc-mod-system)',     roles: ['developer','ops','admin'] },
     { id: 'agent-runtime',  label: 'Agent Runtime',  icon: 'cpu',         color: 'var(--mc-mod-agent)',      roles: ['developer','admin'] },
   ];

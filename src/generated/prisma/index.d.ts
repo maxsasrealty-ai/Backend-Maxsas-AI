@@ -159,6 +159,11 @@ export type Webinar = $Result.DefaultSelection<Prisma.$WebinarPayload>
  * 
  */
 export type WebinarPaymentEvent = $Result.DefaultSelection<Prisma.$WebinarPaymentEventPayload>
+/**
+ * Model WebinarConfig
+ * 
+ */
+export type WebinarConfig = $Result.DefaultSelection<Prisma.$WebinarConfigPayload>
 
 /**
  * Enums
@@ -408,6 +413,15 @@ export const WebinarStatus: {
 
 export type WebinarStatus = (typeof WebinarStatus)[keyof typeof WebinarStatus]
 
+
+export const WebinarConfigStatus: {
+  OPEN: 'OPEN',
+  SEATS_FULL: 'SEATS_FULL',
+  COMPLETED: 'COMPLETED'
+};
+
+export type WebinarConfigStatus = (typeof WebinarConfigStatus)[keyof typeof WebinarConfigStatus]
+
 }
 
 export type PlanKey = $Enums.PlanKey
@@ -505,6 +519,10 @@ export const RegistrationStatus: typeof $Enums.RegistrationStatus
 export type WebinarStatus = $Enums.WebinarStatus
 
 export const WebinarStatus: typeof $Enums.WebinarStatus
+
+export type WebinarConfigStatus = $Enums.WebinarConfigStatus
+
+export const WebinarConfigStatus: typeof $Enums.WebinarConfigStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -913,6 +931,16 @@ export class PrismaClient<
     * ```
     */
   get webinarPaymentEvent(): Prisma.WebinarPaymentEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.webinarConfig`: Exposes CRUD operations for the **WebinarConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WebinarConfigs
+    * const webinarConfigs = await prisma.webinarConfig.findMany()
+    * ```
+    */
+  get webinarConfig(): Prisma.WebinarConfigDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1382,7 +1410,8 @@ export namespace Prisma {
     AccountDeletionAuditEntry: 'AccountDeletionAuditEntry',
     WebinarRegistration: 'WebinarRegistration',
     Webinar: 'Webinar',
-    WebinarPaymentEvent: 'WebinarPaymentEvent'
+    WebinarPaymentEvent: 'WebinarPaymentEvent',
+    WebinarConfig: 'WebinarConfig'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1401,7 +1430,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "webinar" | "webinarPaymentEvent"
+      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "webinar" | "webinarPaymentEvent" | "webinarConfig"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3551,6 +3580,80 @@ export namespace Prisma {
           }
         }
       }
+      WebinarConfig: {
+        payload: Prisma.$WebinarConfigPayload<ExtArgs>
+        fields: Prisma.WebinarConfigFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WebinarConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WebinarConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          findFirst: {
+            args: Prisma.WebinarConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WebinarConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          findMany: {
+            args: Prisma.WebinarConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>[]
+          }
+          create: {
+            args: Prisma.WebinarConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          createMany: {
+            args: Prisma.WebinarConfigCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WebinarConfigCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>[]
+          }
+          delete: {
+            args: Prisma.WebinarConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          update: {
+            args: Prisma.WebinarConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          deleteMany: {
+            args: Prisma.WebinarConfigDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WebinarConfigUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WebinarConfigUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>[]
+          }
+          upsert: {
+            args: Prisma.WebinarConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarConfigPayload>
+          }
+          aggregate: {
+            args: Prisma.WebinarConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWebinarConfig>
+          }
+          groupBy: {
+            args: Prisma.WebinarConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WebinarConfigGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WebinarConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<WebinarConfigCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3676,6 +3779,7 @@ export namespace Prisma {
     webinarRegistration?: WebinarRegistrationOmit
     webinar?: WebinarOmit
     webinarPaymentEvent?: WebinarPaymentEventOmit
+    webinarConfig?: WebinarConfigOmit
   }
 
   /* Types for Logging */
@@ -39226,6 +39330,1113 @@ export namespace Prisma {
 
 
   /**
+   * Model WebinarConfig
+   */
+
+  export type AggregateWebinarConfig = {
+    _count: WebinarConfigCountAggregateOutputType | null
+    _avg: WebinarConfigAvgAggregateOutputType | null
+    _sum: WebinarConfigSumAggregateOutputType | null
+    _min: WebinarConfigMinAggregateOutputType | null
+    _max: WebinarConfigMaxAggregateOutputType | null
+  }
+
+  export type WebinarConfigAvgAggregateOutputType = {
+    ticketPrice: number | null
+  }
+
+  export type WebinarConfigSumAggregateOutputType = {
+    ticketPrice: number | null
+  }
+
+  export type WebinarConfigMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subTitle: string | null
+    eventDate: Date | null
+    eventTime: string | null
+    hostName: string | null
+    ticketPrice: number | null
+    zoomLink: string | null
+    whatsappGroupLink: string | null
+    status: $Enums.WebinarConfigStatus | null
+    updatedAt: Date | null
+  }
+
+  export type WebinarConfigMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    subTitle: string | null
+    eventDate: Date | null
+    eventTime: string | null
+    hostName: string | null
+    ticketPrice: number | null
+    zoomLink: string | null
+    whatsappGroupLink: string | null
+    status: $Enums.WebinarConfigStatus | null
+    updatedAt: Date | null
+  }
+
+  export type WebinarConfigCountAggregateOutputType = {
+    id: number
+    title: number
+    subTitle: number
+    eventDate: number
+    eventTime: number
+    hostName: number
+    ticketPrice: number
+    zoomLink: number
+    whatsappGroupLink: number
+    status: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WebinarConfigAvgAggregateInputType = {
+    ticketPrice?: true
+  }
+
+  export type WebinarConfigSumAggregateInputType = {
+    ticketPrice?: true
+  }
+
+  export type WebinarConfigMinAggregateInputType = {
+    id?: true
+    title?: true
+    subTitle?: true
+    eventDate?: true
+    eventTime?: true
+    hostName?: true
+    ticketPrice?: true
+    zoomLink?: true
+    whatsappGroupLink?: true
+    status?: true
+    updatedAt?: true
+  }
+
+  export type WebinarConfigMaxAggregateInputType = {
+    id?: true
+    title?: true
+    subTitle?: true
+    eventDate?: true
+    eventTime?: true
+    hostName?: true
+    ticketPrice?: true
+    zoomLink?: true
+    whatsappGroupLink?: true
+    status?: true
+    updatedAt?: true
+  }
+
+  export type WebinarConfigCountAggregateInputType = {
+    id?: true
+    title?: true
+    subTitle?: true
+    eventDate?: true
+    eventTime?: true
+    hostName?: true
+    ticketPrice?: true
+    zoomLink?: true
+    whatsappGroupLink?: true
+    status?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WebinarConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebinarConfig to aggregate.
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarConfigs to fetch.
+     */
+    orderBy?: WebinarConfigOrderByWithRelationInput | WebinarConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WebinarConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WebinarConfigs
+    **/
+    _count?: true | WebinarConfigCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WebinarConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WebinarConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WebinarConfigMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WebinarConfigMaxAggregateInputType
+  }
+
+  export type GetWebinarConfigAggregateType<T extends WebinarConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateWebinarConfig]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWebinarConfig[P]>
+      : GetScalarType<T[P], AggregateWebinarConfig[P]>
+  }
+
+
+
+
+  export type WebinarConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebinarConfigWhereInput
+    orderBy?: WebinarConfigOrderByWithAggregationInput | WebinarConfigOrderByWithAggregationInput[]
+    by: WebinarConfigScalarFieldEnum[] | WebinarConfigScalarFieldEnum
+    having?: WebinarConfigScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WebinarConfigCountAggregateInputType | true
+    _avg?: WebinarConfigAvgAggregateInputType
+    _sum?: WebinarConfigSumAggregateInputType
+    _min?: WebinarConfigMinAggregateInputType
+    _max?: WebinarConfigMaxAggregateInputType
+  }
+
+  export type WebinarConfigGroupByOutputType = {
+    id: string
+    title: string
+    subTitle: string
+    eventDate: Date
+    eventTime: string
+    hostName: string
+    ticketPrice: number
+    zoomLink: string
+    whatsappGroupLink: string
+    status: $Enums.WebinarConfigStatus
+    updatedAt: Date
+    _count: WebinarConfigCountAggregateOutputType | null
+    _avg: WebinarConfigAvgAggregateOutputType | null
+    _sum: WebinarConfigSumAggregateOutputType | null
+    _min: WebinarConfigMinAggregateOutputType | null
+    _max: WebinarConfigMaxAggregateOutputType | null
+  }
+
+  type GetWebinarConfigGroupByPayload<T extends WebinarConfigGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WebinarConfigGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WebinarConfigGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WebinarConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], WebinarConfigGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WebinarConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subTitle?: boolean
+    eventDate?: boolean
+    eventTime?: boolean
+    hostName?: boolean
+    ticketPrice?: boolean
+    zoomLink?: boolean
+    whatsappGroupLink?: boolean
+    status?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webinarConfig"]>
+
+  export type WebinarConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subTitle?: boolean
+    eventDate?: boolean
+    eventTime?: boolean
+    hostName?: boolean
+    ticketPrice?: boolean
+    zoomLink?: boolean
+    whatsappGroupLink?: boolean
+    status?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webinarConfig"]>
+
+  export type WebinarConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    subTitle?: boolean
+    eventDate?: boolean
+    eventTime?: boolean
+    hostName?: boolean
+    ticketPrice?: boolean
+    zoomLink?: boolean
+    whatsappGroupLink?: boolean
+    status?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webinarConfig"]>
+
+  export type WebinarConfigSelectScalar = {
+    id?: boolean
+    title?: boolean
+    subTitle?: boolean
+    eventDate?: boolean
+    eventTime?: boolean
+    hostName?: boolean
+    ticketPrice?: boolean
+    zoomLink?: boolean
+    whatsappGroupLink?: boolean
+    status?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WebinarConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "subTitle" | "eventDate" | "eventTime" | "hostName" | "ticketPrice" | "zoomLink" | "whatsappGroupLink" | "status" | "updatedAt", ExtArgs["result"]["webinarConfig"]>
+
+  export type $WebinarConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WebinarConfig"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      subTitle: string
+      eventDate: Date
+      eventTime: string
+      hostName: string
+      ticketPrice: number
+      zoomLink: string
+      whatsappGroupLink: string
+      status: $Enums.WebinarConfigStatus
+      updatedAt: Date
+    }, ExtArgs["result"]["webinarConfig"]>
+    composites: {}
+  }
+
+  type WebinarConfigGetPayload<S extends boolean | null | undefined | WebinarConfigDefaultArgs> = $Result.GetResult<Prisma.$WebinarConfigPayload, S>
+
+  type WebinarConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WebinarConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WebinarConfigCountAggregateInputType | true
+    }
+
+  export interface WebinarConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WebinarConfig'], meta: { name: 'WebinarConfig' } }
+    /**
+     * Find zero or one WebinarConfig that matches the filter.
+     * @param {WebinarConfigFindUniqueArgs} args - Arguments to find a WebinarConfig
+     * @example
+     * // Get one WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WebinarConfigFindUniqueArgs>(args: SelectSubset<T, WebinarConfigFindUniqueArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WebinarConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WebinarConfigFindUniqueOrThrowArgs} args - Arguments to find a WebinarConfig
+     * @example
+     * // Get one WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WebinarConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, WebinarConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebinarConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigFindFirstArgs} args - Arguments to find a WebinarConfig
+     * @example
+     * // Get one WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WebinarConfigFindFirstArgs>(args?: SelectSubset<T, WebinarConfigFindFirstArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebinarConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigFindFirstOrThrowArgs} args - Arguments to find a WebinarConfig
+     * @example
+     * // Get one WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WebinarConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, WebinarConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WebinarConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WebinarConfigs
+     * const webinarConfigs = await prisma.webinarConfig.findMany()
+     * 
+     * // Get first 10 WebinarConfigs
+     * const webinarConfigs = await prisma.webinarConfig.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const webinarConfigWithIdOnly = await prisma.webinarConfig.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WebinarConfigFindManyArgs>(args?: SelectSubset<T, WebinarConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WebinarConfig.
+     * @param {WebinarConfigCreateArgs} args - Arguments to create a WebinarConfig.
+     * @example
+     * // Create one WebinarConfig
+     * const WebinarConfig = await prisma.webinarConfig.create({
+     *   data: {
+     *     // ... data to create a WebinarConfig
+     *   }
+     * })
+     * 
+     */
+    create<T extends WebinarConfigCreateArgs>(args: SelectSubset<T, WebinarConfigCreateArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WebinarConfigs.
+     * @param {WebinarConfigCreateManyArgs} args - Arguments to create many WebinarConfigs.
+     * @example
+     * // Create many WebinarConfigs
+     * const webinarConfig = await prisma.webinarConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WebinarConfigCreateManyArgs>(args?: SelectSubset<T, WebinarConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WebinarConfigs and returns the data saved in the database.
+     * @param {WebinarConfigCreateManyAndReturnArgs} args - Arguments to create many WebinarConfigs.
+     * @example
+     * // Create many WebinarConfigs
+     * const webinarConfig = await prisma.webinarConfig.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WebinarConfigs and only return the `id`
+     * const webinarConfigWithIdOnly = await prisma.webinarConfig.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WebinarConfigCreateManyAndReturnArgs>(args?: SelectSubset<T, WebinarConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WebinarConfig.
+     * @param {WebinarConfigDeleteArgs} args - Arguments to delete one WebinarConfig.
+     * @example
+     * // Delete one WebinarConfig
+     * const WebinarConfig = await prisma.webinarConfig.delete({
+     *   where: {
+     *     // ... filter to delete one WebinarConfig
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WebinarConfigDeleteArgs>(args: SelectSubset<T, WebinarConfigDeleteArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WebinarConfig.
+     * @param {WebinarConfigUpdateArgs} args - Arguments to update one WebinarConfig.
+     * @example
+     * // Update one WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WebinarConfigUpdateArgs>(args: SelectSubset<T, WebinarConfigUpdateArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WebinarConfigs.
+     * @param {WebinarConfigDeleteManyArgs} args - Arguments to filter WebinarConfigs to delete.
+     * @example
+     * // Delete a few WebinarConfigs
+     * const { count } = await prisma.webinarConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WebinarConfigDeleteManyArgs>(args?: SelectSubset<T, WebinarConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebinarConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WebinarConfigs
+     * const webinarConfig = await prisma.webinarConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WebinarConfigUpdateManyArgs>(args: SelectSubset<T, WebinarConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebinarConfigs and returns the data updated in the database.
+     * @param {WebinarConfigUpdateManyAndReturnArgs} args - Arguments to update many WebinarConfigs.
+     * @example
+     * // Update many WebinarConfigs
+     * const webinarConfig = await prisma.webinarConfig.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WebinarConfigs and only return the `id`
+     * const webinarConfigWithIdOnly = await prisma.webinarConfig.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WebinarConfigUpdateManyAndReturnArgs>(args: SelectSubset<T, WebinarConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WebinarConfig.
+     * @param {WebinarConfigUpsertArgs} args - Arguments to update or create a WebinarConfig.
+     * @example
+     * // Update or create a WebinarConfig
+     * const webinarConfig = await prisma.webinarConfig.upsert({
+     *   create: {
+     *     // ... data to create a WebinarConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WebinarConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WebinarConfigUpsertArgs>(args: SelectSubset<T, WebinarConfigUpsertArgs<ExtArgs>>): Prisma__WebinarConfigClient<$Result.GetResult<Prisma.$WebinarConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WebinarConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigCountArgs} args - Arguments to filter WebinarConfigs to count.
+     * @example
+     * // Count the number of WebinarConfigs
+     * const count = await prisma.webinarConfig.count({
+     *   where: {
+     *     // ... the filter for the WebinarConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends WebinarConfigCountArgs>(
+      args?: Subset<T, WebinarConfigCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WebinarConfigCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WebinarConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WebinarConfigAggregateArgs>(args: Subset<T, WebinarConfigAggregateArgs>): Prisma.PrismaPromise<GetWebinarConfigAggregateType<T>>
+
+    /**
+     * Group by WebinarConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WebinarConfigGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WebinarConfigGroupByArgs['orderBy'] }
+        : { orderBy?: WebinarConfigGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WebinarConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWebinarConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WebinarConfig model
+   */
+  readonly fields: WebinarConfigFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WebinarConfig.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WebinarConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WebinarConfig model
+   */
+  interface WebinarConfigFieldRefs {
+    readonly id: FieldRef<"WebinarConfig", 'String'>
+    readonly title: FieldRef<"WebinarConfig", 'String'>
+    readonly subTitle: FieldRef<"WebinarConfig", 'String'>
+    readonly eventDate: FieldRef<"WebinarConfig", 'DateTime'>
+    readonly eventTime: FieldRef<"WebinarConfig", 'String'>
+    readonly hostName: FieldRef<"WebinarConfig", 'String'>
+    readonly ticketPrice: FieldRef<"WebinarConfig", 'Int'>
+    readonly zoomLink: FieldRef<"WebinarConfig", 'String'>
+    readonly whatsappGroupLink: FieldRef<"WebinarConfig", 'String'>
+    readonly status: FieldRef<"WebinarConfig", 'WebinarConfigStatus'>
+    readonly updatedAt: FieldRef<"WebinarConfig", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WebinarConfig findUnique
+   */
+  export type WebinarConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which WebinarConfig to fetch.
+     */
+    where: WebinarConfigWhereUniqueInput
+  }
+
+  /**
+   * WebinarConfig findUniqueOrThrow
+   */
+  export type WebinarConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which WebinarConfig to fetch.
+     */
+    where: WebinarConfigWhereUniqueInput
+  }
+
+  /**
+   * WebinarConfig findFirst
+   */
+  export type WebinarConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which WebinarConfig to fetch.
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarConfigs to fetch.
+     */
+    orderBy?: WebinarConfigOrderByWithRelationInput | WebinarConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebinarConfigs.
+     */
+    cursor?: WebinarConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebinarConfigs.
+     */
+    distinct?: WebinarConfigScalarFieldEnum | WebinarConfigScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarConfig findFirstOrThrow
+   */
+  export type WebinarConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which WebinarConfig to fetch.
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarConfigs to fetch.
+     */
+    orderBy?: WebinarConfigOrderByWithRelationInput | WebinarConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebinarConfigs.
+     */
+    cursor?: WebinarConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebinarConfigs.
+     */
+    distinct?: WebinarConfigScalarFieldEnum | WebinarConfigScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarConfig findMany
+   */
+  export type WebinarConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which WebinarConfigs to fetch.
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarConfigs to fetch.
+     */
+    orderBy?: WebinarConfigOrderByWithRelationInput | WebinarConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WebinarConfigs.
+     */
+    cursor?: WebinarConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarConfigs.
+     */
+    skip?: number
+    distinct?: WebinarConfigScalarFieldEnum | WebinarConfigScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarConfig create
+   */
+  export type WebinarConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WebinarConfig.
+     */
+    data: XOR<WebinarConfigCreateInput, WebinarConfigUncheckedCreateInput>
+  }
+
+  /**
+   * WebinarConfig createMany
+   */
+  export type WebinarConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WebinarConfigs.
+     */
+    data: WebinarConfigCreateManyInput | WebinarConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebinarConfig createManyAndReturn
+   */
+  export type WebinarConfigCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * The data used to create many WebinarConfigs.
+     */
+    data: WebinarConfigCreateManyInput | WebinarConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebinarConfig update
+   */
+  export type WebinarConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WebinarConfig.
+     */
+    data: XOR<WebinarConfigUpdateInput, WebinarConfigUncheckedUpdateInput>
+    /**
+     * Choose, which WebinarConfig to update.
+     */
+    where: WebinarConfigWhereUniqueInput
+  }
+
+  /**
+   * WebinarConfig updateMany
+   */
+  export type WebinarConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WebinarConfigs.
+     */
+    data: XOR<WebinarConfigUpdateManyMutationInput, WebinarConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which WebinarConfigs to update
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * Limit how many WebinarConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebinarConfig updateManyAndReturn
+   */
+  export type WebinarConfigUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * The data used to update WebinarConfigs.
+     */
+    data: XOR<WebinarConfigUpdateManyMutationInput, WebinarConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which WebinarConfigs to update
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * Limit how many WebinarConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebinarConfig upsert
+   */
+  export type WebinarConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WebinarConfig to update in case it exists.
+     */
+    where: WebinarConfigWhereUniqueInput
+    /**
+     * In case the WebinarConfig found by the `where` argument doesn't exist, create a new WebinarConfig with this data.
+     */
+    create: XOR<WebinarConfigCreateInput, WebinarConfigUncheckedCreateInput>
+    /**
+     * In case the WebinarConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WebinarConfigUpdateInput, WebinarConfigUncheckedUpdateInput>
+  }
+
+  /**
+   * WebinarConfig delete
+   */
+  export type WebinarConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+    /**
+     * Filter which WebinarConfig to delete.
+     */
+    where: WebinarConfigWhereUniqueInput
+  }
+
+  /**
+   * WebinarConfig deleteMany
+   */
+  export type WebinarConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebinarConfigs to delete
+     */
+    where?: WebinarConfigWhereInput
+    /**
+     * Limit how many WebinarConfigs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebinarConfig without action
+   */
+  export type WebinarConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarConfig
+     */
+    select?: WebinarConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarConfig
+     */
+    omit?: WebinarConfigOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -39780,6 +40991,23 @@ export namespace Prisma {
   export type WebinarPaymentEventScalarFieldEnum = (typeof WebinarPaymentEventScalarFieldEnum)[keyof typeof WebinarPaymentEventScalarFieldEnum]
 
 
+  export const WebinarConfigScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    subTitle: 'subTitle',
+    eventDate: 'eventDate',
+    eventTime: 'eventTime',
+    hostName: 'hostName',
+    ticketPrice: 'ticketPrice',
+    zoomLink: 'zoomLink',
+    whatsappGroupLink: 'whatsappGroupLink',
+    status: 'status',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WebinarConfigScalarFieldEnum = (typeof WebinarConfigScalarFieldEnum)[keyof typeof WebinarConfigScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -40271,6 +41499,20 @@ export namespace Prisma {
    * Reference to a field of type 'WebinarStatus[]'
    */
   export type ListEnumWebinarStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebinarStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WebinarConfigStatus'
+   */
+  export type EnumWebinarConfigStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebinarConfigStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WebinarConfigStatus[]'
+   */
+  export type ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebinarConfigStatus[]'>
     
   /**
    * Deep Input Types
@@ -43157,6 +44399,90 @@ export namespace Prisma {
     eventType?: StringWithAggregatesFilter<"WebinarPaymentEvent"> | string
     rawPayload?: JsonWithAggregatesFilter<"WebinarPaymentEvent">
     processedAt?: DateTimeWithAggregatesFilter<"WebinarPaymentEvent"> | Date | string
+  }
+
+  export type WebinarConfigWhereInput = {
+    AND?: WebinarConfigWhereInput | WebinarConfigWhereInput[]
+    OR?: WebinarConfigWhereInput[]
+    NOT?: WebinarConfigWhereInput | WebinarConfigWhereInput[]
+    id?: StringFilter<"WebinarConfig"> | string
+    title?: StringFilter<"WebinarConfig"> | string
+    subTitle?: StringFilter<"WebinarConfig"> | string
+    eventDate?: DateTimeFilter<"WebinarConfig"> | Date | string
+    eventTime?: StringFilter<"WebinarConfig"> | string
+    hostName?: StringFilter<"WebinarConfig"> | string
+    ticketPrice?: IntFilter<"WebinarConfig"> | number
+    zoomLink?: StringFilter<"WebinarConfig"> | string
+    whatsappGroupLink?: StringFilter<"WebinarConfig"> | string
+    status?: EnumWebinarConfigStatusFilter<"WebinarConfig"> | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFilter<"WebinarConfig"> | Date | string
+  }
+
+  export type WebinarConfigOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subTitle?: SortOrder
+    eventDate?: SortOrder
+    eventTime?: SortOrder
+    hostName?: SortOrder
+    ticketPrice?: SortOrder
+    zoomLink?: SortOrder
+    whatsappGroupLink?: SortOrder
+    status?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarConfigWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WebinarConfigWhereInput | WebinarConfigWhereInput[]
+    OR?: WebinarConfigWhereInput[]
+    NOT?: WebinarConfigWhereInput | WebinarConfigWhereInput[]
+    title?: StringFilter<"WebinarConfig"> | string
+    subTitle?: StringFilter<"WebinarConfig"> | string
+    eventDate?: DateTimeFilter<"WebinarConfig"> | Date | string
+    eventTime?: StringFilter<"WebinarConfig"> | string
+    hostName?: StringFilter<"WebinarConfig"> | string
+    ticketPrice?: IntFilter<"WebinarConfig"> | number
+    zoomLink?: StringFilter<"WebinarConfig"> | string
+    whatsappGroupLink?: StringFilter<"WebinarConfig"> | string
+    status?: EnumWebinarConfigStatusFilter<"WebinarConfig"> | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFilter<"WebinarConfig"> | Date | string
+  }, "id">
+
+  export type WebinarConfigOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subTitle?: SortOrder
+    eventDate?: SortOrder
+    eventTime?: SortOrder
+    hostName?: SortOrder
+    ticketPrice?: SortOrder
+    zoomLink?: SortOrder
+    whatsappGroupLink?: SortOrder
+    status?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WebinarConfigCountOrderByAggregateInput
+    _avg?: WebinarConfigAvgOrderByAggregateInput
+    _max?: WebinarConfigMaxOrderByAggregateInput
+    _min?: WebinarConfigMinOrderByAggregateInput
+    _sum?: WebinarConfigSumOrderByAggregateInput
+  }
+
+  export type WebinarConfigScalarWhereWithAggregatesInput = {
+    AND?: WebinarConfigScalarWhereWithAggregatesInput | WebinarConfigScalarWhereWithAggregatesInput[]
+    OR?: WebinarConfigScalarWhereWithAggregatesInput[]
+    NOT?: WebinarConfigScalarWhereWithAggregatesInput | WebinarConfigScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    title?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    subTitle?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    eventDate?: DateTimeWithAggregatesFilter<"WebinarConfig"> | Date | string
+    eventTime?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    hostName?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    ticketPrice?: IntWithAggregatesFilter<"WebinarConfig"> | number
+    zoomLink?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    whatsappGroupLink?: StringWithAggregatesFilter<"WebinarConfig"> | string
+    status?: EnumWebinarConfigStatusWithAggregatesFilter<"WebinarConfig"> | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeWithAggregatesFilter<"WebinarConfig"> | Date | string
   }
 
   export type TenantCreateInput = {
@@ -46451,6 +47777,104 @@ export namespace Prisma {
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WebinarConfigCreateInput = {
+    id?: string
+    title: string
+    subTitle: string
+    eventDate: Date | string
+    eventTime: string
+    hostName: string
+    ticketPrice: number
+    zoomLink: string
+    whatsappGroupLink: string
+    status?: $Enums.WebinarConfigStatus
+    updatedAt?: Date | string
+  }
+
+  export type WebinarConfigUncheckedCreateInput = {
+    id?: string
+    title: string
+    subTitle: string
+    eventDate: Date | string
+    eventTime: string
+    hostName: string
+    ticketPrice: number
+    zoomLink: string
+    whatsappGroupLink: string
+    status?: $Enums.WebinarConfigStatus
+    updatedAt?: Date | string
+  }
+
+  export type WebinarConfigUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subTitle?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventTime?: StringFieldUpdateOperationsInput | string
+    hostName?: StringFieldUpdateOperationsInput | string
+    ticketPrice?: IntFieldUpdateOperationsInput | number
+    zoomLink?: StringFieldUpdateOperationsInput | string
+    whatsappGroupLink?: StringFieldUpdateOperationsInput | string
+    status?: EnumWebinarConfigStatusFieldUpdateOperationsInput | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarConfigUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subTitle?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventTime?: StringFieldUpdateOperationsInput | string
+    hostName?: StringFieldUpdateOperationsInput | string
+    ticketPrice?: IntFieldUpdateOperationsInput | number
+    zoomLink?: StringFieldUpdateOperationsInput | string
+    whatsappGroupLink?: StringFieldUpdateOperationsInput | string
+    status?: EnumWebinarConfigStatusFieldUpdateOperationsInput | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarConfigCreateManyInput = {
+    id?: string
+    title: string
+    subTitle: string
+    eventDate: Date | string
+    eventTime: string
+    hostName: string
+    ticketPrice: number
+    zoomLink: string
+    whatsappGroupLink: string
+    status?: $Enums.WebinarConfigStatus
+    updatedAt?: Date | string
+  }
+
+  export type WebinarConfigUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subTitle?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventTime?: StringFieldUpdateOperationsInput | string
+    hostName?: StringFieldUpdateOperationsInput | string
+    ticketPrice?: IntFieldUpdateOperationsInput | number
+    zoomLink?: StringFieldUpdateOperationsInput | string
+    whatsappGroupLink?: StringFieldUpdateOperationsInput | string
+    status?: EnumWebinarConfigStatusFieldUpdateOperationsInput | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarConfigUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    subTitle?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventTime?: StringFieldUpdateOperationsInput | string
+    hostName?: StringFieldUpdateOperationsInput | string
+    ticketPrice?: IntFieldUpdateOperationsInput | number
+    zoomLink?: StringFieldUpdateOperationsInput | string
+    whatsappGroupLink?: StringFieldUpdateOperationsInput | string
+    status?: EnumWebinarConfigStatusFieldUpdateOperationsInput | $Enums.WebinarConfigStatus
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -49005,6 +50429,73 @@ export namespace Prisma {
     processedAt?: SortOrder
   }
 
+  export type EnumWebinarConfigStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WebinarConfigStatus | EnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWebinarConfigStatusFilter<$PrismaModel> | $Enums.WebinarConfigStatus
+  }
+
+  export type WebinarConfigCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subTitle?: SortOrder
+    eventDate?: SortOrder
+    eventTime?: SortOrder
+    hostName?: SortOrder
+    ticketPrice?: SortOrder
+    zoomLink?: SortOrder
+    whatsappGroupLink?: SortOrder
+    status?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarConfigAvgOrderByAggregateInput = {
+    ticketPrice?: SortOrder
+  }
+
+  export type WebinarConfigMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subTitle?: SortOrder
+    eventDate?: SortOrder
+    eventTime?: SortOrder
+    hostName?: SortOrder
+    ticketPrice?: SortOrder
+    zoomLink?: SortOrder
+    whatsappGroupLink?: SortOrder
+    status?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    subTitle?: SortOrder
+    eventDate?: SortOrder
+    eventTime?: SortOrder
+    hostName?: SortOrder
+    ticketPrice?: SortOrder
+    zoomLink?: SortOrder
+    whatsappGroupLink?: SortOrder
+    status?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarConfigSumOrderByAggregateInput = {
+    ticketPrice?: SortOrder
+  }
+
+  export type EnumWebinarConfigStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WebinarConfigStatus | EnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWebinarConfigStatusWithAggregatesFilter<$PrismaModel> | $Enums.WebinarConfigStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWebinarConfigStatusFilter<$PrismaModel>
+    _max?: NestedEnumWebinarConfigStatusFilter<$PrismaModel>
+  }
+
   export type AccountDeletionRequestCreateNestedManyWithoutTenantInput = {
     create?: XOR<AccountDeletionRequestCreateWithoutTenantInput, AccountDeletionRequestUncheckedCreateWithoutTenantInput> | AccountDeletionRequestCreateWithoutTenantInput[] | AccountDeletionRequestUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: AccountDeletionRequestCreateOrConnectWithoutTenantInput | AccountDeletionRequestCreateOrConnectWithoutTenantInput[]
@@ -51279,6 +52770,10 @@ export namespace Prisma {
     update?: XOR<XOR<WebinarRegistrationUpdateToOneWithWhereWithoutWebinarPaymentEventInput, WebinarRegistrationUpdateWithoutWebinarPaymentEventInput>, WebinarRegistrationUncheckedUpdateWithoutWebinarPaymentEventInput>
   }
 
+  export type EnumWebinarConfigStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WebinarConfigStatus
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -52002,6 +53497,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWebinarStatusFilter<$PrismaModel>
     _max?: NestedEnumWebinarStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWebinarConfigStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WebinarConfigStatus | EnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWebinarConfigStatusFilter<$PrismaModel> | $Enums.WebinarConfigStatus
+  }
+
+  export type NestedEnumWebinarConfigStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WebinarConfigStatus | EnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WebinarConfigStatus[] | ListEnumWebinarConfigStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWebinarConfigStatusWithAggregatesFilter<$PrismaModel> | $Enums.WebinarConfigStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWebinarConfigStatusFilter<$PrismaModel>
+    _max?: NestedEnumWebinarConfigStatusFilter<$PrismaModel>
   }
 
   export type AccountDeletionRequestCreateWithoutTenantInput = {

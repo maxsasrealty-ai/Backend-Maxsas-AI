@@ -21,7 +21,7 @@ import {
   BackendControlVisibility,
 } from "../../../shared/contracts/admin";
 import { config } from "../lib/config";
-import { Prisma } from "../generated/prisma";
+import { Prisma, RegistrationStatus } from "../generated/prisma";
 import { prisma } from "../lib/prisma";
 import { requireAdminAccess } from "../middleware/requireAdminAccess";
 import { listCampaigns } from "../repositories/campaignRepository";
@@ -380,6 +380,89 @@ function filterBackendControlSnapshot(snapshot: BackendControlSnapshot, role: st
       ...snapshot.schema,
       sections,
     },
+  };
+}
+
+const WEBINAR_REGISTRATION_FEE_PAISE = 19_900;
+
+function normalizeWebinarPaymentStatus(status: unknown): "PAID" | "PENDING" | "FAILED" {
+  const normalized = String(status || "").trim().toLowerCase();
+  if (normalized === "paid") {
+    return "PAID";
+  }
+  if (normalized === "failed" || normalized === "cancelled") {
+    return "FAILED";
+  }
+  return "PENDING";
+}
+
+function isPendingWebinarStatus(status: unknown): boolean {
+  const normalized = String(status || "").trim().toUpperCase();
+  return normalized === RegistrationStatus.REGISTERED || normalized === RegistrationStatus.PAYMENT_PENDING;
+}
+
+function isFailedWebinarStatus(status: unknown): boolean {
+  const normalized = String(status || "").trim().toUpperCase();
+  return normalized === RegistrationStatus.FAILED || normalized === RegistrationStatus.CANCELLED;
+}
+
+function mapWebinarRegistrationRecord(registration: {
+  id: string;
+  webinarId: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string | null;
+  status: string;
+  razorpayPaymentId: string | null;
+  razorpayOrderId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  Webinar: {
+    title: string;
+    slug: string;
+    priceInPaise: number;
+  } | null;
+}) {
+  const paymentStatus = normalizeWebinarPaymentStatus(registration.status);
+  const webinarPricePaise = registration.Webinar?.priceInPaise ?? WEBINAR_REGISTRATION_FEE_PAISE;
+
+  return {
+    id: registration.id,
+    webinarId: registration.webinarId,
+    webinarTitle: registration.Webinar?.title ?? null,
+    webinarSlug: registration.Webinar?.slug ?? null,
+    fullName: registration.name,
+    phone: registration.phone,
+    email: registration.email,
+    company: registration.company,
+    paymentStatus,
+    rawStatus: registration.status,
+    razorpayPaymentId: registration.razorpayPaymentId,
+    razorpayOrderId: registration.razorpayOrderId,
+    registrationTimestamp: registration.createdAt.toISOString(),
+    updatedAt: registration.updatedAt.toISOString(),
+    revenuePaise: paymentStatus === "PAID" ? webinarPricePaise : 0,
+  };
+}
+
+function buildWebinarSummary(registrations: Array<{
+  status: string;
+  Webinar: { priceInPaise: number } | null;
+}>) {
+  const totalRegistrations = registrations.length;
+  const paidRegistrations = registrations.filter((registration) => String(registration.status || "").trim().toUpperCase() === RegistrationStatus.PAID);
+  const pendingRegistrations = registrations.filter((registration) => isPendingWebinarStatus(registration.status));
+  const failedRegistrations = registrations.filter((registration) => isFailedWebinarStatus(registration.status));
+  const revenueCollectedPaise = paidRegistrations.reduce((sum, registration) => sum + (registration.Webinar?.priceInPaise ?? WEBINAR_REGISTRATION_FEE_PAISE), 0);
+
+  return {
+    totalRegistrations,
+    paidCount: paidRegistrations.length,
+    pendingCount: pendingRegistrations.length,
+    failedCount: failedRegistrations.length,
+    revenueCollectedPaise,
+    revenueCollectedFormatted: `₹${(revenueCollectedPaise / 100).toLocaleString("en-IN")}`,
   };
 }
 
@@ -1071,6 +1154,7 @@ async function runDevMonitorCommand(rawCommand: string) {
   };
 }
 
+import webinarRouter from "./webinar";
 adminRouter.get("/live-events/stream", async (req: Request, res: Response) => {
   // Manual admin key check for SSE endpoint
   const configuredKey = process.env.ADMIN_API_KEY || "dev-admin-key";
@@ -1249,6 +1333,133 @@ adminRouter.get("/users", async (req: Request, res: Response) => {
       requestId: req.requestContext?.requestId,
       timestamp: new Date().toISOString(),
       totalCount: data.length,
+    },
+  });
+});
+
+adminRouter.get("/webinar-registrations", async (req: Request, res: Response) => {
+  const query = typeof req.query.query === "string" ? req.query.query.trim().toLowerCase() : "";
+  const statusFilter = typeof req.query.status === "string" ? req.query.status.trim().toLowerCase() : "all";
+
+  const where: Prisma.WebinarRegistrationWhereInput = {};
+
+  if (query) {
+    where.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { email: { contains: query, mode: "insensitive" } },
+      { phone: { contains: query, mode: "insensitive" } },
+      { company: { contains: query, mode: "insensitive" } },
+      { razorpayPaymentId: { contains: query, mode: "insensitive" } },
+      { razorpayOrderId: { contains: query, mode: "insensitive" } },
+    ];
+  }
+
+  if (statusFilter === "paid") {
+    where.status = RegistrationStatus.PAID;
+  } else if (statusFilter === "pending") {
+    where.status = {
+      in: [RegistrationStatus.REGISTERED, RegistrationStatus.PAYMENT_PENDING],
+    };
+  } else if (statusFilter === "failed") {
+    where.status = {
+      in: [RegistrationStatus.FAILED, RegistrationStatus.CANCELLED],
+    };
+  }
+
+  const [allRegistrations, registrations] = await Promise.all([
+    prisma.webinarRegistration.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        Webinar: {
+          select: {
+            title: true,
+            slug: true,
+            priceInPaise: true,
+          },
+        },
+      },
+    }),
+    prisma.webinarRegistration.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      include: {
+        Webinar: {
+          select: {
+            title: true,
+            slug: true,
+            priceInPaise: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const summary = buildWebinarSummary(allRegistrations);
+
+  res.status(200).json({
+    success: true,
+    data: registrations.map(mapWebinarRegistrationRecord),
+    summary,
+    meta: {
+      requestId: req.requestContext?.requestId,
+      timestamp: new Date().toISOString(),
+      totalCount: registrations.length,
+    },
+  });
+});
+
+adminRouter.patch("/webinar-registrations/:id", async (req: Request, res: Response) => {
+  const registrationId = String(req.params.id || "").trim();
+  const body = req.body as { status?: string; razorpayPaymentId?: string | null };
+
+  if (!registrationId) {
+    res.status(400).json({
+      success: false,
+      error: {
+        code: "INVALID_REQUEST",
+        message: "Registration id is required",
+      },
+    });
+    return;
+  }
+
+  const requestedStatus = String(body.status || RegistrationStatus.PAID).trim().toUpperCase();
+  const validStatuses = new Set(Object.values(RegistrationStatus));
+
+  if (!validStatuses.has(requestedStatus as RegistrationStatus)) {
+    res.status(400).json({
+      success: false,
+      error: {
+        code: "INVALID_REQUEST",
+        message: "Invalid webinar registration status",
+      },
+    });
+    return;
+  }
+
+  const updated = await prisma.webinarRegistration.update({
+    where: { id: registrationId },
+    data: {
+      status: requestedStatus as RegistrationStatus,
+      razorpayPaymentId: typeof body.razorpayPaymentId === "string" ? body.razorpayPaymentId.trim() || null : undefined,
+    },
+    include: {
+      Webinar: {
+        select: {
+          title: true,
+          slug: true,
+          priceInPaise: true,
+        },
+      },
+    },
+  });
+
+  res.status(200).json({
+    success: true,
+    data: mapWebinarRegistrationRecord(updated),
+    meta: {
+      requestId: req.requestContext?.requestId,
+      timestamp: new Date().toISOString(),
     },
   });
 });
@@ -2765,6 +2976,8 @@ adminRouter.post("/account-deletion/sweep", async (req: Request, res: Response) 
     },
   });
 });
+
+adminRouter.use("/webinar", webinarRouter);
 
 export default adminRouter;
 

@@ -10,6 +10,7 @@ window.MCRouter = (function () {
     'finance':        () => window.MCModFinance?.render(),
     'dev-tools':      () => window.MCModDevTools?.render(),
     'analytics':      () => window.MCModAnalytics?.render(),
+    'webinar':        () => window.MCModWebinar?.render(),
     'system':         () => window.MCModSystem?.render(),
     'agent-runtime':  () => window.MCModAgentRuntime?.render(),
   };
@@ -24,6 +25,7 @@ window.MCRouter = (function () {
       case 'finance': return window.MCModFinance;
       case 'dev-tools': return window.MCModDevTools;
       case 'analytics': return window.MCModAnalytics;
+      case 'webinar': return window.MCModWebinar;
       case 'system': return window.MCModSystem;
       case 'agent-runtime': return window.MCModAgentRuntime;
       default: return null;

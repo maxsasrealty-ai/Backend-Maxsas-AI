@@ -1,14 +1,57 @@
-import { Request, Response, Router } from 'express';
-import Razorpay from 'razorpay';
+import { Router } from 'express';
 import crypto from 'crypto';
-import { PrismaClient, RegistrationStatus, WebinarStatus } from '../generated/prisma';
+import Razorpay from 'razorpay';
+import { PrismaClient, RegistrationStatus, WebinarConfigStatus, WebinarStatus } from '../generated/prisma';
+import { requireAdminAccess } from '../middleware/requireAdminAccess';
 import { sendMetaPurchaseEvent } from '../services/metaCapiService';
 import { sendWebinarEmail } from '../services/notificationService';
 
 const router = Router();
 const prisma = new PrismaClient();
 const WEBINAR_SLUG = 'maxsas-ai-voice-agent-workshop-2026';
-const WEBINAR_TITLE = 'Maxsas AI Voice Agent Workshop';
+const DEFAULT_WEBINAR_DATE = new Date('2026-08-25T16:00:00+05:30');
+
+const DEFAULT_WEBINAR_CONFIG: WebinarConfigRecord = {
+  title: 'Maxsas AI Voice Agent Workshop',
+  subTitle: 'Live workshop on AI voice agents for real estate teams',
+  eventDate: DEFAULT_WEBINAR_DATE,
+  eventTime: '4:00 PM IST',
+  hostName: 'Anubhav Chaudhary',
+  ticketPrice: 19900,
+  zoomLink: process.env.ZOOM_WEBINAR_LINK || '',
+  whatsappGroupLink: process.env.WHATSAPP_GROUP_LINK || '',
+  status: WebinarConfigStatus.OPEN,
+};
+
+type WebinarConfigRecord = {
+  id?: string;
+  title: string;
+  subTitle: string;
+  eventDate: Date;
+  eventTime: string;
+  hostName: string;
+  ticketPrice: number;
+  zoomLink: string;
+  whatsappGroupLink: string;
+  status: WebinarConfigStatus;
+  updatedAt?: Date;
+};
+
+type WebinarConfigPayload = {
+  id: string;
+  title: string;
+  subTitle: string;
+  eventDate: string;
+  eventTime: string;
+  hostName: string;
+  ticketPrice: number;
+  zoomLink: string;
+  whatsappGroupLink: string;
+  status: WebinarConfigStatus;
+  updatedAt: string;
+};
+
+let razorpayClient: Razorpay | null = null;
 
 function resolveRazorpayKeyId(): string {
   return process.env.RAZORPAY_KEY_ID || process.env.Live_API_Key || '';
@@ -17,45 +60,6 @@ function resolveRazorpayKeyId(): string {
 function resolveRazorpayKeySecret(): string {
   return process.env.RAZORPAY_KEY_SECRET || process.env.Live_Key_Secret || '';
 }
-
-async function ensureWebinar() {
-  const existing = await prisma.webinar.findFirst({
-    where: { slug: WEBINAR_SLUG },
-  });
-
-  if (existing) {
-    return existing;
-  }
-
-  return prisma.webinar.create({
-    data: {
-      id: crypto.randomUUID(),
-      slug: WEBINAR_SLUG,
-      title: WEBINAR_TITLE,
-      subtitle: 'Live workshop on AI voice agents for real estate teams',
-      date: new Date('2026-08-25T16:00:00+05:30'),
-      time: '4:00 PM IST',
-      priceInPaise: 19900,
-      status: WebinarStatus.PUBLISHED,
-      speakerName: 'Anubhav Chaudhary',
-      speakerDesignation: 'Founder & CEO, Maxsas AI',
-      speakerExperience: 'AI voice systems for real estate lead qualification',
-      speakerImageUrl: null,
-      benefits: [],
-      agenda: [],
-      testimonials: [],
-      faqs: [],
-      whoShouldAttend: [],
-      whatsappGroupLink: process.env.WHATSAPP_GROUP_LINK || null,
-      seoTitle: 'Maxsas AI Voice Agent Workshop',
-      seoDescription: 'Learn how to qualify real estate leads with AI voice agents.',
-      ogImageUrl: null,
-      updatedAt: new Date(),
-    },
-  });
-}
-
-let razorpayClient: Razorpay | null = null;
 
 function getRazorpayClient(): Razorpay {
   const keyId = resolveRazorpayKeyId();
@@ -75,6 +79,237 @@ function getRazorpayClient(): Razorpay {
   return razorpayClient;
 }
 
+function parseDate(value: unknown, fallback: Date): Date {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value;
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed;
+    }
+  }
+
+  return fallback;
+}
+
+function parseTicketPrice(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number(value);
+  if (Number.isFinite(parsed) && parsed >= 0) {
+    return Math.round(parsed);
+  }
+
+  return fallback;
+}
+
+function parseStatus(value: unknown): WebinarConfigStatus {
+  const raw = typeof value === 'string' ? value.trim().toUpperCase() : '';
+  if (raw === WebinarConfigStatus.SEATS_FULL || raw === WebinarConfigStatus.COMPLETED) {
+    return raw;
+  }
+
+  return WebinarConfigStatus.OPEN;
+}
+
+function isMissingDbTableError(error: any): boolean {
+  return Boolean(
+    error && (
+      error.code === 'P2021' ||
+      String(error.message || '').includes('does not exist in the current database') ||
+      String(error.message || '').includes('WebinarConfig')
+    )
+  );
+}
+
+function serializeWebinarConfig(config: WebinarConfigRecord): WebinarConfigPayload {
+  return {
+    id: config.id || 'default',
+    title: config.title,
+    subTitle: config.subTitle,
+    eventDate: config.eventDate.toISOString(),
+    eventTime: config.eventTime,
+    hostName: config.hostName,
+    ticketPrice: config.ticketPrice,
+    zoomLink: config.zoomLink,
+    whatsappGroupLink: config.whatsappGroupLink,
+    status: config.status,
+    updatedAt: config.updatedAt ? config.updatedAt.toISOString() : new Date().toISOString(),
+  };
+}
+
+async function getWebinarConfigRecord(): Promise<WebinarConfigRecord | null> {
+  try {
+    const record = await prisma.webinarConfig.findFirst({
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    return record
+      ? {
+          id: record.id,
+          title: record.title,
+          subTitle: record.subTitle,
+          eventDate: record.eventDate,
+          eventTime: record.eventTime,
+          hostName: record.hostName,
+          ticketPrice: record.ticketPrice,
+          zoomLink: record.zoomLink,
+          whatsappGroupLink: record.whatsappGroupLink,
+          status: record.status as WebinarConfigStatus,
+          updatedAt: record.updatedAt,
+        }
+      : null;
+  } catch (error) {
+    if (isMissingDbTableError(error)) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+async function resolveWebinarConfig(): Promise<WebinarConfigRecord> {
+  return (await getWebinarConfigRecord()) || { ...DEFAULT_WEBINAR_CONFIG };
+}
+
+async function syncLegacyWebinar(config: WebinarConfigRecord) {
+  const existing = await prisma.webinar.findFirst({
+    where: { slug: WEBINAR_SLUG },
+  });
+
+  const payload: any = {
+    slug: WEBINAR_SLUG,
+    title: config.title,
+    subtitle: config.subTitle,
+    date: config.eventDate,
+    time: config.eventTime,
+    priceInPaise: config.ticketPrice,
+    status: config.status === WebinarConfigStatus.OPEN ? WebinarStatus.PUBLISHED : WebinarStatus.ARCHIVED,
+    speakerName: config.hostName,
+    speakerDesignation: 'Founder & CEO, Maxsas AI',
+    speakerExperience: 'AI voice systems for real estate lead qualification',
+    speakerImageUrl: null,
+    benefits: [],
+    agenda: [],
+    testimonials: [],
+    faqs: [],
+    whoShouldAttend: [],
+    whatsappGroupLink: config.whatsappGroupLink || null,
+    seoTitle: config.title,
+    seoDescription: config.subTitle,
+    ogImageUrl: null,
+    updatedAt: new Date(),
+  };
+
+  if (existing) {
+    return prisma.webinar.update({
+      where: { id: existing.id },
+      data: payload,
+    });
+  }
+
+  return prisma.webinar.create({
+    data: {
+      id: crypto.randomUUID(),
+      ...payload,
+    },
+  });
+}
+
+async function ensureWebinar() {
+  return syncLegacyWebinar(await resolveWebinarConfig());
+}
+
+router.get('/config', async (_req: any, res: any): Promise<void> => {
+  try {
+    const config = await resolveWebinarConfig();
+    res.json({ success: true, data: serializeWebinarConfig(config) });
+  } catch (error) {
+    console.error('Webinar Config Load Error:', error);
+    res.status(500).json({ success: false, error: { message: 'Failed to load webinar config' } });
+  }
+});
+
+router.put('/config', requireAdminAccess, async (req: any, res: any): Promise<void> => {
+  try {
+    const existing = await getWebinarConfigRecord();
+    const fallback = existing || DEFAULT_WEBINAR_CONFIG;
+
+    const payload = {
+      title: typeof req.body?.title === 'string' && req.body.title.trim() ? req.body.title.trim() : fallback.title,
+      subTitle: typeof req.body?.subTitle === 'string' && req.body.subTitle.trim() ? req.body.subTitle.trim() : fallback.subTitle,
+      eventDate: parseDate(req.body?.eventDate, fallback.eventDate),
+      eventTime: typeof req.body?.eventTime === 'string' && req.body.eventTime.trim() ? req.body.eventTime.trim() : fallback.eventTime,
+      hostName: typeof req.body?.hostName === 'string' && req.body.hostName.trim() ? req.body.hostName.trim() : fallback.hostName,
+      ticketPrice: parseTicketPrice(req.body?.ticketPrice, fallback.ticketPrice),
+      zoomLink: typeof req.body?.zoomLink === 'string' ? req.body.zoomLink.trim() : fallback.zoomLink,
+      whatsappGroupLink: typeof req.body?.whatsappGroupLink === 'string' ? req.body.whatsappGroupLink.trim() : fallback.whatsappGroupLink,
+      status: parseStatus(req.body?.status),
+    };
+
+    let saved: WebinarConfigRecord;
+    try {
+      if (existing) {
+        const updated = await prisma.webinarConfig.update({
+          where: { id: existing.id },
+          data: payload,
+        });
+        saved = {
+          id: updated.id,
+          ...payload,
+          updatedAt: updated.updatedAt,
+        };
+      } else {
+        const created = await prisma.webinarConfig.create({
+          data: {
+            id: crypto.randomUUID(),
+            ...payload,
+          },
+        });
+        saved = {
+          id: created.id,
+          ...payload,
+          updatedAt: created.updatedAt,
+        };
+      }
+    } catch (error) {
+      if (isMissingDbTableError(error)) {
+        saved = {
+          ...DEFAULT_WEBINAR_CONFIG,
+          ...payload,
+          updatedAt: new Date(),
+        };
+      } else {
+        throw error;
+      }
+    }
+
+    try {
+      await syncLegacyWebinar({
+        id: saved.id,
+        title: saved.title,
+        subTitle: saved.subTitle,
+        eventDate: saved.eventDate,
+        eventTime: saved.eventTime,
+        hostName: saved.hostName,
+        ticketPrice: saved.ticketPrice,
+        zoomLink: saved.zoomLink,
+        whatsappGroupLink: saved.whatsappGroupLink,
+        status: saved.status,
+        updatedAt: saved.updatedAt,
+      });
+    } catch (error) {
+      if (!isMissingDbTableError(error)) {
+        console.warn('Webinar legacy sync skipped due to non-table error:', error);
+      }
+    }
+
+    res.json({ success: true, data: serializeWebinarConfig(saved) });
+  } catch (error) {
+    console.error('Webinar Config Save Error:', error);
+    res.status(500).json({ success: false, error: { message: 'Failed to save webinar config' } });
+  }
+});
+
 // 1. Create Razorpay Order & Register Lead
 router.post('/register', async (req: any, res: any): Promise<void> => {
   try {
@@ -91,17 +326,15 @@ router.post('/register', async (req: any, res: any): Promise<void> => {
       return res.status(400).json({ error: 'Name, Phone, and Email are required' });
     }
 
-    const amount = 19900; // 199 INR in paise
     const webinar = await ensureWebinar();
+    const amount = webinar.priceInPaise;
 
-    // Create Razorpay Order
     const order = await getRazorpayClient().orders.create({
       amount,
       currency: 'INR',
       receipt: `webinar_${Date.now()}`,
     });
 
-    // Save initial registration state to DB
     const registration = await prisma.webinarRegistration.create({
       data: {
         webinarId: webinar.id,
@@ -157,7 +390,6 @@ router.post('/verify-payment', async (req: any, res: any): Promise<void> => {
       return res.status(404).json({ error: 'Webinar registration not found for this order' });
     }
 
-    // Update status in DB
     const updated = await prisma.webinarRegistration.update({
       where: { id: registration.id },
       data: {
@@ -192,6 +424,5 @@ router.post('/verify-payment', async (req: any, res: any): Promise<void> => {
     return res.status(500).json({ error: 'Payment verification failed' });
   }
 });
-
 
 export default router;

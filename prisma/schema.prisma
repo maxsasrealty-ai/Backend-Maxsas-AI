@@ -650,6 +650,22 @@ model WebinarPaymentEvent {
   WebinarRegistration WebinarRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
 }
 
+model WebinarConfig {
+  id                String              @id @default(uuid())
+  title             String
+  subTitle          String
+  eventDate         DateTime
+  eventTime         String
+  hostName          String
+  ticketPrice       Int
+  zoomLink          String
+  whatsappGroupLink String
+  status            WebinarConfigStatus  @default(OPEN)
+  updatedAt         DateTime             @updatedAt
+
+  @@index([status, updatedAt])
+}
+
 enum PlanKey {
   basic
   pro
@@ -828,4 +844,10 @@ enum WebinarStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum WebinarConfigStatus {
+  OPEN
+  SEATS_FULL
+  COMPLETED
 }

@@ -49,6 +49,8 @@ apiRouter.use("/wallet", walletLedgerRouter);
 
 // Webinar registration and payment flow
 apiRouter.use("/webinar", webinarRouter);
+// Compatibility alias for admin UIs and deployed environments that expect the admin-prefixed route.
+apiRouter.use("/admin/webinar", webinarRouter);
 
 // Legacy Razorpay webhook needs raw body before express.json() has a chance to parse it.
 // Mount it before the json-parsing wrapper, using express.raw() for this specific path.

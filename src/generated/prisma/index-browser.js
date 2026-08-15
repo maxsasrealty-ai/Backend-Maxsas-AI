@@ -575,6 +575,20 @@ exports.Prisma.WebinarPaymentEventScalarFieldEnum = {
   processedAt: 'processedAt'
 };
 
+exports.Prisma.WebinarConfigScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  subTitle: 'subTitle',
+  eventDate: 'eventDate',
+  eventTime: 'eventTime',
+  hostName: 'hostName',
+  ticketPrice: 'ticketPrice',
+  zoomLink: 'zoomLink',
+  whatsappGroupLink: 'whatsappGroupLink',
+  status: 'status',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -777,6 +791,12 @@ exports.WebinarStatus = exports.$Enums.WebinarStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.WebinarConfigStatus = exports.$Enums.WebinarConfigStatus = {
+  OPEN: 'OPEN',
+  SEATS_FULL: 'SEATS_FULL',
+  COMPLETED: 'COMPLETED'
+};
+
 exports.Prisma.ModelName = {
   Tenant: 'Tenant',
   User: 'User',
@@ -806,7 +826,8 @@ exports.Prisma.ModelName = {
   AccountDeletionAuditEntry: 'AccountDeletionAuditEntry',
   WebinarRegistration: 'WebinarRegistration',
   Webinar: 'Webinar',
-  WebinarPaymentEvent: 'WebinarPaymentEvent'
+  WebinarPaymentEvent: 'WebinarPaymentEvent',
+  WebinarConfig: 'WebinarConfig'
 };
 
 /**

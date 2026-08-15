@@ -43,6 +43,15 @@ window.MCApi = (function () {
     updateTenant(id, body)         { return request('PATCH', '/tenants/' + id, body); },
     createTenant(body)             { return request('POST', '/tenants', body); },
     createEnterpriseTenant(body)   { return request('POST', '/tenants/enterprise', body); },
+    getWebinarRegistrations(params = {}) {
+      const query = new URLSearchParams();
+      if (params.query) query.set('query', params.query);
+      if (params.status && params.status !== 'all') query.set('status', params.status);
+      return request('GET', '/webinar-registrations' + (query.toString() ? '?' + query.toString() : ''));
+    },
+    getWebinarConfig() { return request('GET', '/webinar/config'); },
+    updateWebinarConfig(body) { return request('PUT', '/webinar/config', body); },
+    updateWebinarRegistration(id, body) { return request('PATCH', '/webinar-registrations/' + encodeURIComponent(id), body); },
     convertEnterprise(id, body)    { return request('POST', '/tenants/' + id + '/enterprise/convert', body); },
     cloneEnterprise(id, body)      { return request('POST', '/tenants/' + id + '/enterprise/clone', body); },
     getBackendControl()            { return request('GET', '/backend-control?role=' + MCState.role); },
