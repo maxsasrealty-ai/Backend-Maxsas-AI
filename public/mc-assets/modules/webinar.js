@@ -88,7 +88,40 @@ window.MCModWebinar = (function () {
       .mc-webinar-status-chip { border:1px solid var(--mc-border); background:rgba(255,255,255,0.02); color:var(--mc-muted); border-radius:999px; padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer; transition:all var(--mc-ease-fast); }
       .mc-webinar-status-chip:hover { color:var(--mc-text); border-color:rgba(167,139,250,0.35); }
       .mc-webinar-status-chip.active { color:var(--mc-violet); background:rgba(167,139,250,0.12); border-color:rgba(167,139,250,0.4); }
-      .mc-webinar-config-note { color:var(--mc-muted); font-size:12px; line-height:1.6; }
+      .mc-webinar-field-hint {
+  color: var(--mc-faint);
+  font-size: 10px;
+  font-family: var(--mc-font-mono);
+  margin-top: 2px;
+}
+
+.mc-webinar-config-grid .mc-input {
+  min-width: 0;
+}
+
+.mc-webinar-config-grid textarea.mc-input {
+  min-height: 58px;
+  height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.mc-webinar-config-grid input[type="date"],
+.mc-webinar-config-grid input[type="time"],
+.mc-webinar-config-grid input[type="number"] {
+  cursor: text;
+}
+
+.mc-webinar-config-grid input[type="date"],
+.mc-webinar-config-grid input[type="time"] {
+  color-scheme: dark;
+}
+
+.mc-webinar-config-grid input[type="date"]::-webkit-calendar-picker-indicator,
+.mc-webinar-config-grid input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.8;
+  cursor: pointer;
+}
       @media (max-width: 1080px) {
         .mc-webinar-toolbar { grid-template-columns:1fr; }
         .mc-webinar-split { grid-template-columns:1fr; }
@@ -135,12 +168,66 @@ window.MCModWebinar = (function () {
     return date.toLocaleString('en-IN');
   }
 
-  function formatDateInput(value) {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toISOString().slice(0, 10);
+function formatDateInput(value) {
+  if (!value) return '';
+
+  const raw = String(value).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    const year = Number(raw.slice(0, 4));
+    return year >= 2000 && year <= 2100 ? raw : '';
   }
+
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return '';
+
+  const year = date.getUTCFullYear();
+  if (year < 2000 || year > 2100) return '';
+
+  return date.toISOString().slice(0, 10);
+}
+
+function formatTimeInput(value) {
+  if (!value) return '';
+
+  const raw = String(value).trim();
+
+  if (/^\d{2}:\d{2}$/.test(raw)) {
+    const [hours, minutes] = raw.split(':').map(Number);
+    if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+      return raw;
+    }
+  }
+
+  const match = raw.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)(?:\s*IST)?$/i);
+  if (!match) return '';
+
+  let hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const period = match[3].toUpperCase();
+
+  if (hours < 1 || hours > 12 || minutes < 0 || minutes > 59) return '';
+
+  if (period === 'AM') {
+    if (hours === 12) hours = 0;
+  } else if (hours !== 12) {
+    hours += 12;
+  }
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+function formatTimePayload(value) {
+  const input = formatTimeInput(value);
+  if (!input) return String(value || '').trim();
+
+  const [hoursRaw, minutes] = input.split(':');
+  const hours24 = Number(hoursRaw);
+  const period = hours24 >= 12 ? 'PM' : 'AM';
+  const hours12 = hours24 % 12 || 12;
+
+  return `${hours12}:${minutes} ${period} IST`;
+}
 
   function formatCurrency(paise) {
     return `₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(Number(paise || 0) / 100)}`;
@@ -151,8 +238,8 @@ window.MCModWebinar = (function () {
     return {
       title: source.title || '',
       subTitle: source.subTitle || '',
-      eventDate: formatDateInput(source.eventDate) || source.eventDate || DEFAULT_CONFIG.eventDate,
-      eventTime: source.eventTime || '',
+      eventDate: formatDateInput(source.eventDate) || DEFAULT_CONFIG.eventDate,
+      eventTime: formatTimeInput(source.eventTime) || formatTimeInput(DEFAULT_CONFIG.eventTime),
       hostName: source.hostName || '',
       ticketPriceRupees: String(Math.round(Number(source.ticketPrice || 0) / 100) || 0),
       zoomLink: source.zoomLink || '',
@@ -165,8 +252,10 @@ window.MCModWebinar = (function () {
     return {
       title: String(draft.title || '').trim(),
       subTitle: String(draft.subTitle || '').trim(),
-      eventDate: draft.eventDate ? `${draft.eventDate}T12:00:00.000Z` : DEFAULT_CONFIG.eventDate,
-      eventTime: String(draft.eventTime || '').trim(),
+      eventDate: draft.eventDate
+      ? `${draft.eventDate}T12:00:00.000Z`
+      : `${DEFAULT_CONFIG.eventDate}T12:00:00.000Z`,
+      eventTime: formatTimePayload(draft.eventTime),
       hostName: String(draft.hostName || '').trim(),
       ticketPrice: Math.round(Number(draft.ticketPriceRupees || 0)) * 100,
       zoomLink: String(draft.zoomLink || '').trim(),
@@ -396,7 +485,13 @@ window.MCModWebinar = (function () {
           </div>
           <div class="mc-input-group">
             <label class="mc-input-label">Time</label>
-            <input class="mc-input" data-config-field="eventTime" value="${escapeHtml(draft.eventTime)}" placeholder="4:00 PM IST" />
+            <input
+            class="mc-input mc-webinar-time-input"
+            type="time"
+            data-config-field="eventTime"
+            value="${escapeHtml(formatTimeInput(draft.eventTime))}"
+            />
+          <div class="mc-webinar-field-hint">IST • 24-hour picker</div>
           </div>
           <div class="mc-input-group">
             <label class="mc-input-label">Host Name</label>
@@ -418,7 +513,14 @@ window.MCModWebinar = (function () {
             <label class="mc-input-label">Registration Status</label>
             <div class="mc-webinar-status-row">
               ${STATUS_OPTIONS.map((option) => `
-                <button class="mc-webinar-status-chip ${activeStatus === option.value ? 'active' : ''}" data-config-status="${option.value}" type="button">${option.label}</button>
+                <button
+                class="mc-webinar-status-chip ${activeStatus === option.value ? 'active' : ''}"
+                data-config-status="${option.value}"
+                type="button"
+                aria-pressed="${activeStatus === option.value ? 'true' : 'false'}"
+                >
+              ${option.label}
+                </button>
               `).join('')}
             </div>
           </div>
@@ -426,7 +528,12 @@ window.MCModWebinar = (function () {
 
         <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;align-items:center;">
           <div class="mc-webinar-config-note">
-            <div>Current status: <span style="color:var(--mc-text);font-weight:700;">${statusOptionsLabel(activeStatus)}</span></div>
+            <div>
+  Current status:
+  <span data-config-status-label style="color:var(--mc-text);font-weight:700;">
+    ${statusOptionsLabel(activeStatus)}
+  </span>
+</div>
             <div>Last synced: ${escapeHtml(updatedAt)}</div>
           </div>
           <div class="mc-webinar-config-note" style="text-align:right;max-width:460px;">
@@ -738,26 +845,53 @@ window.MCModWebinar = (function () {
       button.addEventListener('click', () => void saveWebinarConfig());
     });
     root.querySelectorAll('[data-config-status]').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (!state.configDraft) {
-          state.configDraft = toDraft(DEFAULT_CONFIG);
-        }
-        state.configDraft = { ...state.configDraft, status: button.dataset.configStatus || 'OPEN' };
-        render();
-      });
+  button.addEventListener('click', () => {
+    if (!state.configDraft) {
+      state.configDraft = toDraft(DEFAULT_CONFIG);
+    }
+
+    const nextStatus = button.dataset.configStatus || 'OPEN';
+
+    state.configDraft = {
+      ...state.configDraft,
+      status: nextStatus,
+    };
+
+    root.querySelectorAll('[data-config-status]').forEach((statusButton) => {
+      const active = statusButton.dataset.configStatus === nextStatus;
+
+      statusButton.classList.toggle('active', active);
+      statusButton.setAttribute(
+        'aria-pressed',
+        active ? 'true' : 'false'
+      );
     });
+
+    const statusLabel = root.querySelector('[data-config-status-label]');
+
+    if (statusLabel) {
+      statusLabel.textContent = statusOptionsLabel(nextStatus);
+    }
+  });
+});
     root.querySelectorAll('[data-config-field]').forEach((input) => {
-      input.addEventListener('input', () => {
-        if (!state.configDraft) {
-          state.configDraft = toDraft(DEFAULT_CONFIG);
-        }
-        state.configDraft = {
-          ...state.configDraft,
-          [input.dataset.configField]: input.value,
-        };
-        render();
-      });
-    });
+  const syncConfigField = () => {
+    if (!state.configDraft) {
+      state.configDraft = toDraft(DEFAULT_CONFIG);
+    }
+
+    const field = input.dataset.configField;
+    if (!field) return;
+
+    state.configDraft = {
+      ...state.configDraft,
+      [field]: input.value,
+    };
+  };
+
+  input.addEventListener('input', syncConfigField);
+  input.addEventListener('change', syncConfigField);  
+  });
     if (window.lucide) window.lucide.createIcons();
 
     if (!state.bootstrapped) {

@@ -550,3 +550,39 @@
   max-width: 44ch;
   line-height: 1.6;
 }
+
+/* Webinar CMS input improvements */
+.mc-webinar-config-grid .mc-input {
+  min-width: 0;
+}
+
+.mc-webinar-config-grid textarea.mc-input {
+  min-height: 58px;
+  height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.mc-webinar-config-grid input[type="date"],
+.mc-webinar-config-grid input[type="time"],
+.mc-webinar-config-grid input[type="number"] {
+  cursor: text;
+}
+
+.mc-webinar-config-grid input[type="date"],
+.mc-webinar-config-grid input[type="time"] {
+  color-scheme: dark;
+}
+
+.mc-webinar-config-grid input[type="date"]::-webkit-calendar-picker-indicator,
+.mc-webinar-config-grid input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.mc-webinar-field-hint {
+  color: var(--mc-faint);
+  font-size: 10px;
+  font-family: var(--mc-font-mono);
+  margin-top: 2px;
+}
