@@ -3,55 +3,359 @@ interface RegistrationDetails {
   email: string;
   phone: string;
   amount: number;
+  paymentId?: string;
+  webinarTitle?: string;
+  webinarDate?: string;
+  webinarTime?: string;
+  hostName?: string;
+  zoomLink?: string;
+  whatsappGroupLink?: string;
 }
 
-export async function sendWebinarEmail(details: RegistrationDetails) {
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export async function sendWebinarEmail(details: RegistrationDetails): Promise<void> {
   const brevoApiKey = process.env.BREVO_API_KEY;
-  const zoomLink = process.env.ZOOM_WEBINAR_LINK || 'https://zoom.us/j/your-webinar-id';
-  const whatsappGroupLink = process.env.WHATSAPP_GROUP_LINK || 'https://chat.whatsapp.com/your-group-invite';
 
   if (!brevoApiKey) {
-    console.log('Brevo API key missing in .env, skipping email.');
+    console.error('BREVO_API_KEY is not configured. Webinar confirmation email skipped.');
     return;
   }
+
+  const senderEmail =
+    process.env.SMTP_FROM ||
+    process.env.SENDER_EMAIL ||
+    'info@maxsasrealty.ai';
+
+  const webinarTitle =
+    details.webinarTitle || 'Maxsas AI Voice Agent Workshop';
+
+  const webinarDate =
+    details.webinarDate || 'Date will be announced';
+
+  const webinarTime =
+    details.webinarTime || 'Time will be announced';
+
+  const hostName =
+    details.hostName || 'Anubhav Chaudhary';
+
+  const zoomLink = String(details.zoomLink || '').trim();
+  const whatsappGroupLink = String(details.whatsappGroupLink || '').trim();
+
+  const safeName = escapeHtml(details.fullName);
+  const safeTitle = escapeHtml(webinarTitle);
+  const safeDate = escapeHtml(webinarDate);
+  const safeTime = escapeHtml(webinarTime);
+  const safeHost = escapeHtml(hostName);
+  const safeAmount = escapeHtml(details.amount.toFixed(2));
+  const safePaymentId = escapeHtml(details.paymentId || '');
+
+  const zoomSection = zoomLink
+    ? `
+      <tr>
+        <td style="padding:8px 0;">
+          <a
+            href="${escapeHtml(zoomLink)}"
+            style="
+              display:inline-block;
+              background:#635BFF;
+              color:#ffffff;
+              text-decoration:none;
+              padding:12px 20px;
+              border-radius:8px;
+              font-weight:700;
+            "
+          >
+            Join Zoom Webinar
+          </a>
+        </td>
+      </tr>
+    `
+    : '';
+
+  const whatsappSection = whatsappGroupLink
+    ? `
+      <tr>
+        <td style="padding:8px 0;">
+          <a
+            href="${escapeHtml(whatsappGroupLink)}"
+            style="
+              display:inline-block;
+              background:#25D366;
+              color:#ffffff;
+              text-decoration:none;
+              padding:12px 20px;
+              border-radius:8px;
+              font-weight:700;
+            "
+          >
+            Join WhatsApp Group
+          </a>
+        </td>
+      </tr>
+    `
+    : '';
+
+  const accessSection =
+    zoomLink || whatsappGroupLink
+      ? `
+        <div
+          style="
+            background:#0E1220;
+            border:1px solid #232A44;
+            border-radius:12px;
+            padding:20px;
+            margin:24px 0;
+          "
+        >
+          <h3 style="margin:0 0 14px;color:#F4F6FB;">
+            Workshop Access
+          </h3>
+
+          <table cellpadding="0" cellspacing="0" border="0">
+            ${zoomSection}
+            ${whatsappSection}
+          </table>
+        </div>
+      `
+      : `
+        <div
+          style="
+            background:#0E1220;
+            border:1px solid #232A44;
+            border-radius:12px;
+            padding:18px;
+            margin:24px 0;
+            color:#B8C0D8;
+          "
+        >
+          Your workshop access details will be shared separately.
+        </div>
+      `;
+
+  const paymentIdRow = safePaymentId
+    ? `
+      <p style="margin:7px 0;">
+        <strong>Payment ID:</strong> ${safePaymentId}
+      </p>
+    `
+    : '';
 
   const payload = {
     sender: {
       name: 'Maxsas AI',
-      email: process.env.SENDER_EMAIL || 'info@maxsasrealty.ai',
+      email: senderEmail,
     },
+
     to: [
       {
         email: details.email,
         name: details.fullName,
       },
     ],
-    subject: '🎉 Confirmation: Maxsas AI Voice Agent Workshop Registration',
+
+    subject: `Registration Confirmed — ${webinarTitle}`,
+
     htmlContent: `
-      <div style="font-family: Arial, sans-serif; background-color: #06080F; color: #F4F6FB; padding: 24px; border-radius: 12px;">
-        <h2 style="color: #3B6FFF;">Registration Confirmed!</h2>
-        <p>Hi <strong>${details.fullName}</strong>,</p>
-        <p>Thank you for registering for the <strong>Maxsas AI Voice Agent Workshop</strong>!</p>
-        
-        <div style="background-color: #0E1220; padding: 16px; border-radius: 8px; border: 1px solid #232A44; margin: 20px 0;">
-          <p style="margin: 6px 0;"><strong>📅 Date & Time:</strong> Thursday, 25 Aug 2026 at 4:00 PM IST</p>
-          <p style="margin: 6px 0;"><strong>🎙️ Host:</strong> Anubhav Chaudhary (Founder & CEO, Maxsas AI)</p>
-          <p style="margin: 6px 0;"><strong>💰 Payment Status:</strong> Paid (₹${details.amount})</p>
-        </div>
+      <!DOCTYPE html>
+      <html>
+        <body
+          style="
+            margin:0;
+            padding:0;
+            background:#06080F;
+            font-family:Arial,Helvetica,sans-serif;
+            color:#F4F6FB;
+          "
+        >
+          <div style="max-width:680px;margin:0 auto;padding:28px 18px;">
 
-        <p><strong>Access Links:</strong></p>
-        <ul style="line-height: 1.8;">
-          <li><a href="${zoomLink}" style="color: #5B87FF; font-weight: bold;">Join Zoom Webinar</a></li>
-          <li><a href="${whatsappGroupLink}" style="color: #25D366; font-weight: bold;">Join VIP WhatsApp Group</a></li>
-        </ul>
+            <div
+              style="
+                background:#0A0D16;
+                border:1px solid #20263A;
+                border-radius:16px;
+                padding:28px;
+              "
+            >
 
-        <p style="margin-top: 24px; color: #8D96B3; font-size: 13px;">See you at the workshop!<br>Team Maxsas AI</p>
-      </div>
+              <div style="margin-bottom:24px;">
+                <div
+                  style="
+                    font-size:13px;
+                    font-weight:700;
+                    letter-spacing:1.5px;
+                    color:#8D96B3;
+                    text-transform:uppercase;
+                  "
+                >
+                  MAXSAS AI
+                </div>
+
+                <h1
+                  style="
+                    margin:10px 0 0;
+                    font-size:28px;
+                    line-height:1.2;
+                    color:#F4F6FB;
+                  "
+                >
+                  Registration Confirmed
+                </h1>
+              </div>
+
+              <p style="font-size:16px;line-height:1.7;">
+                Hi <strong>${safeName}</strong>,
+              </p>
+
+              <p style="font-size:15px;line-height:1.7;color:#C8CEDF;">
+                Your registration and payment for the
+                <strong style="color:#F4F6FB;">
+                  ${safeTitle}
+                </strong>
+                have been successfully confirmed.
+              </p>
+
+              <div
+                style="
+                  background:#0E1220;
+                  border:1px solid #232A44;
+                  border-radius:12px;
+                  padding:20px;
+                  margin:24px 0;
+                "
+              >
+                <h2
+                  style="
+                    margin:0 0 16px;
+                    font-size:18px;
+                    color:#F4F6FB;
+                  "
+                >
+                  Workshop Details
+                </h2>
+
+                <p style="margin:7px 0;">
+                  <strong>Workshop:</strong> ${safeTitle}
+                </p>
+
+                <p style="margin:7px 0;">
+                  <strong>Date:</strong> ${safeDate}
+                </p>
+
+                <p style="margin:7px 0;">
+                  <strong>Time:</strong> ${safeTime}
+                </p>
+
+                <p style="margin:7px 0;">
+                  <strong>Host:</strong> ${safeHost}
+                </p>
+              </div>
+
+              <div
+                style="
+                  background:#0E1220;
+                  border:1px solid #232A44;
+                  border-radius:12px;
+                  padding:20px;
+                  margin:24px 0;
+                "
+              >
+                <h2
+                  style="
+                    margin:0 0 16px;
+                    font-size:18px;
+                    color:#F4F6FB;
+                  "
+                >
+                  Payment Details
+                </h2>
+
+                <p style="margin:7px 0;">
+                  <strong>Status:</strong>
+                  <span style="color:#55D68A;font-weight:700;">
+                    PAID
+                  </span>
+                </p>
+
+                <p style="margin:7px 0;">
+                  <strong>Amount:</strong> ₹${safeAmount}
+                </p>
+
+                ${paymentIdRow}
+              </div>
+
+              ${accessSection}
+
+              <p
+                style="
+                  margin-top:28px;
+                  color:#8D96B3;
+                  font-size:13px;
+                  line-height:1.7;
+                "
+              >
+                Please keep this email for your workshop registration
+                details.
+              </p>
+
+              <p
+                style="
+                  color:#8D96B3;
+                  font-size:13px;
+                  line-height:1.7;
+                "
+              >
+                See you at the workshop!
+                <br />
+                <strong style="color:#F4F6FB;">
+                  Team Maxsas AI
+                </strong>
+              </p>
+
+            </div>
+
+          </div>
+        </body>
+      </html>
     `,
+
+    textContent: `
+Registration Confirmed — ${webinarTitle}
+
+Hi ${details.fullName},
+
+Your registration and payment have been successfully confirmed.
+
+WORKSHOP DETAILS
+Workshop: ${webinarTitle}
+Date: ${webinarDate}
+Time: ${webinarTime}
+Host: ${hostName}
+
+PAYMENT
+Status: PAID
+Amount: ₹${details.amount.toFixed(2)}
+${details.paymentId ? `Payment ID: ${details.paymentId}` : ''}
+
+${zoomLink ? `Join Zoom: ${zoomLink}` : ''}
+${whatsappGroupLink ? `Join WhatsApp Group: ${whatsappGroupLink}` : ''}
+
+See you at the workshop!
+
+Team Maxsas AI
+    `.trim(),
   };
 
   try {
-    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,13 +364,23 @@ export async function sendWebinarEmail(details: RegistrationDetails) {
       body: JSON.stringify(payload),
     });
 
-    if (res.ok) {
-      console.log(`Brevo confirmation email sent successfully to ${details.email}`);
-    } else {
-      const errData = await res.json();
-      console.error('Brevo API Error:', errData);
+    if (response.ok) {
+      console.log(
+        `Webinar confirmation email sent successfully to ${details.email}`
+      );
+      return;
     }
+
+    const errorText = await response.text();
+
+    console.error(
+      `Brevo API Error (${response.status}):`,
+      errorText
+    );
   } catch (error) {
-    console.error('Error triggering Brevo email:', error);
+    console.error(
+      'Error triggering Brevo webinar confirmation email:',
+      error
+    );
   }
 }
