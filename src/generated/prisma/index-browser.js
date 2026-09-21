@@ -575,6 +575,22 @@ exports.Prisma.WebinarPaymentEventScalarFieldEnum = {
   processedAt: 'processedAt'
 };
 
+exports.Prisma.WebinarNotificationScalarFieldEnum = {
+  id: 'id',
+  registrationId: 'registrationId',
+  channel: 'channel',
+  event: 'event',
+  status: 'status',
+  recipient: 'recipient',
+  templateName: 'templateName',
+  providerMessageId: 'providerMessageId',
+  providerResponse: 'providerResponse',
+  errorCode: 'errorCode',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.WebinarConfigScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -827,6 +843,7 @@ exports.Prisma.ModelName = {
   WebinarRegistration: 'WebinarRegistration',
   Webinar: 'Webinar',
   WebinarPaymentEvent: 'WebinarPaymentEvent',
+  WebinarNotification: 'WebinarNotification',
   WebinarConfig: 'WebinarConfig'
 };
 

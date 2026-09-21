@@ -606,6 +606,7 @@ model WebinarRegistration {
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   WebinarPaymentEvent WebinarPaymentEvent[]
+  WebinarNotification WebinarNotification[]
   Webinar             Webinar               @relation(fields: [webinarId], references: [id], onDelete: Cascade)
 
   @@index([webinarId, status])
@@ -650,6 +651,30 @@ model WebinarPaymentEvent {
   WebinarRegistration WebinarRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
 }
 
+model WebinarNotification {
+  id                String   @id @default(uuid())
+  registrationId    String?
+  channel           String
+  event             String
+  status            String
+  recipient         String?
+  templateName      String?
+  providerMessageId String?
+  providerResponse  Json?
+  errorCode         String?
+  errorMessage      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  WebinarRegistration WebinarRegistration? @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@index([registrationId])
+  @@index([channel])
+  @@index([status])
+  @@index([providerMessageId])
+  @@index([createdAt])
+}
+
 model WebinarConfig {
   id                String              @id @default(uuid())
   title             String
@@ -660,8 +685,8 @@ model WebinarConfig {
   ticketPrice       Int
   zoomLink          String
   whatsappGroupLink String
-  status            WebinarConfigStatus  @default(OPEN)
-  updatedAt         DateTime             @updatedAt
+  status            WebinarConfigStatus @default(OPEN)
+  updatedAt         DateTime            @updatedAt
 
   @@index([status, updatedAt])
 }

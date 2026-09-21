@@ -1,3 +1,5 @@
+import { prisma } from '../lib/prisma';
+
 interface RegistrationDetails {
   fullName: string;
   email: string;
@@ -10,6 +12,38 @@ interface RegistrationDetails {
   hostName?: string;
   zoomLink?: string;
   whatsappGroupLink?: string;
+}
+
+async function persistWebinarNotification(params: {
+  registrationId?: string | null;
+  channel: string;
+  event: string;
+  status: string;
+  recipient?: string | null;
+  templateName?: string | null;
+  providerMessageId?: string | null;
+  providerResponse?: unknown;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+}) {
+  try {
+    await prisma.webinarNotification.create({
+      data: {
+        registrationId: params.registrationId ?? null,
+        channel: params.channel,
+        event: params.event,
+        status: params.status,
+        recipient: params.recipient ?? null,
+        templateName: params.templateName ?? null,
+        providerMessageId: params.providerMessageId ?? null,
+        providerResponse: params.providerResponse ?? undefined,
+        errorCode: params.errorCode ?? null,
+        errorMessage: params.errorMessage ?? null,
+      },
+    });
+  } catch (error) {
+    console.error('Failed to persist webinar notification record:', error);
+  }
 }
 
 function escapeHtml(value: unknown): string {
@@ -26,6 +60,15 @@ export async function sendWebinarEmail(details: RegistrationDetails): Promise<vo
 
   if (!brevoApiKey) {
     console.error('BREVO_API_KEY is not configured. Webinar confirmation email skipped.');
+    await persistWebinarNotification({
+      channel: 'email',
+      event: 'webinar_registration_confirmed',
+      status: 'skipped',
+      recipient: details.email,
+      templateName: 'webinar_registration_confirmed',
+      errorCode: 'BREVO_API_KEY_MISSING',
+      errorMessage: 'BREVO_API_KEY is not configured. Webinar confirmation email skipped.',
+    });
     return;
   }
 
@@ -364,10 +407,24 @@ Team Maxsas AI
       body: JSON.stringify(payload),
     });
 
+    const responseBody = await response.json().catch(() => null);
+
     if (response.ok) {
       console.log(
         `Webinar confirmation email sent successfully to ${details.email}`
       );
+      await persistWebinarNotification({
+        channel: 'email',
+        event: 'webinar_registration_confirmed',
+        status: 'sent',
+        recipient: details.email,
+        templateName: 'webinar_registration_confirmed',
+        providerMessageId:
+          typeof responseBody?.messageId === 'string'
+            ? responseBody.messageId
+            : null,
+        providerResponse: responseBody ?? null,
+      });
       return;
     }
 
@@ -377,10 +434,30 @@ Team Maxsas AI
       `Brevo API Error (${response.status}):`,
       errorText
     );
+    await persistWebinarNotification({
+      channel: 'email',
+      event: 'webinar_registration_confirmed',
+      status: 'failed',
+      recipient: details.email,
+      templateName: 'webinar_registration_confirmed',
+      errorCode: String(response.status),
+      errorMessage: errorText,
+      providerResponse: responseBody ?? null,
+    });
   } catch (error) {
     console.error(
       'Error triggering Brevo webinar confirmation email:',
       error
     );
+    const message = error instanceof Error ? error.message : String(error);
+    await persistWebinarNotification({
+      channel: 'email',
+      event: 'webinar_registration_confirmed',
+      status: 'failed',
+      recipient: details.email,
+      templateName: 'webinar_registration_confirmed',
+      errorCode: 'BREVO_REQUEST_ERROR',
+      errorMessage: message,
+    });
   }
 }

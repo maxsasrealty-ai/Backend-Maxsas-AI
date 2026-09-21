@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
-import { PrismaClient } from '../generated/prisma';
+import { prisma } from '../lib/prisma';
 import { requireAdminAccess } from '../middleware/requireAdminAccess';
 import { sendMetaPurchaseEvent } from '../services/metaCapiService';
 import { sendWebinarEmail } from '../services/notificationService';
+import { sendWebinarWhatsApp } from '../services/whatsappService';
 
 const RegistrationStatus = {
   REGISTERED: 'REGISTERED',
@@ -23,10 +24,11 @@ const WebinarConfigStatus = {
   COMPLETED: 'COMPLETED',
 } as const;
 
-type WebinarConfigStatusValue = (typeof WebinarConfigStatus)[keyof typeof WebinarConfigStatus];
+type WebinarConfigStatusValue =
+  (typeof WebinarConfigStatus)[keyof typeof WebinarConfigStatus];
 
 const router = Router();
-const prisma = new PrismaClient();
+
 const WEBINAR_SLUG = 'maxsas-ai-voice-agent-workshop-2026';
 const DEFAULT_WEBINAR_DATE = new Date('2026-08-25T16:00:00+05:30');
 
@@ -105,6 +107,7 @@ function parseDate(value: unknown, fallback: Date): Date {
 
   if (typeof value === 'string' && value.trim()) {
     const parsed = new Date(value);
+
     if (!Number.isNaN(parsed.getTime())) {
       return parsed;
     }
@@ -115,6 +118,7 @@ function parseDate(value: unknown, fallback: Date): Date {
 
 function parseTicketPrice(value: unknown, fallback: number): number {
   const parsed = typeof value === 'number' ? value : Number(value);
+
   if (Number.isFinite(parsed) && parsed >= 0) {
     return Math.round(parsed);
   }
@@ -123,8 +127,13 @@ function parseTicketPrice(value: unknown, fallback: number): number {
 }
 
 function parseStatus(value: unknown): WebinarConfigStatusValue {
-  const raw = typeof value === 'string' ? value.trim().toUpperCase() : '';
-  if (raw === WebinarConfigStatus.SEATS_FULL || raw === WebinarConfigStatus.COMPLETED) {
+  const raw =
+    typeof value === 'string' ? value.trim().toUpperCase() : '';
+
+  if (
+    raw === WebinarConfigStatus.SEATS_FULL ||
+    raw === WebinarConfigStatus.COMPLETED
+  ) {
     return raw;
   }
 
@@ -133,15 +142,20 @@ function parseStatus(value: unknown): WebinarConfigStatusValue {
 
 function isMissingDbTableError(error: any): boolean {
   return Boolean(
-    error && (
-      error.code === 'P2021' ||
-      String(error.message || '').includes('does not exist in the current database') ||
-      String(error.message || '').includes('WebinarConfig')
-    )
+    error &&
+      (
+        error.code === 'P2021' ||
+        String(error.message || '').includes(
+          'does not exist in the current database'
+        ) ||
+        String(error.message || '').includes('WebinarConfig')
+      )
   );
 }
 
-function serializeWebinarConfig(config: WebinarConfigRecord): WebinarConfigPayload {
+function serializeWebinarConfig(
+  config: WebinarConfigRecord
+): WebinarConfigPayload {
   return {
     id: config.id || 'default',
     title: config.title,
@@ -153,7 +167,9 @@ function serializeWebinarConfig(config: WebinarConfigRecord): WebinarConfigPaylo
     zoomLink: config.zoomLink,
     whatsappGroupLink: config.whatsappGroupLink,
     status: config.status,
-    updatedAt: config.updatedAt ? config.updatedAt.toISOString() : new Date().toISOString(),
+    updatedAt: config.updatedAt
+      ? config.updatedAt.toISOString()
+      : new Date().toISOString(),
   };
 }
 
@@ -182,12 +198,17 @@ async function getWebinarConfigRecord(): Promise<WebinarConfigRecord | null> {
     if (isMissingDbTableError(error)) {
       return null;
     }
+
     throw error;
   }
 }
 
 async function resolveWebinarConfig(): Promise<WebinarConfigRecord> {
-  return (await getWebinarConfigRecord()) || { ...DEFAULT_WEBINAR_CONFIG };
+  return (
+    (await getWebinarConfigRecord()) || {
+      ...DEFAULT_WEBINAR_CONFIG,
+    }
+  );
 }
 
 async function syncLegacyWebinar(config: WebinarConfigRecord) {
@@ -202,10 +223,14 @@ async function syncLegacyWebinar(config: WebinarConfigRecord) {
     date: config.eventDate,
     time: config.eventTime,
     priceInPaise: config.ticketPrice,
-    status: config.status === WebinarConfigStatus.OPEN ? WebinarStatus.PUBLISHED : WebinarStatus.ARCHIVED,
+    status:
+      config.status === WebinarConfigStatus.OPEN
+        ? WebinarStatus.PUBLISHED
+        : WebinarStatus.ARCHIVED,
     speakerName: config.hostName,
     speakerDesignation: 'Founder & CEO, Maxsas AI',
-    speakerExperience: 'AI voice systems for real estate lead qualification',
+    speakerExperience:
+      'AI voice systems for real estate lead qualification',
     speakerImageUrl: null,
     benefits: [],
     agenda: [],
@@ -238,210 +263,424 @@ async function ensureWebinar() {
   return syncLegacyWebinar(await resolveWebinarConfig());
 }
 
-router.get('/config', async (_req: any, res: any): Promise<void> => {
-  try {
-    const config = await resolveWebinarConfig();
-    res.json({ success: true, data: serializeWebinarConfig(config) });
-  } catch (error) {
-    console.error('Webinar Config Load Error:', error);
-    res.status(500).json({ success: false, error: { message: 'Failed to load webinar config' } });
-  }
-});
-
-router.put('/config', requireAdminAccess, async (req: any, res: any): Promise<void> => {
-  try {
-    const existing = await getWebinarConfigRecord();
-    const fallback = existing || DEFAULT_WEBINAR_CONFIG;
-
-    const payload = {
-      title: typeof req.body?.title === 'string' && req.body.title.trim() ? req.body.title.trim() : fallback.title,
-      subTitle: typeof req.body?.subTitle === 'string' && req.body.subTitle.trim() ? req.body.subTitle.trim() : fallback.subTitle,
-      eventDate: parseDate(req.body?.eventDate, fallback.eventDate),
-      eventTime: typeof req.body?.eventTime === 'string' && req.body.eventTime.trim() ? req.body.eventTime.trim() : fallback.eventTime,
-      hostName: typeof req.body?.hostName === 'string' && req.body.hostName.trim() ? req.body.hostName.trim() : fallback.hostName,
-      ticketPrice: parseTicketPrice(req.body?.ticketPrice, fallback.ticketPrice),
-      zoomLink: typeof req.body?.zoomLink === 'string' ? req.body.zoomLink.trim() : fallback.zoomLink,
-      whatsappGroupLink: typeof req.body?.whatsappGroupLink === 'string' ? req.body.whatsappGroupLink.trim() : fallback.whatsappGroupLink,
-      status: parseStatus(req.body?.status),
-    };
-
-    let saved: WebinarConfigRecord;
+/**
+ * Public webinar config
+ */
+router.get(
+  '/config',
+  async (_req: any, res: any): Promise<void> => {
     try {
-      if (existing) {
-        const updated = await prisma.webinarConfig.update({
-          where: { id: existing.id },
-          data: payload,
-        });
-        saved = {
-          id: updated.id,
-          ...payload,
-          updatedAt: updated.updatedAt,
-        };
-      } else {
-        const created = await prisma.webinarConfig.create({
-          data: {
-            id: crypto.randomUUID(),
-            ...payload,
-          },
-        });
-        saved = {
-          id: created.id,
-          ...payload,
-          updatedAt: created.updatedAt,
-        };
-      }
-    } catch (error) {
-      if (isMissingDbTableError(error)) {
-        saved = {
-          ...DEFAULT_WEBINAR_CONFIG,
-          ...payload,
-          updatedAt: new Date(),
-        };
-      } else {
-        throw error;
-      }
-    }
+      const config = await resolveWebinarConfig();
 
-    try {
-      await syncLegacyWebinar({
-        id: saved.id,
-        title: saved.title,
-        subTitle: saved.subTitle,
-        eventDate: saved.eventDate,
-        eventTime: saved.eventTime,
-        hostName: saved.hostName,
-        ticketPrice: saved.ticketPrice,
-        zoomLink: saved.zoomLink,
-        whatsappGroupLink: saved.whatsappGroupLink,
-        status: saved.status,
-        updatedAt: saved.updatedAt,
+      res.json({
+        success: true,
+        data: serializeWebinarConfig(config),
       });
     } catch (error) {
-      if (!isMissingDbTableError(error)) {
-        console.warn('Webinar legacy sync skipped due to non-table error:', error);
-      }
-    }
+      console.error('Webinar Config Load Error:', error);
 
-    res.json({ success: true, data: serializeWebinarConfig(saved) });
-  } catch (error) {
-    console.error('Webinar Config Save Error:', error);
-    res.status(500).json({ success: false, error: { message: 'Failed to save webinar config' } });
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'Failed to load webinar config',
+        },
+      });
+    }
   }
-});
+);
 
-// 1. Create Razorpay Order & Register Lead
-router.post('/register', async (req: any, res: any): Promise<void> => {
-  try {
-    const { fullName, phone, email, company, city, monthlyLeads } = req.body as {
-      fullName?: string;
-      phone?: string;
-      email?: string;
-      company?: string;
-      city?: string;
-      monthlyLeads?: string;
-    };
+/**
+ * Admin webinar config update
+ */
+router.put(
+  '/config',
+  requireAdminAccess,
+  async (req: any, res: any): Promise<void> => {
+    try {
+      const existing = await getWebinarConfigRecord();
+      const fallback = existing || DEFAULT_WEBINAR_CONFIG;
 
-    if (!fullName || !phone || !email) {
-      return res.status(400).json({ error: 'Name, Phone, and Email are required' });
+      const payload = {
+        title:
+          typeof req.body?.title === 'string' &&
+          req.body.title.trim()
+            ? req.body.title.trim()
+            : fallback.title,
+
+        subTitle:
+          typeof req.body?.subTitle === 'string' &&
+          req.body.subTitle.trim()
+            ? req.body.subTitle.trim()
+            : fallback.subTitle,
+
+        eventDate: parseDate(
+          req.body?.eventDate,
+          fallback.eventDate
+        ),
+
+        eventTime:
+          typeof req.body?.eventTime === 'string' &&
+          req.body.eventTime.trim()
+            ? req.body.eventTime.trim()
+            : fallback.eventTime,
+
+        hostName:
+          typeof req.body?.hostName === 'string' &&
+          req.body.hostName.trim()
+            ? req.body.hostName.trim()
+            : fallback.hostName,
+
+        ticketPrice: parseTicketPrice(
+          req.body?.ticketPrice,
+          fallback.ticketPrice
+        ),
+
+        zoomLink:
+          typeof req.body?.zoomLink === 'string'
+            ? req.body.zoomLink.trim()
+            : fallback.zoomLink,
+
+        whatsappGroupLink:
+          typeof req.body?.whatsappGroupLink === 'string'
+            ? req.body.whatsappGroupLink.trim()
+            : fallback.whatsappGroupLink,
+
+        status: parseStatus(req.body?.status),
+      };
+
+      let saved: WebinarConfigRecord;
+
+      try {
+        if (existing) {
+          const updated = await prisma.webinarConfig.update({
+            where: { id: existing.id },
+            data: payload,
+          });
+
+          saved = {
+            id: updated.id,
+            ...payload,
+            updatedAt: updated.updatedAt,
+          };
+        } else {
+          const created = await prisma.webinarConfig.create({
+            data: {
+              id: crypto.randomUUID(),
+              ...payload,
+            },
+          });
+
+          saved = {
+            id: created.id,
+            ...payload,
+            updatedAt: created.updatedAt,
+          };
+        }
+      } catch (error) {
+        if (isMissingDbTableError(error)) {
+          saved = {
+            ...DEFAULT_WEBINAR_CONFIG,
+            ...payload,
+            updatedAt: new Date(),
+          };
+        } else {
+          throw error;
+        }
+      }
+
+      try {
+        await syncLegacyWebinar({
+          id: saved.id,
+          title: saved.title,
+          subTitle: saved.subTitle,
+          eventDate: saved.eventDate,
+          eventTime: saved.eventTime,
+          hostName: saved.hostName,
+          ticketPrice: saved.ticketPrice,
+          zoomLink: saved.zoomLink,
+          whatsappGroupLink: saved.whatsappGroupLink,
+          status: saved.status,
+          updatedAt: saved.updatedAt,
+        });
+      } catch (error) {
+        if (!isMissingDbTableError(error)) {
+          console.warn(
+            'Webinar legacy sync skipped due to non-table error:',
+            error
+          );
+        }
+      }
+
+      res.json({
+        success: true,
+        data: serializeWebinarConfig(saved),
+      });
+    } catch (error) {
+      console.error('Webinar Config Save Error:', error);
+
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'Failed to save webinar config',
+        },
+      });
     }
+  }
+);
 
-    const webinar = await ensureWebinar();
-    const amount = webinar.priceInPaise;
-
-    const order = await getRazorpayClient().orders.create({
-      amount,
-      currency: 'INR',
-      receipt: `webinar_${Date.now()}`,
-    });
-
-    const registration = await prisma.webinarRegistration.create({
-      data: {
-        webinarId: webinar.id,
-        name: fullName,
+/**
+ * 1. Create Razorpay Order & Register Lead
+ */
+router.post(
+  '/register',
+  async (req: any, res: any): Promise<void> => {
+    try {
+      const {
+        fullName,
         phone,
         email,
         company,
         city,
         monthlyLeads,
-        status: RegistrationStatus.REGISTERED,
-        razorpayOrderId: order.id,
-      },
-    });
+      } = req.body as {
+        fullName?: string;
+        phone?: string;
+        email?: string;
+        company?: string;
+        city?: string;
+        monthlyLeads?: string;
+      };
 
-    return res.json({
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      key: resolveRazorpayKeyId(),
-      registrationId: registration.id,
-    });
-  } catch (error) {
-    console.error('Webinar Registration Error:', error);
-    return res.status(500).json({ error: 'Failed to initiate webinar payment' });
+      if (!fullName || !phone || !email) {
+        return res.status(400).json({
+          error: 'Name, Phone, and Email are required',
+        });
+      }
+
+      const webinar = await ensureWebinar();
+      const amount = webinar.priceInPaise;
+
+      const order = await getRazorpayClient().orders.create({
+        amount,
+        currency: 'INR',
+        receipt: `webinar_${Date.now()}`,
+      });
+
+      const registration =
+        await prisma.webinarRegistration.create({
+          data: {
+            webinarId: webinar.id,
+            name: fullName,
+            phone,
+            email,
+            company,
+            city,
+            monthlyLeads,
+            status: RegistrationStatus.REGISTERED,
+            razorpayOrderId: order.id,
+          },
+        });
+
+      return res.json({
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        key: resolveRazorpayKeyId(),
+        registrationId: registration.id,
+      });
+    } catch (error) {
+      console.error('Webinar Registration Error:', error);
+
+      return res.status(500).json({
+        error: 'Failed to initiate webinar payment',
+      });
+    }
   }
-});
+);
 
-// 2. Verify Razorpay Payment Signature
-router.post('/verify-payment', async (req: any, res: any): Promise<void> => {
-  try {
-    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
-
-    if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
-      return res.status(400).json({ error: 'Missing payment verification fields' });
-    }
-
-    const body = razorpayOrderId + '|' + razorpayPaymentId;
-    const expectedSignature = crypto
-      .createHmac('sha256', resolveRazorpayKeySecret())
-      .update(body.toString())
-      .digest('hex');
-
-    if (expectedSignature !== razorpaySignature) {
-      return res.status(400).json({ error: 'Invalid payment signature' });
-    }
-
-    const registration = await prisma.webinarRegistration.findFirst({
-      where: { razorpayOrderId },
-      include: { Webinar: true },
-    });
-
-    if (!registration) {
-      return res.status(404).json({ error: 'Webinar registration not found for this order' });
-    }
-
-    const updated = await prisma.webinarRegistration.update({
-      where: { id: registration.id },
-      data: {
-        status: RegistrationStatus.PAID,
+/**
+ * 2. Verify Razorpay Payment Signature
+ *
+ * IMPORTANT:
+ * Email details are resolved from the current Master Control
+ * WebinarConfig, so the email always reflects the latest
+ * webinar date/time/title/host/links.
+ */
+router.post(
+  '/verify-payment',
+  async (req: any, res: any): Promise<void> => {
+    try {
+      const {
+        razorpayOrderId,
         razorpayPaymentId,
         razorpaySignature,
-      },
-      include: { Webinar: true },
-    });
+      } = req.body;
 
-    const amountInRupees = updated.Webinar.priceInPaise / 100;
+      if (
+        !razorpayOrderId ||
+        !razorpayPaymentId ||
+        !razorpaySignature
+      ) {
+        return res.status(400).json({
+          error: 'Missing payment verification fields',
+        });
+      }
 
-    await Promise.allSettled([
-      sendWebinarEmail({
-        fullName: updated.name,
-        email: updated.email,
-        phone: updated.phone,
-        amount: amountInRupees,
-      }),
-      sendMetaPurchaseEvent({
-        fullName: updated.name,
-        email: updated.email,
-        phone: updated.phone,
-        amount: amountInRupees,
-        registrationId: updated.id,
-      }),
-    ]);
+      const body =
+        razorpayOrderId + '|' + razorpayPaymentId;
 
-    return res.json({ success: true, registration: updated });
-  } catch (error) {
-    console.error('Payment Verification Error:', error);
-    return res.status(500).json({ error: 'Payment verification failed' });
+      const expectedSignature = crypto
+        .createHmac(
+          'sha256',
+          resolveRazorpayKeySecret()
+        )
+        .update(body.toString())
+        .digest('hex');
+
+      if (expectedSignature !== razorpaySignature) {
+        return res.status(400).json({
+          error: 'Invalid payment signature',
+        });
+      }
+
+      const registration =
+        await prisma.webinarRegistration.findFirst({
+          where: { razorpayOrderId },
+          include: { Webinar: true },
+        });
+
+      if (!registration) {
+        return res.status(404).json({
+          error:
+            'Webinar registration not found for this order',
+        });
+      }
+
+      const updated =
+        await prisma.webinarRegistration.update({
+          where: { id: registration.id },
+          data: {
+            status: RegistrationStatus.PAID,
+            razorpayPaymentId,
+            razorpaySignature,
+          },
+          include: { Webinar: true },
+        });
+
+      /**
+       * Always fetch the latest WebinarConfig from
+       * Master Control instead of relying on stale legacy
+       * Webinar data.
+       */
+      const webinarConfig =
+        await resolveWebinarConfig();
+
+      const amountInRupees =
+        updated.Webinar.priceInPaise / 100;
+
+      /**
+       * Convert the current webinar date into a clean
+       * Indian date string.
+       */
+      const formattedDate =
+        updated.Webinar.date &&
+        !Number.isNaN(
+          updated.Webinar.date.getTime()
+        )
+          ? updated.Webinar.date.toLocaleDateString(
+              'en-IN',
+              {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                timeZone: 'Asia/Kolkata',
+              }
+            )
+          : 'Date will be announced';
+
+      /**
+       * Send confirmation email + Meta Purchase independently.
+       *
+       * Email receives the exact current values from
+       * Master Control.
+       */
+      await Promise.allSettled([
+        sendWebinarEmail({
+          fullName: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          amount: amountInRupees,
+
+          paymentId: updated.razorpayPaymentId || undefined,
+
+          webinarTitle:
+            webinarConfig.title ||
+            updated.Webinar.title,
+
+          webinarDate:
+            formattedDate ||
+            'Date will be announced',
+
+          webinarTime:
+            webinarConfig.eventTime ||
+            updated.Webinar.time ||
+            'Time will be announced',
+
+          hostName:
+            webinarConfig.hostName ||
+            updated.Webinar.speakerName ||
+            'Anubhav Chaudhary',
+
+          zoomLink:
+            webinarConfig.zoomLink ||
+            process.env.ZOOM_WEBINAR_LINK ||
+            '',
+
+          whatsappGroupLink:
+            webinarConfig.whatsappGroupLink ||
+            process.env.WHATSAPP_GROUP_LINK ||
+            '',
+        }),
+
+        sendMetaPurchaseEvent({
+          fullName: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          amount: amountInRupees,
+          registrationId: updated.id,
+        }),
+      ]);
+
+      try {
+        await sendWebinarWhatsApp({
+          registrationId: updated.id,
+          fullName: updated.name,
+          phone: updated.phone,
+          workshopTitle: updated.Webinar.title,
+          eventDate: formattedDate,
+          eventTime: updated.Webinar.time || 'Time will be announced',
+          hostName: updated.Webinar.speakerName || 'Maxsas AI',
+          amount: amountInRupees,
+        });
+      } catch (whatsappError) {
+        console.error('Webinar WhatsApp notification failed:', whatsappError);
+      }
+
+      return res.json({
+        success: true,
+        registration: updated,
+      });
+    } catch (error) {
+      console.error(
+        'Payment Verification Error:',
+        error
+      );
+
+      return res.status(500).json({
+        error: 'Payment verification failed',
+      });
+    }
   }
-});
+);
 
 export default router;

@@ -1,0 +1,23 @@
+name: Temporary Render Keep Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: render-keep-alive
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render health endpoint
+        # Remove this workflow after moving the backend to paid Render.
+        run: >-
+          curl --fail --silent --show-error
+          --max-time 30
+          --retry 2
+          --retry-delay 5
+          https://backend-maxsas-ai.onrender.com/health

@@ -160,6 +160,11 @@ export type Webinar = $Result.DefaultSelection<Prisma.$WebinarPayload>
  */
 export type WebinarPaymentEvent = $Result.DefaultSelection<Prisma.$WebinarPaymentEventPayload>
 /**
+ * Model WebinarNotification
+ * 
+ */
+export type WebinarNotification = $Result.DefaultSelection<Prisma.$WebinarNotificationPayload>
+/**
  * Model WebinarConfig
  * 
  */
@@ -933,6 +938,16 @@ export class PrismaClient<
   get webinarPaymentEvent(): Prisma.WebinarPaymentEventDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.webinarNotification`: Exposes CRUD operations for the **WebinarNotification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WebinarNotifications
+    * const webinarNotifications = await prisma.webinarNotification.findMany()
+    * ```
+    */
+  get webinarNotification(): Prisma.WebinarNotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.webinarConfig`: Exposes CRUD operations for the **WebinarConfig** model.
     * Example usage:
     * ```ts
@@ -1411,6 +1426,7 @@ export namespace Prisma {
     WebinarRegistration: 'WebinarRegistration',
     Webinar: 'Webinar',
     WebinarPaymentEvent: 'WebinarPaymentEvent',
+    WebinarNotification: 'WebinarNotification',
     WebinarConfig: 'WebinarConfig'
   };
 
@@ -1430,7 +1446,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "webinar" | "webinarPaymentEvent" | "webinarConfig"
+      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "webinar" | "webinarPaymentEvent" | "webinarNotification" | "webinarConfig"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3580,6 +3596,80 @@ export namespace Prisma {
           }
         }
       }
+      WebinarNotification: {
+        payload: Prisma.$WebinarNotificationPayload<ExtArgs>
+        fields: Prisma.WebinarNotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WebinarNotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WebinarNotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.WebinarNotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WebinarNotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          findMany: {
+            args: Prisma.WebinarNotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>[]
+          }
+          create: {
+            args: Prisma.WebinarNotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          createMany: {
+            args: Prisma.WebinarNotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WebinarNotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.WebinarNotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          update: {
+            args: Prisma.WebinarNotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.WebinarNotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WebinarNotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WebinarNotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.WebinarNotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebinarNotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.WebinarNotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWebinarNotification>
+          }
+          groupBy: {
+            args: Prisma.WebinarNotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WebinarNotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WebinarNotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<WebinarNotificationCountAggregateOutputType> | number
+          }
+        }
+      }
       WebinarConfig: {
         payload: Prisma.$WebinarConfigPayload<ExtArgs>
         fields: Prisma.WebinarConfigFieldRefs
@@ -3779,6 +3869,7 @@ export namespace Prisma {
     webinarRegistration?: WebinarRegistrationOmit
     webinar?: WebinarOmit
     webinarPaymentEvent?: WebinarPaymentEventOmit
+    webinarNotification?: WebinarNotificationOmit
     webinarConfig?: WebinarConfigOmit
   }
 
@@ -4321,10 +4412,12 @@ export namespace Prisma {
 
   export type WebinarRegistrationCountOutputType = {
     WebinarPaymentEvent: number
+    WebinarNotification: number
   }
 
   export type WebinarRegistrationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     WebinarPaymentEvent?: boolean | WebinarRegistrationCountOutputTypeCountWebinarPaymentEventArgs
+    WebinarNotification?: boolean | WebinarRegistrationCountOutputTypeCountWebinarNotificationArgs
   }
 
   // Custom InputTypes
@@ -4343,6 +4436,13 @@ export namespace Prisma {
    */
   export type WebinarRegistrationCountOutputTypeCountWebinarPaymentEventArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WebinarPaymentEventWhereInput
+  }
+
+  /**
+   * WebinarRegistrationCountOutputType without action
+   */
+  export type WebinarRegistrationCountOutputTypeCountWebinarNotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebinarNotificationWhereInput
   }
 
 
@@ -35951,6 +36051,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     WebinarPaymentEvent?: boolean | WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>
+    WebinarNotification?: boolean | WebinarRegistration$WebinarNotificationArgs<ExtArgs>
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
     _count?: boolean | WebinarRegistrationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["webinarRegistration"]>
@@ -36026,6 +36127,7 @@ export namespace Prisma {
   export type WebinarRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "webinarId" | "name" | "email" | "phone" | "company" | "city" | "monthlyLeads" | "status" | "razorpayOrderId" | "razorpayPaymentId" | "razorpaySignature" | "utmSource" | "utmMedium" | "utmCampaign" | "fbclid" | "gclid" | "createdAt" | "updatedAt", ExtArgs["result"]["webinarRegistration"]>
   export type WebinarRegistrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     WebinarPaymentEvent?: boolean | WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>
+    WebinarNotification?: boolean | WebinarRegistration$WebinarNotificationArgs<ExtArgs>
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
     _count?: boolean | WebinarRegistrationCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -36040,6 +36142,7 @@ export namespace Prisma {
     name: "WebinarRegistration"
     objects: {
       WebinarPaymentEvent: Prisma.$WebinarPaymentEventPayload<ExtArgs>[]
+      WebinarNotification: Prisma.$WebinarNotificationPayload<ExtArgs>[]
       Webinar: Prisma.$WebinarPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -36457,6 +36560,7 @@ export namespace Prisma {
   export interface Prisma__WebinarRegistrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     WebinarPaymentEvent<T extends WebinarRegistration$WebinarPaymentEventArgs<ExtArgs> = {}>(args?: Subset<T, WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarPaymentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    WebinarNotification<T extends WebinarRegistration$WebinarNotificationArgs<ExtArgs> = {}>(args?: Subset<T, WebinarRegistration$WebinarNotificationArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Webinar<T extends WebinarDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WebinarDefaultArgs<ExtArgs>>): Prisma__WebinarClient<$Result.GetResult<Prisma.$WebinarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -36923,6 +37027,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WebinarPaymentEventScalarFieldEnum | WebinarPaymentEventScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarRegistration.WebinarNotification
+   */
+  export type WebinarRegistration$WebinarNotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    where?: WebinarNotificationWhereInput
+    orderBy?: WebinarNotificationOrderByWithRelationInput | WebinarNotificationOrderByWithRelationInput[]
+    cursor?: WebinarNotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WebinarNotificationScalarFieldEnum | WebinarNotificationScalarFieldEnum[]
   }
 
   /**
@@ -39330,6 +39458,1183 @@ export namespace Prisma {
 
 
   /**
+   * Model WebinarNotification
+   */
+
+  export type AggregateWebinarNotification = {
+    _count: WebinarNotificationCountAggregateOutputType | null
+    _min: WebinarNotificationMinAggregateOutputType | null
+    _max: WebinarNotificationMaxAggregateOutputType | null
+  }
+
+  export type WebinarNotificationMinAggregateOutputType = {
+    id: string | null
+    registrationId: string | null
+    channel: string | null
+    event: string | null
+    status: string | null
+    recipient: string | null
+    templateName: string | null
+    providerMessageId: string | null
+    errorCode: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebinarNotificationMaxAggregateOutputType = {
+    id: string | null
+    registrationId: string | null
+    channel: string | null
+    event: string | null
+    status: string | null
+    recipient: string | null
+    templateName: string | null
+    providerMessageId: string | null
+    errorCode: string | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebinarNotificationCountAggregateOutputType = {
+    id: number
+    registrationId: number
+    channel: number
+    event: number
+    status: number
+    recipient: number
+    templateName: number
+    providerMessageId: number
+    providerResponse: number
+    errorCode: number
+    errorMessage: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WebinarNotificationMinAggregateInputType = {
+    id?: true
+    registrationId?: true
+    channel?: true
+    event?: true
+    status?: true
+    recipient?: true
+    templateName?: true
+    providerMessageId?: true
+    errorCode?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebinarNotificationMaxAggregateInputType = {
+    id?: true
+    registrationId?: true
+    channel?: true
+    event?: true
+    status?: true
+    recipient?: true
+    templateName?: true
+    providerMessageId?: true
+    errorCode?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebinarNotificationCountAggregateInputType = {
+    id?: true
+    registrationId?: true
+    channel?: true
+    event?: true
+    status?: true
+    recipient?: true
+    templateName?: true
+    providerMessageId?: true
+    providerResponse?: true
+    errorCode?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WebinarNotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebinarNotification to aggregate.
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarNotifications to fetch.
+     */
+    orderBy?: WebinarNotificationOrderByWithRelationInput | WebinarNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WebinarNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WebinarNotifications
+    **/
+    _count?: true | WebinarNotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WebinarNotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WebinarNotificationMaxAggregateInputType
+  }
+
+  export type GetWebinarNotificationAggregateType<T extends WebinarNotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateWebinarNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWebinarNotification[P]>
+      : GetScalarType<T[P], AggregateWebinarNotification[P]>
+  }
+
+
+
+
+  export type WebinarNotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebinarNotificationWhereInput
+    orderBy?: WebinarNotificationOrderByWithAggregationInput | WebinarNotificationOrderByWithAggregationInput[]
+    by: WebinarNotificationScalarFieldEnum[] | WebinarNotificationScalarFieldEnum
+    having?: WebinarNotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WebinarNotificationCountAggregateInputType | true
+    _min?: WebinarNotificationMinAggregateInputType
+    _max?: WebinarNotificationMaxAggregateInputType
+  }
+
+  export type WebinarNotificationGroupByOutputType = {
+    id: string
+    registrationId: string | null
+    channel: string
+    event: string
+    status: string
+    recipient: string | null
+    templateName: string | null
+    providerMessageId: string | null
+    providerResponse: JsonValue | null
+    errorCode: string | null
+    errorMessage: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WebinarNotificationCountAggregateOutputType | null
+    _min: WebinarNotificationMinAggregateOutputType | null
+    _max: WebinarNotificationMaxAggregateOutputType | null
+  }
+
+  type GetWebinarNotificationGroupByPayload<T extends WebinarNotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WebinarNotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WebinarNotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WebinarNotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], WebinarNotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WebinarNotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    registrationId?: boolean
+    channel?: boolean
+    event?: boolean
+    status?: boolean
+    recipient?: boolean
+    templateName?: boolean
+    providerMessageId?: boolean
+    providerResponse?: boolean
+    errorCode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["webinarNotification"]>
+
+  export type WebinarNotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    registrationId?: boolean
+    channel?: boolean
+    event?: boolean
+    status?: boolean
+    recipient?: boolean
+    templateName?: boolean
+    providerMessageId?: boolean
+    providerResponse?: boolean
+    errorCode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["webinarNotification"]>
+
+  export type WebinarNotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    registrationId?: boolean
+    channel?: boolean
+    event?: boolean
+    status?: boolean
+    recipient?: boolean
+    templateName?: boolean
+    providerMessageId?: boolean
+    providerResponse?: boolean
+    errorCode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["webinarNotification"]>
+
+  export type WebinarNotificationSelectScalar = {
+    id?: boolean
+    registrationId?: boolean
+    channel?: boolean
+    event?: boolean
+    status?: boolean
+    recipient?: boolean
+    templateName?: boolean
+    providerMessageId?: boolean
+    providerResponse?: boolean
+    errorCode?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WebinarNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "registrationId" | "channel" | "event" | "status" | "recipient" | "templateName" | "providerMessageId" | "providerResponse" | "errorCode" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["webinarNotification"]>
+  export type WebinarNotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }
+  export type WebinarNotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }
+  export type WebinarNotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    WebinarRegistration?: boolean | WebinarNotification$WebinarRegistrationArgs<ExtArgs>
+  }
+
+  export type $WebinarNotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WebinarNotification"
+    objects: {
+      WebinarRegistration: Prisma.$WebinarRegistrationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      registrationId: string | null
+      channel: string
+      event: string
+      status: string
+      recipient: string | null
+      templateName: string | null
+      providerMessageId: string | null
+      providerResponse: Prisma.JsonValue | null
+      errorCode: string | null
+      errorMessage: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["webinarNotification"]>
+    composites: {}
+  }
+
+  type WebinarNotificationGetPayload<S extends boolean | null | undefined | WebinarNotificationDefaultArgs> = $Result.GetResult<Prisma.$WebinarNotificationPayload, S>
+
+  type WebinarNotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WebinarNotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WebinarNotificationCountAggregateInputType | true
+    }
+
+  export interface WebinarNotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WebinarNotification'], meta: { name: 'WebinarNotification' } }
+    /**
+     * Find zero or one WebinarNotification that matches the filter.
+     * @param {WebinarNotificationFindUniqueArgs} args - Arguments to find a WebinarNotification
+     * @example
+     * // Get one WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WebinarNotificationFindUniqueArgs>(args: SelectSubset<T, WebinarNotificationFindUniqueArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WebinarNotification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WebinarNotificationFindUniqueOrThrowArgs} args - Arguments to find a WebinarNotification
+     * @example
+     * // Get one WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WebinarNotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, WebinarNotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebinarNotification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationFindFirstArgs} args - Arguments to find a WebinarNotification
+     * @example
+     * // Get one WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WebinarNotificationFindFirstArgs>(args?: SelectSubset<T, WebinarNotificationFindFirstArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebinarNotification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationFindFirstOrThrowArgs} args - Arguments to find a WebinarNotification
+     * @example
+     * // Get one WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WebinarNotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, WebinarNotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WebinarNotifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WebinarNotifications
+     * const webinarNotifications = await prisma.webinarNotification.findMany()
+     * 
+     * // Get first 10 WebinarNotifications
+     * const webinarNotifications = await prisma.webinarNotification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const webinarNotificationWithIdOnly = await prisma.webinarNotification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WebinarNotificationFindManyArgs>(args?: SelectSubset<T, WebinarNotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WebinarNotification.
+     * @param {WebinarNotificationCreateArgs} args - Arguments to create a WebinarNotification.
+     * @example
+     * // Create one WebinarNotification
+     * const WebinarNotification = await prisma.webinarNotification.create({
+     *   data: {
+     *     // ... data to create a WebinarNotification
+     *   }
+     * })
+     * 
+     */
+    create<T extends WebinarNotificationCreateArgs>(args: SelectSubset<T, WebinarNotificationCreateArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WebinarNotifications.
+     * @param {WebinarNotificationCreateManyArgs} args - Arguments to create many WebinarNotifications.
+     * @example
+     * // Create many WebinarNotifications
+     * const webinarNotification = await prisma.webinarNotification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WebinarNotificationCreateManyArgs>(args?: SelectSubset<T, WebinarNotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WebinarNotifications and returns the data saved in the database.
+     * @param {WebinarNotificationCreateManyAndReturnArgs} args - Arguments to create many WebinarNotifications.
+     * @example
+     * // Create many WebinarNotifications
+     * const webinarNotification = await prisma.webinarNotification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WebinarNotifications and only return the `id`
+     * const webinarNotificationWithIdOnly = await prisma.webinarNotification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WebinarNotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, WebinarNotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WebinarNotification.
+     * @param {WebinarNotificationDeleteArgs} args - Arguments to delete one WebinarNotification.
+     * @example
+     * // Delete one WebinarNotification
+     * const WebinarNotification = await prisma.webinarNotification.delete({
+     *   where: {
+     *     // ... filter to delete one WebinarNotification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WebinarNotificationDeleteArgs>(args: SelectSubset<T, WebinarNotificationDeleteArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WebinarNotification.
+     * @param {WebinarNotificationUpdateArgs} args - Arguments to update one WebinarNotification.
+     * @example
+     * // Update one WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WebinarNotificationUpdateArgs>(args: SelectSubset<T, WebinarNotificationUpdateArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WebinarNotifications.
+     * @param {WebinarNotificationDeleteManyArgs} args - Arguments to filter WebinarNotifications to delete.
+     * @example
+     * // Delete a few WebinarNotifications
+     * const { count } = await prisma.webinarNotification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WebinarNotificationDeleteManyArgs>(args?: SelectSubset<T, WebinarNotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebinarNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WebinarNotifications
+     * const webinarNotification = await prisma.webinarNotification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WebinarNotificationUpdateManyArgs>(args: SelectSubset<T, WebinarNotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebinarNotifications and returns the data updated in the database.
+     * @param {WebinarNotificationUpdateManyAndReturnArgs} args - Arguments to update many WebinarNotifications.
+     * @example
+     * // Update many WebinarNotifications
+     * const webinarNotification = await prisma.webinarNotification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WebinarNotifications and only return the `id`
+     * const webinarNotificationWithIdOnly = await prisma.webinarNotification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WebinarNotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, WebinarNotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WebinarNotification.
+     * @param {WebinarNotificationUpsertArgs} args - Arguments to update or create a WebinarNotification.
+     * @example
+     * // Update or create a WebinarNotification
+     * const webinarNotification = await prisma.webinarNotification.upsert({
+     *   create: {
+     *     // ... data to create a WebinarNotification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WebinarNotification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WebinarNotificationUpsertArgs>(args: SelectSubset<T, WebinarNotificationUpsertArgs<ExtArgs>>): Prisma__WebinarNotificationClient<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WebinarNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationCountArgs} args - Arguments to filter WebinarNotifications to count.
+     * @example
+     * // Count the number of WebinarNotifications
+     * const count = await prisma.webinarNotification.count({
+     *   where: {
+     *     // ... the filter for the WebinarNotifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends WebinarNotificationCountArgs>(
+      args?: Subset<T, WebinarNotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WebinarNotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WebinarNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WebinarNotificationAggregateArgs>(args: Subset<T, WebinarNotificationAggregateArgs>): Prisma.PrismaPromise<GetWebinarNotificationAggregateType<T>>
+
+    /**
+     * Group by WebinarNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebinarNotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WebinarNotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WebinarNotificationGroupByArgs['orderBy'] }
+        : { orderBy?: WebinarNotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WebinarNotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWebinarNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WebinarNotification model
+   */
+  readonly fields: WebinarNotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WebinarNotification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WebinarNotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    WebinarRegistration<T extends WebinarNotification$WebinarRegistrationArgs<ExtArgs> = {}>(args?: Subset<T, WebinarNotification$WebinarRegistrationArgs<ExtArgs>>): Prisma__WebinarRegistrationClient<$Result.GetResult<Prisma.$WebinarRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WebinarNotification model
+   */
+  interface WebinarNotificationFieldRefs {
+    readonly id: FieldRef<"WebinarNotification", 'String'>
+    readonly registrationId: FieldRef<"WebinarNotification", 'String'>
+    readonly channel: FieldRef<"WebinarNotification", 'String'>
+    readonly event: FieldRef<"WebinarNotification", 'String'>
+    readonly status: FieldRef<"WebinarNotification", 'String'>
+    readonly recipient: FieldRef<"WebinarNotification", 'String'>
+    readonly templateName: FieldRef<"WebinarNotification", 'String'>
+    readonly providerMessageId: FieldRef<"WebinarNotification", 'String'>
+    readonly providerResponse: FieldRef<"WebinarNotification", 'Json'>
+    readonly errorCode: FieldRef<"WebinarNotification", 'String'>
+    readonly errorMessage: FieldRef<"WebinarNotification", 'String'>
+    readonly createdAt: FieldRef<"WebinarNotification", 'DateTime'>
+    readonly updatedAt: FieldRef<"WebinarNotification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WebinarNotification findUnique
+   */
+  export type WebinarNotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which WebinarNotification to fetch.
+     */
+    where: WebinarNotificationWhereUniqueInput
+  }
+
+  /**
+   * WebinarNotification findUniqueOrThrow
+   */
+  export type WebinarNotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which WebinarNotification to fetch.
+     */
+    where: WebinarNotificationWhereUniqueInput
+  }
+
+  /**
+   * WebinarNotification findFirst
+   */
+  export type WebinarNotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which WebinarNotification to fetch.
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarNotifications to fetch.
+     */
+    orderBy?: WebinarNotificationOrderByWithRelationInput | WebinarNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebinarNotifications.
+     */
+    cursor?: WebinarNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebinarNotifications.
+     */
+    distinct?: WebinarNotificationScalarFieldEnum | WebinarNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarNotification findFirstOrThrow
+   */
+  export type WebinarNotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which WebinarNotification to fetch.
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarNotifications to fetch.
+     */
+    orderBy?: WebinarNotificationOrderByWithRelationInput | WebinarNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebinarNotifications.
+     */
+    cursor?: WebinarNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebinarNotifications.
+     */
+    distinct?: WebinarNotificationScalarFieldEnum | WebinarNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarNotification findMany
+   */
+  export type WebinarNotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which WebinarNotifications to fetch.
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebinarNotifications to fetch.
+     */
+    orderBy?: WebinarNotificationOrderByWithRelationInput | WebinarNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WebinarNotifications.
+     */
+    cursor?: WebinarNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebinarNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebinarNotifications.
+     */
+    skip?: number
+    distinct?: WebinarNotificationScalarFieldEnum | WebinarNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * WebinarNotification create
+   */
+  export type WebinarNotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WebinarNotification.
+     */
+    data: XOR<WebinarNotificationCreateInput, WebinarNotificationUncheckedCreateInput>
+  }
+
+  /**
+   * WebinarNotification createMany
+   */
+  export type WebinarNotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WebinarNotifications.
+     */
+    data: WebinarNotificationCreateManyInput | WebinarNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebinarNotification createManyAndReturn
+   */
+  export type WebinarNotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many WebinarNotifications.
+     */
+    data: WebinarNotificationCreateManyInput | WebinarNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WebinarNotification update
+   */
+  export type WebinarNotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WebinarNotification.
+     */
+    data: XOR<WebinarNotificationUpdateInput, WebinarNotificationUncheckedUpdateInput>
+    /**
+     * Choose, which WebinarNotification to update.
+     */
+    where: WebinarNotificationWhereUniqueInput
+  }
+
+  /**
+   * WebinarNotification updateMany
+   */
+  export type WebinarNotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WebinarNotifications.
+     */
+    data: XOR<WebinarNotificationUpdateManyMutationInput, WebinarNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which WebinarNotifications to update
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * Limit how many WebinarNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebinarNotification updateManyAndReturn
+   */
+  export type WebinarNotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update WebinarNotifications.
+     */
+    data: XOR<WebinarNotificationUpdateManyMutationInput, WebinarNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which WebinarNotifications to update
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * Limit how many WebinarNotifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WebinarNotification upsert
+   */
+  export type WebinarNotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WebinarNotification to update in case it exists.
+     */
+    where: WebinarNotificationWhereUniqueInput
+    /**
+     * In case the WebinarNotification found by the `where` argument doesn't exist, create a new WebinarNotification with this data.
+     */
+    create: XOR<WebinarNotificationCreateInput, WebinarNotificationUncheckedCreateInput>
+    /**
+     * In case the WebinarNotification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WebinarNotificationUpdateInput, WebinarNotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * WebinarNotification delete
+   */
+  export type WebinarNotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+    /**
+     * Filter which WebinarNotification to delete.
+     */
+    where: WebinarNotificationWhereUniqueInput
+  }
+
+  /**
+   * WebinarNotification deleteMany
+   */
+  export type WebinarNotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebinarNotifications to delete
+     */
+    where?: WebinarNotificationWhereInput
+    /**
+     * Limit how many WebinarNotifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebinarNotification.WebinarRegistration
+   */
+  export type WebinarNotification$WebinarRegistrationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarRegistration
+     */
+    select?: WebinarRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarRegistration
+     */
+    omit?: WebinarRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarRegistrationInclude<ExtArgs> | null
+    where?: WebinarRegistrationWhereInput
+  }
+
+  /**
+   * WebinarNotification without action
+   */
+  export type WebinarNotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarNotification
+     */
+    select?: WebinarNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarNotification
+     */
+    omit?: WebinarNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarNotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model WebinarConfig
    */
 
@@ -40989,6 +42294,25 @@ export namespace Prisma {
   };
 
   export type WebinarPaymentEventScalarFieldEnum = (typeof WebinarPaymentEventScalarFieldEnum)[keyof typeof WebinarPaymentEventScalarFieldEnum]
+
+
+  export const WebinarNotificationScalarFieldEnum: {
+    id: 'id',
+    registrationId: 'registrationId',
+    channel: 'channel',
+    event: 'event',
+    status: 'status',
+    recipient: 'recipient',
+    templateName: 'templateName',
+    providerMessageId: 'providerMessageId',
+    providerResponse: 'providerResponse',
+    errorCode: 'errorCode',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WebinarNotificationScalarFieldEnum = (typeof WebinarNotificationScalarFieldEnum)[keyof typeof WebinarNotificationScalarFieldEnum]
 
 
   export const WebinarConfigScalarFieldEnum: {
@@ -44090,6 +45414,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventListRelationFilter
+    WebinarNotification?: WebinarNotificationListRelationFilter
     Webinar?: XOR<WebinarScalarRelationFilter, WebinarWhereInput>
   }
 
@@ -44114,6 +45439,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     WebinarPaymentEvent?: WebinarPaymentEventOrderByRelationAggregateInput
+    WebinarNotification?: WebinarNotificationOrderByRelationAggregateInput
     Webinar?: WebinarOrderByWithRelationInput
   }
 
@@ -44141,6 +45467,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventListRelationFilter
+    WebinarNotification?: WebinarNotificationListRelationFilter
     Webinar?: XOR<WebinarScalarRelationFilter, WebinarWhereInput>
   }, "id">
 
@@ -44399,6 +45726,101 @@ export namespace Prisma {
     eventType?: StringWithAggregatesFilter<"WebinarPaymentEvent"> | string
     rawPayload?: JsonWithAggregatesFilter<"WebinarPaymentEvent">
     processedAt?: DateTimeWithAggregatesFilter<"WebinarPaymentEvent"> | Date | string
+  }
+
+  export type WebinarNotificationWhereInput = {
+    AND?: WebinarNotificationWhereInput | WebinarNotificationWhereInput[]
+    OR?: WebinarNotificationWhereInput[]
+    NOT?: WebinarNotificationWhereInput | WebinarNotificationWhereInput[]
+    id?: StringFilter<"WebinarNotification"> | string
+    registrationId?: StringNullableFilter<"WebinarNotification"> | string | null
+    channel?: StringFilter<"WebinarNotification"> | string
+    event?: StringFilter<"WebinarNotification"> | string
+    status?: StringFilter<"WebinarNotification"> | string
+    recipient?: StringNullableFilter<"WebinarNotification"> | string | null
+    templateName?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerMessageId?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerResponse?: JsonNullableFilter<"WebinarNotification">
+    errorCode?: StringNullableFilter<"WebinarNotification"> | string | null
+    errorMessage?: StringNullableFilter<"WebinarNotification"> | string | null
+    createdAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+    WebinarRegistration?: XOR<WebinarRegistrationNullableScalarRelationFilter, WebinarRegistrationWhereInput> | null
+  }
+
+  export type WebinarNotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    registrationId?: SortOrderInput | SortOrder
+    channel?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    recipient?: SortOrderInput | SortOrder
+    templateName?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    providerResponse?: SortOrderInput | SortOrder
+    errorCode?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    WebinarRegistration?: WebinarRegistrationOrderByWithRelationInput
+  }
+
+  export type WebinarNotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WebinarNotificationWhereInput | WebinarNotificationWhereInput[]
+    OR?: WebinarNotificationWhereInput[]
+    NOT?: WebinarNotificationWhereInput | WebinarNotificationWhereInput[]
+    registrationId?: StringNullableFilter<"WebinarNotification"> | string | null
+    channel?: StringFilter<"WebinarNotification"> | string
+    event?: StringFilter<"WebinarNotification"> | string
+    status?: StringFilter<"WebinarNotification"> | string
+    recipient?: StringNullableFilter<"WebinarNotification"> | string | null
+    templateName?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerMessageId?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerResponse?: JsonNullableFilter<"WebinarNotification">
+    errorCode?: StringNullableFilter<"WebinarNotification"> | string | null
+    errorMessage?: StringNullableFilter<"WebinarNotification"> | string | null
+    createdAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+    WebinarRegistration?: XOR<WebinarRegistrationNullableScalarRelationFilter, WebinarRegistrationWhereInput> | null
+  }, "id">
+
+  export type WebinarNotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    registrationId?: SortOrderInput | SortOrder
+    channel?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    recipient?: SortOrderInput | SortOrder
+    templateName?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    providerResponse?: SortOrderInput | SortOrder
+    errorCode?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WebinarNotificationCountOrderByAggregateInput
+    _max?: WebinarNotificationMaxOrderByAggregateInput
+    _min?: WebinarNotificationMinOrderByAggregateInput
+  }
+
+  export type WebinarNotificationScalarWhereWithAggregatesInput = {
+    AND?: WebinarNotificationScalarWhereWithAggregatesInput | WebinarNotificationScalarWhereWithAggregatesInput[]
+    OR?: WebinarNotificationScalarWhereWithAggregatesInput[]
+    NOT?: WebinarNotificationScalarWhereWithAggregatesInput | WebinarNotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WebinarNotification"> | string
+    registrationId?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    channel?: StringWithAggregatesFilter<"WebinarNotification"> | string
+    event?: StringWithAggregatesFilter<"WebinarNotification"> | string
+    status?: StringWithAggregatesFilter<"WebinarNotification"> | string
+    recipient?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    templateName?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    providerMessageId?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    providerResponse?: JsonNullableWithAggregatesFilter<"WebinarNotification">
+    errorCode?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"WebinarNotification"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WebinarNotification"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WebinarNotification"> | Date | string
   }
 
   export type WebinarConfigWhereInput = {
@@ -47392,6 +48814,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
     Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
   }
 
@@ -47416,6 +48839,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationUpdateInput = {
@@ -47438,6 +48862,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
     Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
   }
 
@@ -47462,6 +48887,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationCreateManyInput = {
@@ -47775,6 +49201,117 @@ export namespace Prisma {
     eventType?: StringFieldUpdateOperationsInput | string
     rawPayload?: JsonNullValueInput | InputJsonValue
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationCreateInput = {
+    id?: string
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    WebinarRegistration?: WebinarRegistrationCreateNestedOneWithoutWebinarNotificationInput
+  }
+
+  export type WebinarNotificationUncheckedCreateInput = {
+    id?: string
+    registrationId?: string | null
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebinarNotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarRegistration?: WebinarRegistrationUpdateOneWithoutWebinarNotificationNestedInput
+  }
+
+  export type WebinarNotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    registrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationCreateManyInput = {
+    id?: string
+    registrationId?: string | null
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebinarNotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    registrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WebinarConfigCreateInput = {
@@ -50211,12 +51748,22 @@ export namespace Prisma {
     none?: WebinarPaymentEventWhereInput
   }
 
+  export type WebinarNotificationListRelationFilter = {
+    every?: WebinarNotificationWhereInput
+    some?: WebinarNotificationWhereInput
+    none?: WebinarNotificationWhereInput
+  }
+
   export type WebinarScalarRelationFilter = {
     is?: WebinarWhereInput
     isNot?: WebinarWhereInput
   }
 
   export type WebinarPaymentEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WebinarNotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50427,6 +51974,57 @@ export namespace Prisma {
     razorpayEventId?: SortOrder
     eventType?: SortOrder
     processedAt?: SortOrder
+  }
+
+  export type WebinarRegistrationNullableScalarRelationFilter = {
+    is?: WebinarRegistrationWhereInput | null
+    isNot?: WebinarRegistrationWhereInput | null
+  }
+
+  export type WebinarNotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    registrationId?: SortOrder
+    channel?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    recipient?: SortOrder
+    templateName?: SortOrder
+    providerMessageId?: SortOrder
+    providerResponse?: SortOrder
+    errorCode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarNotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    registrationId?: SortOrder
+    channel?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    recipient?: SortOrder
+    templateName?: SortOrder
+    providerMessageId?: SortOrder
+    errorCode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebinarNotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    registrationId?: SortOrder
+    channel?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    recipient?: SortOrder
+    templateName?: SortOrder
+    providerMessageId?: SortOrder
+    errorCode?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumWebinarConfigStatusFilter<$PrismaModel = never> = {
@@ -52657,6 +54255,13 @@ export namespace Prisma {
     connect?: WebinarPaymentEventWhereUniqueInput | WebinarPaymentEventWhereUniqueInput[]
   }
 
+  export type WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput = {
+    create?: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput> | WebinarNotificationCreateWithoutWebinarRegistrationInput[] | WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput | WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput[]
+    createMany?: WebinarNotificationCreateManyWebinarRegistrationInputEnvelope
+    connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+  }
+
   export type WebinarCreateNestedOneWithoutWebinarRegistrationInput = {
     create?: XOR<WebinarCreateWithoutWebinarRegistrationInput, WebinarUncheckedCreateWithoutWebinarRegistrationInput>
     connectOrCreate?: WebinarCreateOrConnectWithoutWebinarRegistrationInput
@@ -52668,6 +54273,13 @@ export namespace Prisma {
     connectOrCreate?: WebinarPaymentEventCreateOrConnectWithoutWebinarRegistrationInput | WebinarPaymentEventCreateOrConnectWithoutWebinarRegistrationInput[]
     createMany?: WebinarPaymentEventCreateManyWebinarRegistrationInputEnvelope
     connect?: WebinarPaymentEventWhereUniqueInput | WebinarPaymentEventWhereUniqueInput[]
+  }
+
+  export type WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput = {
+    create?: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput> | WebinarNotificationCreateWithoutWebinarRegistrationInput[] | WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput | WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput[]
+    createMany?: WebinarNotificationCreateManyWebinarRegistrationInputEnvelope
+    connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
   }
 
   export type EnumRegistrationStatusFieldUpdateOperationsInput = {
@@ -52686,6 +54298,20 @@ export namespace Prisma {
     update?: WebinarPaymentEventUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarPaymentEventUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
     updateMany?: WebinarPaymentEventUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarPaymentEventUpdateManyWithWhereWithoutWebinarRegistrationInput[]
     deleteMany?: WebinarPaymentEventScalarWhereInput | WebinarPaymentEventScalarWhereInput[]
+  }
+
+  export type WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput = {
+    create?: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput> | WebinarNotificationCreateWithoutWebinarRegistrationInput[] | WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput | WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput[]
+    upsert?: WebinarNotificationUpsertWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpsertWithWhereUniqueWithoutWebinarRegistrationInput[]
+    createMany?: WebinarNotificationCreateManyWebinarRegistrationInputEnvelope
+    set?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    disconnect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    delete?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    update?: WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
+    updateMany?: WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput[]
+    deleteMany?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
   }
 
   export type WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput = {
@@ -52708,6 +54334,20 @@ export namespace Prisma {
     update?: WebinarPaymentEventUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarPaymentEventUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
     updateMany?: WebinarPaymentEventUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarPaymentEventUpdateManyWithWhereWithoutWebinarRegistrationInput[]
     deleteMany?: WebinarPaymentEventScalarWhereInput | WebinarPaymentEventScalarWhereInput[]
+  }
+
+  export type WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput = {
+    create?: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput> | WebinarNotificationCreateWithoutWebinarRegistrationInput[] | WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput | WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput[]
+    upsert?: WebinarNotificationUpsertWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpsertWithWhereUniqueWithoutWebinarRegistrationInput[]
+    createMany?: WebinarNotificationCreateManyWebinarRegistrationInputEnvelope
+    set?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    disconnect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    delete?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+    update?: WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
+    updateMany?: WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput[]
+    deleteMany?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
   }
 
   export type WebinarRegistrationCreateNestedManyWithoutWebinarInput = {
@@ -52768,6 +54408,22 @@ export namespace Prisma {
     upsert?: WebinarRegistrationUpsertWithoutWebinarPaymentEventInput
     connect?: WebinarRegistrationWhereUniqueInput
     update?: XOR<XOR<WebinarRegistrationUpdateToOneWithWhereWithoutWebinarPaymentEventInput, WebinarRegistrationUpdateWithoutWebinarPaymentEventInput>, WebinarRegistrationUncheckedUpdateWithoutWebinarPaymentEventInput>
+  }
+
+  export type WebinarRegistrationCreateNestedOneWithoutWebinarNotificationInput = {
+    create?: XOR<WebinarRegistrationCreateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedCreateWithoutWebinarNotificationInput>
+    connectOrCreate?: WebinarRegistrationCreateOrConnectWithoutWebinarNotificationInput
+    connect?: WebinarRegistrationWhereUniqueInput
+  }
+
+  export type WebinarRegistrationUpdateOneWithoutWebinarNotificationNestedInput = {
+    create?: XOR<WebinarRegistrationCreateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedCreateWithoutWebinarNotificationInput>
+    connectOrCreate?: WebinarRegistrationCreateOrConnectWithoutWebinarNotificationInput
+    upsert?: WebinarRegistrationUpsertWithoutWebinarNotificationInput
+    disconnect?: WebinarRegistrationWhereInput | boolean
+    delete?: WebinarRegistrationWhereInput | boolean
+    connect?: WebinarRegistrationWhereUniqueInput
+    update?: XOR<XOR<WebinarRegistrationUpdateToOneWithWhereWithoutWebinarNotificationInput, WebinarRegistrationUpdateWithoutWebinarNotificationInput>, WebinarRegistrationUncheckedUpdateWithoutWebinarNotificationInput>
   }
 
   export type EnumWebinarConfigStatusFieldUpdateOperationsInput = {
@@ -60823,6 +62479,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WebinarNotificationCreateWithoutWebinarRegistrationInput = {
+    id?: string
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput = {
+    id?: string
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput = {
+    where: WebinarNotificationWhereUniqueInput
+    create: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput>
+  }
+
+  export type WebinarNotificationCreateManyWebinarRegistrationInputEnvelope = {
+    data: WebinarNotificationCreateManyWebinarRegistrationInput | WebinarNotificationCreateManyWebinarRegistrationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type WebinarCreateWithoutWebinarRegistrationInput = {
     id: string
     slug: string
@@ -60908,6 +62604,41 @@ export namespace Prisma {
     processedAt?: DateTimeFilter<"WebinarPaymentEvent"> | Date | string
   }
 
+  export type WebinarNotificationUpsertWithWhereUniqueWithoutWebinarRegistrationInput = {
+    where: WebinarNotificationWhereUniqueInput
+    update: XOR<WebinarNotificationUpdateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedUpdateWithoutWebinarRegistrationInput>
+    create: XOR<WebinarNotificationCreateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedCreateWithoutWebinarRegistrationInput>
+  }
+
+  export type WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput = {
+    where: WebinarNotificationWhereUniqueInput
+    data: XOR<WebinarNotificationUpdateWithoutWebinarRegistrationInput, WebinarNotificationUncheckedUpdateWithoutWebinarRegistrationInput>
+  }
+
+  export type WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput = {
+    where: WebinarNotificationScalarWhereInput
+    data: XOR<WebinarNotificationUpdateManyMutationInput, WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationInput>
+  }
+
+  export type WebinarNotificationScalarWhereInput = {
+    AND?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
+    OR?: WebinarNotificationScalarWhereInput[]
+    NOT?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
+    id?: StringFilter<"WebinarNotification"> | string
+    registrationId?: StringNullableFilter<"WebinarNotification"> | string | null
+    channel?: StringFilter<"WebinarNotification"> | string
+    event?: StringFilter<"WebinarNotification"> | string
+    status?: StringFilter<"WebinarNotification"> | string
+    recipient?: StringNullableFilter<"WebinarNotification"> | string | null
+    templateName?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerMessageId?: StringNullableFilter<"WebinarNotification"> | string | null
+    providerResponse?: JsonNullableFilter<"WebinarNotification">
+    errorCode?: StringNullableFilter<"WebinarNotification"> | string | null
+    errorMessage?: StringNullableFilter<"WebinarNotification"> | string | null
+    createdAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"WebinarNotification"> | Date | string
+  }
+
   export type WebinarUpsertWithoutWebinarRegistrationInput = {
     update: XOR<WebinarUpdateWithoutWebinarRegistrationInput, WebinarUncheckedUpdateWithoutWebinarRegistrationInput>
     create: XOR<WebinarCreateWithoutWebinarRegistrationInput, WebinarUncheckedCreateWithoutWebinarRegistrationInput>
@@ -60991,6 +62722,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationUncheckedCreateWithoutWebinarInput = {
@@ -61013,6 +62745,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationCreateOrConnectWithoutWebinarInput = {
@@ -61085,6 +62818,7 @@ export namespace Prisma {
     gclid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
     Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
   }
 
@@ -61108,6 +62842,7 @@ export namespace Prisma {
     gclid?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationCreateOrConnectWithoutWebinarPaymentEventInput = {
@@ -61145,6 +62880,7 @@ export namespace Prisma {
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
     Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
   }
 
@@ -61168,6 +62904,115 @@ export namespace Prisma {
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+  }
+
+  export type WebinarRegistrationCreateWithoutWebinarNotificationInput = {
+    id?: string
+    name: string
+    email: string
+    phone: string
+    company?: string | null
+    city?: string | null
+    monthlyLeads?: string | null
+    status?: $Enums.RegistrationStatus
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    razorpaySignature?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    fbclid?: string | null
+    gclid?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
+    Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
+  }
+
+  export type WebinarRegistrationUncheckedCreateWithoutWebinarNotificationInput = {
+    id?: string
+    webinarId: string
+    name: string
+    email: string
+    phone: string
+    company?: string | null
+    city?: string | null
+    monthlyLeads?: string | null
+    status?: $Enums.RegistrationStatus
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    razorpaySignature?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    fbclid?: string | null
+    gclid?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+  }
+
+  export type WebinarRegistrationCreateOrConnectWithoutWebinarNotificationInput = {
+    where: WebinarRegistrationWhereUniqueInput
+    create: XOR<WebinarRegistrationCreateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedCreateWithoutWebinarNotificationInput>
+  }
+
+  export type WebinarRegistrationUpsertWithoutWebinarNotificationInput = {
+    update: XOR<WebinarRegistrationUpdateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedUpdateWithoutWebinarNotificationInput>
+    create: XOR<WebinarRegistrationCreateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedCreateWithoutWebinarNotificationInput>
+    where?: WebinarRegistrationWhereInput
+  }
+
+  export type WebinarRegistrationUpdateToOneWithWhereWithoutWebinarNotificationInput = {
+    where?: WebinarRegistrationWhereInput
+    data: XOR<WebinarRegistrationUpdateWithoutWebinarNotificationInput, WebinarRegistrationUncheckedUpdateWithoutWebinarNotificationInput>
+  }
+
+  export type WebinarRegistrationUpdateWithoutWebinarNotificationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    monthlyLeads?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpaySignature?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
+    Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
+  }
+
+  export type WebinarRegistrationUncheckedUpdateWithoutWebinarNotificationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    webinarId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    monthlyLeads?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpaySignature?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type AccountDeletionRequestCreateManyTenantInput = {
@@ -63120,6 +64965,21 @@ export namespace Prisma {
     processedAt?: Date | string
   }
 
+  export type WebinarNotificationCreateManyWebinarRegistrationInput = {
+    id?: string
+    channel: string
+    event: string
+    status: string
+    recipient?: string | null
+    templateName?: string | null
+    providerMessageId?: string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type WebinarPaymentEventUpdateWithoutWebinarRegistrationInput = {
     id?: StringFieldUpdateOperationsInput | string
     razorpayEventId?: StringFieldUpdateOperationsInput | string
@@ -63142,6 +65002,51 @@ export namespace Prisma {
     eventType?: StringFieldUpdateOperationsInput | string
     rawPayload?: JsonNullValueInput | InputJsonValue
     processedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationUpdateWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationUncheckedUpdateWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    recipient?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerResponse?: NullableJsonNullValueInput | InputJsonValue
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WebinarRegistrationCreateManyWebinarInput = {
@@ -63185,6 +65090,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationUncheckedUpdateWithoutWebinarInput = {
@@ -63207,6 +65113,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationUncheckedUpdateManyWithoutWebinarInput = {
