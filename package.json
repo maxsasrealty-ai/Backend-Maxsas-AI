@@ -7,7 +7,7 @@
     "dev": "node --import dotenv/config --import tsx src/index.ts",
     "dev:local": "docker compose -f infra/postgres/docker-compose.yml up -d && npm run prisma:generate && npm run prisma:deploy && node --import dotenv/config --import tsx src/index.ts",
     "start": "node --import dotenv/config --import tsx src/index.ts",
-    "ui": "echo \"Open Master Control: http://134.209.157.41:4000/admin/master-control\"",
+    "ui": "echo \"Open Master Control: http://135.125.222.22:4000/admin/master-control\"",
     "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
     "prisma:deploy": "npx prisma migrate deploy --schema=./prisma/schema.prisma",
     "prisma:migrate": "npx prisma migrate dev --schema=./prisma/schema.prisma",

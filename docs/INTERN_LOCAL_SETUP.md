@@ -59,7 +59,7 @@ npm run dev
 
 5. Open the admin UI if you need it.
 
-- `GET http://134.209.157.41:4000/admin/master-control`
+- `GET http://135.125.222.22:4000/admin/master-control`
 
 ## Important Environment Variables
 

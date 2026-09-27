@@ -1,4 +1,4 @@
-name: Temporary Render Keep Alive
+name: VPS Backend Health Check
 
 on:
   schedule:
@@ -6,18 +6,17 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: render-keep-alive
+  group: vps-backend-health
   cancel-in-progress: true
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render health endpoint
-        # Remove this workflow after moving the backend to paid Render.
+      - name: Ping VPS health endpoint
         run: >-
           curl --fail --silent --show-error
           --max-time 30
           --retry 2
           --retry-delay 5
-          https://backend-maxsas-ai.onrender.com/health
+          http://135.125.222.22:4000/health
