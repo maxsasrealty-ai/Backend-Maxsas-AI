@@ -311,12 +311,13 @@ export async function listAdminTenants(): Promise<TenantAdminRecord[]> {
   try {
     const tenants = await listTenants();
     // Include real wallet balance for each tenant in the list
-    const records = await Promise.all(
-      tenants.map(async (t) => {
-        const balance = await getWalletBalance(t.id);
-        return withEnterpriseMetadata(toTenantAdminRecord(t, balance), t.workspaceConfigJson as string | null);
-      })
-    );
+    // Keep these reads bounded. Each balance lookup performs several database
+    // queries and running all tenants concurrently can exhaust the pool.
+    const records: TenantAdminRecord[] = [];
+    for (const tenant of tenants) {
+      const balance = await getWalletBalance(tenant.id);
+      records.push(withEnterpriseMetadata(toTenantAdminRecord(tenant, balance), tenant.workspaceConfigJson as string | null));
+    }
     return records;
   } catch (error) {
     if (!shouldUseFallbackForError(error)) {

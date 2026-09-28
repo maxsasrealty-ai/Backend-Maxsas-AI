@@ -336,12 +336,13 @@ window.MCModCommandCenter = (function () {
 
   function normalizeKpisFromPayload(payload) {
     const source = unwrap(payload) || {};
+    const nestedKpis = source.kpis && typeof source.kpis === 'object' ? source.kpis : {};
     const kpis = {
-      callsToday: firstDefined(source.callsToday, source.calls_today, source.todayCalls, source.callCount, source.calls?.today),
+      callsToday: firstDefined(source.callsToday, source.calls_today, source.todayCalls, source.callCount, source.calls?.today, nestedKpis.totalCalls),
       activeCalls: firstDefined(source.activeCalls, source.active_calls, source.liveCalls, source.calls?.active),
-      totalTenants: firstDefined(source.totalTenants, source.total_tenants, source.tenantCount, source.tenants?.total),
+      totalTenants: firstDefined(source.totalTenants, source.total_tenants, source.tenantCount, source.tenants?.total, nestedKpis.totalTenants),
       revenueToday: firstDefined(source.revenueToday, source.revenue_today, source.todayRevenue, source.payment?.todayTotal, source.revenue?.todayTotal),
-      callVolumeTrend: firstDefined(source.callVolumeTrend, source.call_volume_trend, source.callVolumeSeries, source.weeklyCalls, source.chart?.callVolumeTrend),
+      callVolumeTrend: firstDefined(source.callVolumeTrend, source.call_volume_trend, source.callVolumeSeries, source.weeklyCalls, source.chart?.callVolumeTrend, source.callVolume?.values),
     };
     const meaningful = Object.values(kpis).some((value) => value !== undefined && value !== null);
     return meaningful ? kpis : null;
@@ -1054,22 +1055,22 @@ window.MCModCommandCenter = (function () {
 
   async function loadKpis() {
     if (!getAdminKey()) return null;
-    return requestFirstAvailable(['/dashboard/kpis', '/analytics/summary']);
+    return requestJson('/analytics/overview?range=7d');
   }
 
   async function loadCalls() {
     if (!getAdminKey()) return null;
-    return requestFirstAvailable(['/calls/active', '/calls/sessions']);
+    return requestJson('/dev-monitor/calls?limit=50');
   }
 
   async function loadTenants() {
     if (!getAdminKey()) return null;
-    return requestFirstAvailable(['/tenants', '/tenants/list']);
+    return requestJson('/tenants');
   }
 
   async function loadRevenue() {
     if (!getAdminKey()) return null;
-    return requestFirstAvailable(['/payments/summary', '/revenue/today']);
+    return requestJson('/dev-monitor/payments?limit=50');
   }
 
   function normalizeCallsPayload(payload) {

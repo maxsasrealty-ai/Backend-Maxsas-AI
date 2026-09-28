@@ -824,22 +824,27 @@ window.MCModVoiceOps = (function () {
       if (quality) tl.fromTo(quality, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 }, '<0.2');
       if (history) tl.fromTo(history, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55 }, '<0.2');
 
-      window.gsap.to('#mc-voice-hero .hero-sparkle-icon', {
-        y: -6,
-        rotation: 15,
-        duration: 2.5,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
+      const sparkle = state.root.querySelector('.hero-sparkle-icon');
+      if (sparkle) {
+        window.gsap.to(sparkle, {
+          y: -6,
+          rotation: 15,
+          duration: 2.5,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        });
+      }
 
-      window.gsap.to('#mc-voice-live-pill', {
-        boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)',
-        duration: 2,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
+      if (pill) {
+        window.gsap.to(pill, {
+          boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)',
+          duration: 2,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        });
+      }
     }, state.root);
 
     if (window.gsap) {

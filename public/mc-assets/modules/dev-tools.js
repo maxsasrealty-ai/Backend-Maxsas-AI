@@ -120,6 +120,8 @@ window.MCModDevTools = (function () {
   return { render };
 })();
 
+  // Keep the legacy appended implementation parse-safe; the active module is defined above.
+  (function () {
   function renderLogFilters() {
     const filters = ['all', 'info', 'warn', 'error', 'debug'];
     return `<div class="mc-dev-tabs" style="margin-bottom:16px;">${filters.map((filter) => `<button type="button" class="mc-dev-tab ${state.logFilter === filter ? 'active' : ''}" data-log-filter="${filter}">${filter.toUpperCase()}</button>`).join('')}</div>`;

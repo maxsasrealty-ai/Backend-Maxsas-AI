@@ -232,6 +232,14 @@ if (fs.existsSync(publicDir)) {
 		res.type("text/css");
 		res.sendFile(path.join(publicDir, "globals.css"));
 	});
+	app.get("/favicon.ico", (_req, res) => {
+		res.type("image/svg+xml");
+		res.sendFile(path.join(publicDir, "favicon.svg"));
+	});
+	app.get("/favicon.svg", (_req, res) => {
+		res.type("image/svg+xml");
+		res.sendFile(path.join(publicDir, "favicon.svg"));
+	});
 	app.use("/admin-ui", express.static(publicDir));
 	app.use("/mc-assets", express.static(path.join(publicDir, "mc-assets")));
 	app.get("/admin", (_req, res) => {
