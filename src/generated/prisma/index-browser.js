@@ -535,9 +535,58 @@ exports.Prisma.WebinarRegistrationScalarFieldEnum = {
   utmMedium: 'utmMedium',
   utmCampaign: 'utmCampaign',
   fbclid: 'fbclid',
+  fbp: 'fbp',
+  fbc: 'fbc',
+  utmContent: 'utmContent',
+  utmTerm: 'utmTerm',
   gclid: 'gclid',
+  metaCampaignId: 'metaCampaignId',
+  metaAdsetId: 'metaAdsetId',
+  metaAdId: 'metaAdId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TrialCallScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  webinarRegistrationId: 'webinarRegistrationId',
+  phoneNumber: 'phoneNumber',
+  customerName: 'customerName',
+  provider: 'provider',
+  providerCallId: 'providerCallId',
+  agentId: 'agentId',
+  status: 'status',
+  subStatus: 'subStatus',
+  callDirection: 'callDirection',
+  durationSeconds: 'durationSeconds',
+  recordingUrl: 'recordingUrl',
+  transcript: 'transcript',
+  outcome: 'outcome',
+  outcomeData: 'outcomeData',
+  initiatedAt: 'initiatedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  failureReason: 'failureReason',
+  lastWebhookAt: 'lastWebhookAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TrialCallWebhookEventScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  eventId: 'eventId',
+  eventType: 'eventType',
+  providerCallId: 'providerCallId',
+  payload: 'payload',
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  processingStatus: 'processingStatus',
+  errorMessage: 'errorMessage',
+  idempotencyKey: 'idempotencyKey'
 };
 
 exports.Prisma.WebinarScalarFieldEnum = {
@@ -801,6 +850,29 @@ exports.RegistrationStatus = exports.$Enums.RegistrationStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.TrialCallStatus = exports.$Enums.TrialCallStatus = {
+  QUEUED: 'QUEUED',
+  INITIATING: 'INITIATING',
+  RINGING: 'RINGING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.TrialCallDirection = exports.$Enums.TrialCallDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+exports.TrialCallWebhookStatus = exports.$Enums.TrialCallWebhookStatus = {
+  RECEIVED: 'RECEIVED',
+  PROCESSING: 'PROCESSING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED',
+  IGNORED: 'IGNORED'
+};
+
 exports.WebinarStatus = exports.$Enums.WebinarStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
@@ -841,6 +913,8 @@ exports.Prisma.ModelName = {
   AccountDeletionRequest: 'AccountDeletionRequest',
   AccountDeletionAuditEntry: 'AccountDeletionAuditEntry',
   WebinarRegistration: 'WebinarRegistration',
+  TrialCall: 'TrialCall',
+  TrialCallWebhookEvent: 'TrialCallWebhookEvent',
   Webinar: 'Webinar',
   WebinarPaymentEvent: 'WebinarPaymentEvent',
   WebinarNotification: 'WebinarNotification',

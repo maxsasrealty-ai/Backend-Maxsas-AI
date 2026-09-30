@@ -150,6 +150,16 @@ export type AccountDeletionAuditEntry = $Result.DefaultSelection<Prisma.$Account
  */
 export type WebinarRegistration = $Result.DefaultSelection<Prisma.$WebinarRegistrationPayload>
 /**
+ * Model TrialCall
+ * 
+ */
+export type TrialCall = $Result.DefaultSelection<Prisma.$TrialCallPayload>
+/**
+ * Model TrialCallWebhookEvent
+ * 
+ */
+export type TrialCallWebhookEvent = $Result.DefaultSelection<Prisma.$TrialCallWebhookEventPayload>
+/**
  * Model Webinar
  * 
  */
@@ -217,6 +227,38 @@ export const CallLifecycleStatus: {
 };
 
 export type CallLifecycleStatus = (typeof CallLifecycleStatus)[keyof typeof CallLifecycleStatus]
+
+
+export const TrialCallStatus: {
+  QUEUED: 'QUEUED',
+  INITIATING: 'INITIATING',
+  RINGING: 'RINGING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TrialCallStatus = (typeof TrialCallStatus)[keyof typeof TrialCallStatus]
+
+
+export const TrialCallDirection: {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+export type TrialCallDirection = (typeof TrialCallDirection)[keyof typeof TrialCallDirection]
+
+
+export const TrialCallWebhookStatus: {
+  RECEIVED: 'RECEIVED',
+  PROCESSING: 'PROCESSING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED',
+  IGNORED: 'IGNORED'
+};
+
+export type TrialCallWebhookStatus = (typeof TrialCallWebhookStatus)[keyof typeof TrialCallWebhookStatus]
 
 
 export const VoiceEventType: {
@@ -444,6 +486,18 @@ export const AccountDeletionRequestStatus: typeof $Enums.AccountDeletionRequestS
 export type CallLifecycleStatus = $Enums.CallLifecycleStatus
 
 export const CallLifecycleStatus: typeof $Enums.CallLifecycleStatus
+
+export type TrialCallStatus = $Enums.TrialCallStatus
+
+export const TrialCallStatus: typeof $Enums.TrialCallStatus
+
+export type TrialCallDirection = $Enums.TrialCallDirection
+
+export const TrialCallDirection: typeof $Enums.TrialCallDirection
+
+export type TrialCallWebhookStatus = $Enums.TrialCallWebhookStatus
+
+export const TrialCallWebhookStatus: typeof $Enums.TrialCallWebhookStatus
 
 export type VoiceEventType = $Enums.VoiceEventType
 
@@ -916,6 +970,26 @@ export class PrismaClient<
     * ```
     */
   get webinarRegistration(): Prisma.WebinarRegistrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.trialCall`: Exposes CRUD operations for the **TrialCall** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TrialCalls
+    * const trialCalls = await prisma.trialCall.findMany()
+    * ```
+    */
+  get trialCall(): Prisma.TrialCallDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.trialCallWebhookEvent`: Exposes CRUD operations for the **TrialCallWebhookEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TrialCallWebhookEvents
+    * const trialCallWebhookEvents = await prisma.trialCallWebhookEvent.findMany()
+    * ```
+    */
+  get trialCallWebhookEvent(): Prisma.TrialCallWebhookEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.webinar`: Exposes CRUD operations for the **Webinar** model.
@@ -1424,6 +1498,8 @@ export namespace Prisma {
     AccountDeletionRequest: 'AccountDeletionRequest',
     AccountDeletionAuditEntry: 'AccountDeletionAuditEntry',
     WebinarRegistration: 'WebinarRegistration',
+    TrialCall: 'TrialCall',
+    TrialCallWebhookEvent: 'TrialCallWebhookEvent',
     Webinar: 'Webinar',
     WebinarPaymentEvent: 'WebinarPaymentEvent',
     WebinarNotification: 'WebinarNotification',
@@ -1446,7 +1522,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "webinar" | "webinarPaymentEvent" | "webinarNotification" | "webinarConfig"
+      modelProps: "tenant" | "user" | "emailOtp" | "magicToken" | "authSession" | "refreshToken" | "callSession" | "callEvent" | "transcriptSegment" | "leadExtraction" | "campaign" | "campaignCall" | "campaignContact" | "walletTransaction" | "walletAccount" | "walletLedger" | "callBillingTransaction" | "paymentOrder" | "paymentAttempt" | "paymentWebhookEvent" | "paymentReconciliation" | "outboundCallRequest" | "usageRecord" | "voiceIngestAudit" | "accountDeletionRequest" | "accountDeletionAuditEntry" | "webinarRegistration" | "trialCall" | "trialCallWebhookEvent" | "webinar" | "webinarPaymentEvent" | "webinarNotification" | "webinarConfig"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3448,6 +3524,154 @@ export namespace Prisma {
           }
         }
       }
+      TrialCall: {
+        payload: Prisma.$TrialCallPayload<ExtArgs>
+        fields: Prisma.TrialCallFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TrialCallFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TrialCallFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          findFirst: {
+            args: Prisma.TrialCallFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TrialCallFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          findMany: {
+            args: Prisma.TrialCallFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>[]
+          }
+          create: {
+            args: Prisma.TrialCallCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          createMany: {
+            args: Prisma.TrialCallCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TrialCallCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>[]
+          }
+          delete: {
+            args: Prisma.TrialCallDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          update: {
+            args: Prisma.TrialCallUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          deleteMany: {
+            args: Prisma.TrialCallDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TrialCallUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TrialCallUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>[]
+          }
+          upsert: {
+            args: Prisma.TrialCallUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallPayload>
+          }
+          aggregate: {
+            args: Prisma.TrialCallAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTrialCall>
+          }
+          groupBy: {
+            args: Prisma.TrialCallGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TrialCallGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TrialCallCountArgs<ExtArgs>
+            result: $Utils.Optional<TrialCallCountAggregateOutputType> | number
+          }
+        }
+      }
+      TrialCallWebhookEvent: {
+        payload: Prisma.$TrialCallWebhookEventPayload<ExtArgs>
+        fields: Prisma.TrialCallWebhookEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TrialCallWebhookEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TrialCallWebhookEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          findFirst: {
+            args: Prisma.TrialCallWebhookEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TrialCallWebhookEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          findMany: {
+            args: Prisma.TrialCallWebhookEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>[]
+          }
+          create: {
+            args: Prisma.TrialCallWebhookEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          createMany: {
+            args: Prisma.TrialCallWebhookEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TrialCallWebhookEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>[]
+          }
+          delete: {
+            args: Prisma.TrialCallWebhookEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          update: {
+            args: Prisma.TrialCallWebhookEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.TrialCallWebhookEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TrialCallWebhookEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TrialCallWebhookEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.TrialCallWebhookEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrialCallWebhookEventPayload>
+          }
+          aggregate: {
+            args: Prisma.TrialCallWebhookEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTrialCallWebhookEvent>
+          }
+          groupBy: {
+            args: Prisma.TrialCallWebhookEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TrialCallWebhookEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TrialCallWebhookEventCountArgs<ExtArgs>
+            result: $Utils.Optional<TrialCallWebhookEventCountAggregateOutputType> | number
+          }
+        }
+      }
       Webinar: {
         payload: Prisma.$WebinarPayload<ExtArgs>
         fields: Prisma.WebinarFieldRefs
@@ -3867,6 +4091,8 @@ export namespace Prisma {
     accountDeletionRequest?: AccountDeletionRequestOmit
     accountDeletionAuditEntry?: AccountDeletionAuditEntryOmit
     webinarRegistration?: WebinarRegistrationOmit
+    trialCall?: TrialCallOmit
+    trialCallWebhookEvent?: TrialCallWebhookEventOmit
     webinar?: WebinarOmit
     webinarPaymentEvent?: WebinarPaymentEventOmit
     webinarNotification?: WebinarNotificationOmit
@@ -3964,6 +4190,7 @@ export namespace Prisma {
     paymentOrders: number
     paymentReconciliations: number
     paymentWebhooks: number
+    trialCalls: number
     transcriptSegments: number
     usageRecords: number
     users: number
@@ -3985,6 +4212,7 @@ export namespace Prisma {
     paymentOrders?: boolean | TenantCountOutputTypeCountPaymentOrdersArgs
     paymentReconciliations?: boolean | TenantCountOutputTypeCountPaymentReconciliationsArgs
     paymentWebhooks?: boolean | TenantCountOutputTypeCountPaymentWebhooksArgs
+    trialCalls?: boolean | TenantCountOutputTypeCountTrialCallsArgs
     transcriptSegments?: boolean | TenantCountOutputTypeCountTranscriptSegmentsArgs
     usageRecords?: boolean | TenantCountOutputTypeCountUsageRecordsArgs
     users?: boolean | TenantCountOutputTypeCountUsersArgs
@@ -4097,6 +4325,13 @@ export namespace Prisma {
   /**
    * TenantCountOutputType without action
    */
+  export type TenantCountOutputTypeCountTrialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrialCallWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
   export type TenantCountOutputTypeCountTranscriptSegmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TranscriptSegmentWhereInput
   }
@@ -4135,11 +4370,13 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    trialCalls: number
     authSessions: number
     refreshTokens: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    trialCalls?: boolean | UserCountOutputTypeCountTrialCallsArgs
     authSessions?: boolean | UserCountOutputTypeCountAuthSessionsArgs
     refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   }
@@ -4153,6 +4390,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTrialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrialCallWhereInput
   }
 
   /**
@@ -4413,11 +4657,13 @@ export namespace Prisma {
   export type WebinarRegistrationCountOutputType = {
     WebinarPaymentEvent: number
     WebinarNotification: number
+    trialCalls: number
   }
 
   export type WebinarRegistrationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     WebinarPaymentEvent?: boolean | WebinarRegistrationCountOutputTypeCountWebinarPaymentEventArgs
     WebinarNotification?: boolean | WebinarRegistrationCountOutputTypeCountWebinarNotificationArgs
+    trialCalls?: boolean | WebinarRegistrationCountOutputTypeCountTrialCallsArgs
   }
 
   // Custom InputTypes
@@ -4443,6 +4689,13 @@ export namespace Prisma {
    */
   export type WebinarRegistrationCountOutputTypeCountWebinarNotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WebinarNotificationWhereInput
+  }
+
+  /**
+   * WebinarRegistrationCountOutputType without action
+   */
+  export type WebinarRegistrationCountOutputTypeCountTrialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrialCallWhereInput
   }
 
 
@@ -4768,6 +5021,7 @@ export namespace Prisma {
     paymentOrders?: boolean | Tenant$paymentOrdersArgs<ExtArgs>
     paymentReconciliations?: boolean | Tenant$paymentReconciliationsArgs<ExtArgs>
     paymentWebhooks?: boolean | Tenant$paymentWebhooksArgs<ExtArgs>
+    trialCalls?: boolean | Tenant$trialCallsArgs<ExtArgs>
     transcriptSegments?: boolean | Tenant$transcriptSegmentsArgs<ExtArgs>
     usageRecords?: boolean | Tenant$usageRecordsArgs<ExtArgs>
     users?: boolean | Tenant$usersArgs<ExtArgs>
@@ -4848,6 +5102,7 @@ export namespace Prisma {
     paymentOrders?: boolean | Tenant$paymentOrdersArgs<ExtArgs>
     paymentReconciliations?: boolean | Tenant$paymentReconciliationsArgs<ExtArgs>
     paymentWebhooks?: boolean | Tenant$paymentWebhooksArgs<ExtArgs>
+    trialCalls?: boolean | Tenant$trialCallsArgs<ExtArgs>
     transcriptSegments?: boolean | Tenant$transcriptSegmentsArgs<ExtArgs>
     usageRecords?: boolean | Tenant$usageRecordsArgs<ExtArgs>
     users?: boolean | Tenant$usersArgs<ExtArgs>
@@ -4874,6 +5129,7 @@ export namespace Prisma {
       paymentOrders: Prisma.$PaymentOrderPayload<ExtArgs>[]
       paymentReconciliations: Prisma.$PaymentReconciliationPayload<ExtArgs>[]
       paymentWebhooks: Prisma.$PaymentWebhookEventPayload<ExtArgs>[]
+      trialCalls: Prisma.$TrialCallPayload<ExtArgs>[]
       transcriptSegments: Prisma.$TranscriptSegmentPayload<ExtArgs>[]
       usageRecords: Prisma.$UsageRecordPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
@@ -5304,6 +5560,7 @@ export namespace Prisma {
     paymentOrders<T extends Tenant$paymentOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$paymentOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentReconciliations<T extends Tenant$paymentReconciliationsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$paymentReconciliationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReconciliationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentWebhooks<T extends Tenant$paymentWebhooksArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$paymentWebhooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentWebhookEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    trialCalls<T extends Tenant$trialCallsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$trialCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transcriptSegments<T extends Tenant$transcriptSegmentsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$transcriptSegmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TranscriptSegmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     usageRecords<T extends Tenant$usageRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Tenant$usersArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6054,6 +6311,30 @@ export namespace Prisma {
   }
 
   /**
+   * Tenant.trialCalls
+   */
+  export type Tenant$trialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    where?: TrialCallWhereInput
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    cursor?: TrialCallWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
+  }
+
+  /**
    * Tenant.transcriptSegments
    */
   export type Tenant$transcriptSegmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6436,6 +6717,7 @@ export namespace Prisma {
     avatar?: boolean
     googleId?: boolean
     provider?: boolean
+    trialCalls?: boolean | User$trialCallsArgs<ExtArgs>
     authSessions?: boolean | User$authSessionsArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -6500,6 +6782,7 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "email" | "fullName" | "passwordHash" | "createdAt" | "updatedAt" | "deletionStatus" | "deletedAt" | "deletionRequestedAt" | "authRevokedAt" | "role" | "avatar" | "googleId" | "provider", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    trialCalls?: boolean | User$trialCallsArgs<ExtArgs>
     authSessions?: boolean | User$authSessionsArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -6515,6 +6798,7 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      trialCalls: Prisma.$TrialCallPayload<ExtArgs>[]
       authSessions: Prisma.$AuthSessionPayload<ExtArgs>[]
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
       tenant: Prisma.$TenantPayload<ExtArgs>
@@ -6929,6 +7213,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    trialCalls<T extends User$trialCallsArgs<ExtArgs> = {}>(args?: Subset<T, User$trialCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     authSessions<T extends User$authSessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$authSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuthSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -7369,6 +7654,30 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.trialCalls
+   */
+  export type User$trialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    where?: TrialCallWhereInput
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    cursor?: TrialCallWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
   }
 
   /**
@@ -35801,7 +36110,14 @@ export namespace Prisma {
     utmMedium: string | null
     utmCampaign: string | null
     fbclid: string | null
+    fbp: string | null
+    fbc: string | null
+    utmContent: string | null
+    utmTerm: string | null
     gclid: string | null
+    metaCampaignId: string | null
+    metaAdsetId: string | null
+    metaAdId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35823,7 +36139,14 @@ export namespace Prisma {
     utmMedium: string | null
     utmCampaign: string | null
     fbclid: string | null
+    fbp: string | null
+    fbc: string | null
+    utmContent: string | null
+    utmTerm: string | null
     gclid: string | null
+    metaCampaignId: string | null
+    metaAdsetId: string | null
+    metaAdId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35845,7 +36168,14 @@ export namespace Prisma {
     utmMedium: number
     utmCampaign: number
     fbclid: number
+    fbp: number
+    fbc: number
+    utmContent: number
+    utmTerm: number
     gclid: number
+    metaCampaignId: number
+    metaAdsetId: number
+    metaAdId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -35869,7 +36199,14 @@ export namespace Prisma {
     utmMedium?: true
     utmCampaign?: true
     fbclid?: true
+    fbp?: true
+    fbc?: true
+    utmContent?: true
+    utmTerm?: true
     gclid?: true
+    metaCampaignId?: true
+    metaAdsetId?: true
+    metaAdId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35891,7 +36228,14 @@ export namespace Prisma {
     utmMedium?: true
     utmCampaign?: true
     fbclid?: true
+    fbp?: true
+    fbc?: true
+    utmContent?: true
+    utmTerm?: true
     gclid?: true
+    metaCampaignId?: true
+    metaAdsetId?: true
+    metaAdId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35913,7 +36257,14 @@ export namespace Prisma {
     utmMedium?: true
     utmCampaign?: true
     fbclid?: true
+    fbp?: true
+    fbc?: true
+    utmContent?: true
+    utmTerm?: true
     gclid?: true
+    metaCampaignId?: true
+    metaAdsetId?: true
+    metaAdId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -36008,7 +36359,14 @@ export namespace Prisma {
     utmMedium: string | null
     utmCampaign: string | null
     fbclid: string | null
+    fbp: string | null
+    fbc: string | null
+    utmContent: string | null
+    utmTerm: string | null
     gclid: string | null
+    metaCampaignId: string | null
+    metaAdsetId: string | null
+    metaAdId: string | null
     createdAt: Date
     updatedAt: Date
     _count: WebinarRegistrationCountAggregateOutputType | null
@@ -36047,11 +36405,19 @@ export namespace Prisma {
     utmMedium?: boolean
     utmCampaign?: boolean
     fbclid?: boolean
+    fbp?: boolean
+    fbc?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
     gclid?: boolean
+    metaCampaignId?: boolean
+    metaAdsetId?: boolean
+    metaAdId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     WebinarPaymentEvent?: boolean | WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>
     WebinarNotification?: boolean | WebinarRegistration$WebinarNotificationArgs<ExtArgs>
+    trialCalls?: boolean | WebinarRegistration$trialCallsArgs<ExtArgs>
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
     _count?: boolean | WebinarRegistrationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["webinarRegistration"]>
@@ -36073,7 +36439,14 @@ export namespace Prisma {
     utmMedium?: boolean
     utmCampaign?: boolean
     fbclid?: boolean
+    fbp?: boolean
+    fbc?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
     gclid?: boolean
+    metaCampaignId?: boolean
+    metaAdsetId?: boolean
+    metaAdId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
@@ -36096,7 +36469,14 @@ export namespace Prisma {
     utmMedium?: boolean
     utmCampaign?: boolean
     fbclid?: boolean
+    fbp?: boolean
+    fbc?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
     gclid?: boolean
+    metaCampaignId?: boolean
+    metaAdsetId?: boolean
+    metaAdId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
@@ -36119,15 +36499,23 @@ export namespace Prisma {
     utmMedium?: boolean
     utmCampaign?: boolean
     fbclid?: boolean
+    fbp?: boolean
+    fbc?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
     gclid?: boolean
+    metaCampaignId?: boolean
+    metaAdsetId?: boolean
+    metaAdId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WebinarRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "webinarId" | "name" | "email" | "phone" | "company" | "city" | "monthlyLeads" | "status" | "razorpayOrderId" | "razorpayPaymentId" | "razorpaySignature" | "utmSource" | "utmMedium" | "utmCampaign" | "fbclid" | "gclid" | "createdAt" | "updatedAt", ExtArgs["result"]["webinarRegistration"]>
+  export type WebinarRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "webinarId" | "name" | "email" | "phone" | "company" | "city" | "monthlyLeads" | "status" | "razorpayOrderId" | "razorpayPaymentId" | "razorpaySignature" | "utmSource" | "utmMedium" | "utmCampaign" | "fbclid" | "fbp" | "fbc" | "utmContent" | "utmTerm" | "gclid" | "metaCampaignId" | "metaAdsetId" | "metaAdId" | "createdAt" | "updatedAt", ExtArgs["result"]["webinarRegistration"]>
   export type WebinarRegistrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     WebinarPaymentEvent?: boolean | WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>
     WebinarNotification?: boolean | WebinarRegistration$WebinarNotificationArgs<ExtArgs>
+    trialCalls?: boolean | WebinarRegistration$trialCallsArgs<ExtArgs>
     Webinar?: boolean | WebinarDefaultArgs<ExtArgs>
     _count?: boolean | WebinarRegistrationCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -36143,6 +36531,7 @@ export namespace Prisma {
     objects: {
       WebinarPaymentEvent: Prisma.$WebinarPaymentEventPayload<ExtArgs>[]
       WebinarNotification: Prisma.$WebinarNotificationPayload<ExtArgs>[]
+      trialCalls: Prisma.$TrialCallPayload<ExtArgs>[]
       Webinar: Prisma.$WebinarPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -36162,7 +36551,14 @@ export namespace Prisma {
       utmMedium: string | null
       utmCampaign: string | null
       fbclid: string | null
+      fbp: string | null
+      fbc: string | null
+      utmContent: string | null
+      utmTerm: string | null
       gclid: string | null
+      metaCampaignId: string | null
+      metaAdsetId: string | null
+      metaAdId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["webinarRegistration"]>
@@ -36561,6 +36957,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     WebinarPaymentEvent<T extends WebinarRegistration$WebinarPaymentEventArgs<ExtArgs> = {}>(args?: Subset<T, WebinarRegistration$WebinarPaymentEventArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarPaymentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     WebinarNotification<T extends WebinarRegistration$WebinarNotificationArgs<ExtArgs> = {}>(args?: Subset<T, WebinarRegistration$WebinarNotificationArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebinarNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    trialCalls<T extends WebinarRegistration$trialCallsArgs<ExtArgs> = {}>(args?: Subset<T, WebinarRegistration$trialCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Webinar<T extends WebinarDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WebinarDefaultArgs<ExtArgs>>): Prisma__WebinarClient<$Result.GetResult<Prisma.$WebinarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -36607,7 +37004,14 @@ export namespace Prisma {
     readonly utmMedium: FieldRef<"WebinarRegistration", 'String'>
     readonly utmCampaign: FieldRef<"WebinarRegistration", 'String'>
     readonly fbclid: FieldRef<"WebinarRegistration", 'String'>
+    readonly fbp: FieldRef<"WebinarRegistration", 'String'>
+    readonly fbc: FieldRef<"WebinarRegistration", 'String'>
+    readonly utmContent: FieldRef<"WebinarRegistration", 'String'>
+    readonly utmTerm: FieldRef<"WebinarRegistration", 'String'>
     readonly gclid: FieldRef<"WebinarRegistration", 'String'>
+    readonly metaCampaignId: FieldRef<"WebinarRegistration", 'String'>
+    readonly metaAdsetId: FieldRef<"WebinarRegistration", 'String'>
+    readonly metaAdId: FieldRef<"WebinarRegistration", 'String'>
     readonly createdAt: FieldRef<"WebinarRegistration", 'DateTime'>
     readonly updatedAt: FieldRef<"WebinarRegistration", 'DateTime'>
   }
@@ -37054,6 +37458,30 @@ export namespace Prisma {
   }
 
   /**
+   * WebinarRegistration.trialCalls
+   */
+  export type WebinarRegistration$trialCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    where?: TrialCallWhereInput
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    cursor?: TrialCallWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
+  }
+
+  /**
    * WebinarRegistration without action
    */
   export type WebinarRegistrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -37069,6 +37497,2496 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: WebinarRegistrationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TrialCall
+   */
+
+  export type AggregateTrialCall = {
+    _count: TrialCallCountAggregateOutputType | null
+    _avg: TrialCallAvgAggregateOutputType | null
+    _sum: TrialCallSumAggregateOutputType | null
+    _min: TrialCallMinAggregateOutputType | null
+    _max: TrialCallMaxAggregateOutputType | null
+  }
+
+  export type TrialCallAvgAggregateOutputType = {
+    durationSeconds: number | null
+  }
+
+  export type TrialCallSumAggregateOutputType = {
+    durationSeconds: number | null
+  }
+
+  export type TrialCallMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    userId: string | null
+    webinarRegistrationId: string | null
+    phoneNumber: string | null
+    customerName: string | null
+    provider: string | null
+    providerCallId: string | null
+    agentId: string | null
+    status: $Enums.TrialCallStatus | null
+    subStatus: string | null
+    callDirection: $Enums.TrialCallDirection | null
+    durationSeconds: number | null
+    recordingUrl: string | null
+    transcript: string | null
+    outcome: string | null
+    initiatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
+    lastWebhookAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TrialCallMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    userId: string | null
+    webinarRegistrationId: string | null
+    phoneNumber: string | null
+    customerName: string | null
+    provider: string | null
+    providerCallId: string | null
+    agentId: string | null
+    status: $Enums.TrialCallStatus | null
+    subStatus: string | null
+    callDirection: $Enums.TrialCallDirection | null
+    durationSeconds: number | null
+    recordingUrl: string | null
+    transcript: string | null
+    outcome: string | null
+    initiatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
+    lastWebhookAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TrialCallCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    userId: number
+    webinarRegistrationId: number
+    phoneNumber: number
+    customerName: number
+    provider: number
+    providerCallId: number
+    agentId: number
+    status: number
+    subStatus: number
+    callDirection: number
+    durationSeconds: number
+    recordingUrl: number
+    transcript: number
+    outcome: number
+    outcomeData: number
+    initiatedAt: number
+    startedAt: number
+    completedAt: number
+    failedAt: number
+    failureReason: number
+    lastWebhookAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TrialCallAvgAggregateInputType = {
+    durationSeconds?: true
+  }
+
+  export type TrialCallSumAggregateInputType = {
+    durationSeconds?: true
+  }
+
+  export type TrialCallMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    userId?: true
+    webinarRegistrationId?: true
+    phoneNumber?: true
+    customerName?: true
+    provider?: true
+    providerCallId?: true
+    agentId?: true
+    status?: true
+    subStatus?: true
+    callDirection?: true
+    durationSeconds?: true
+    recordingUrl?: true
+    transcript?: true
+    outcome?: true
+    initiatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
+    lastWebhookAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TrialCallMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    userId?: true
+    webinarRegistrationId?: true
+    phoneNumber?: true
+    customerName?: true
+    provider?: true
+    providerCallId?: true
+    agentId?: true
+    status?: true
+    subStatus?: true
+    callDirection?: true
+    durationSeconds?: true
+    recordingUrl?: true
+    transcript?: true
+    outcome?: true
+    initiatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
+    lastWebhookAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TrialCallCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    userId?: true
+    webinarRegistrationId?: true
+    phoneNumber?: true
+    customerName?: true
+    provider?: true
+    providerCallId?: true
+    agentId?: true
+    status?: true
+    subStatus?: true
+    callDirection?: true
+    durationSeconds?: true
+    recordingUrl?: true
+    transcript?: true
+    outcome?: true
+    outcomeData?: true
+    initiatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
+    lastWebhookAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TrialCallAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrialCall to aggregate.
+     */
+    where?: TrialCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCalls to fetch.
+     */
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TrialCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TrialCalls
+    **/
+    _count?: true | TrialCallCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TrialCallAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TrialCallSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TrialCallMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TrialCallMaxAggregateInputType
+  }
+
+  export type GetTrialCallAggregateType<T extends TrialCallAggregateArgs> = {
+        [P in keyof T & keyof AggregateTrialCall]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTrialCall[P]>
+      : GetScalarType<T[P], AggregateTrialCall[P]>
+  }
+
+
+
+
+  export type TrialCallGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrialCallWhereInput
+    orderBy?: TrialCallOrderByWithAggregationInput | TrialCallOrderByWithAggregationInput[]
+    by: TrialCallScalarFieldEnum[] | TrialCallScalarFieldEnum
+    having?: TrialCallScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TrialCallCountAggregateInputType | true
+    _avg?: TrialCallAvgAggregateInputType
+    _sum?: TrialCallSumAggregateInputType
+    _min?: TrialCallMinAggregateInputType
+    _max?: TrialCallMaxAggregateInputType
+  }
+
+  export type TrialCallGroupByOutputType = {
+    id: string
+    tenantId: string | null
+    userId: string | null
+    webinarRegistrationId: string | null
+    phoneNumber: string
+    customerName: string | null
+    provider: string
+    providerCallId: string | null
+    agentId: string | null
+    status: $Enums.TrialCallStatus
+    subStatus: string | null
+    callDirection: $Enums.TrialCallDirection
+    durationSeconds: number | null
+    recordingUrl: string | null
+    transcript: string | null
+    outcome: string | null
+    outcomeData: JsonValue | null
+    initiatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
+    lastWebhookAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TrialCallCountAggregateOutputType | null
+    _avg: TrialCallAvgAggregateOutputType | null
+    _sum: TrialCallSumAggregateOutputType | null
+    _min: TrialCallMinAggregateOutputType | null
+    _max: TrialCallMaxAggregateOutputType | null
+  }
+
+  type GetTrialCallGroupByPayload<T extends TrialCallGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TrialCallGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TrialCallGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TrialCallGroupByOutputType[P]>
+            : GetScalarType<T[P], TrialCallGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TrialCallSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    webinarRegistrationId?: boolean
+    phoneNumber?: boolean
+    customerName?: boolean
+    provider?: boolean
+    providerCallId?: boolean
+    agentId?: boolean
+    status?: boolean
+    subStatus?: boolean
+    callDirection?: boolean
+    durationSeconds?: boolean
+    recordingUrl?: boolean
+    transcript?: boolean
+    outcome?: boolean
+    outcomeData?: boolean
+    initiatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
+    lastWebhookAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["trialCall"]>
+
+  export type TrialCallSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    webinarRegistrationId?: boolean
+    phoneNumber?: boolean
+    customerName?: boolean
+    provider?: boolean
+    providerCallId?: boolean
+    agentId?: boolean
+    status?: boolean
+    subStatus?: boolean
+    callDirection?: boolean
+    durationSeconds?: boolean
+    recordingUrl?: boolean
+    transcript?: boolean
+    outcome?: boolean
+    outcomeData?: boolean
+    initiatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
+    lastWebhookAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["trialCall"]>
+
+  export type TrialCallSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    webinarRegistrationId?: boolean
+    phoneNumber?: boolean
+    customerName?: boolean
+    provider?: boolean
+    providerCallId?: boolean
+    agentId?: boolean
+    status?: boolean
+    subStatus?: boolean
+    callDirection?: boolean
+    durationSeconds?: boolean
+    recordingUrl?: boolean
+    transcript?: boolean
+    outcome?: boolean
+    outcomeData?: boolean
+    initiatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
+    lastWebhookAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }, ExtArgs["result"]["trialCall"]>
+
+  export type TrialCallSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    webinarRegistrationId?: boolean
+    phoneNumber?: boolean
+    customerName?: boolean
+    provider?: boolean
+    providerCallId?: boolean
+    agentId?: boolean
+    status?: boolean
+    subStatus?: boolean
+    callDirection?: boolean
+    durationSeconds?: boolean
+    recordingUrl?: boolean
+    transcript?: boolean
+    outcome?: boolean
+    outcomeData?: boolean
+    initiatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
+    lastWebhookAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TrialCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "userId" | "webinarRegistrationId" | "phoneNumber" | "customerName" | "provider" | "providerCallId" | "agentId" | "status" | "subStatus" | "callDirection" | "durationSeconds" | "recordingUrl" | "transcript" | "outcome" | "outcomeData" | "initiatedAt" | "startedAt" | "completedAt" | "failedAt" | "failureReason" | "lastWebhookAt" | "createdAt" | "updatedAt", ExtArgs["result"]["trialCall"]>
+  export type TrialCallInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }
+  export type TrialCallIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }
+  export type TrialCallIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TrialCall$tenantArgs<ExtArgs>
+    user?: boolean | TrialCall$userArgs<ExtArgs>
+    webinarRegistration?: boolean | TrialCall$webinarRegistrationArgs<ExtArgs>
+  }
+
+  export type $TrialCallPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TrialCall"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
+      webinarRegistration: Prisma.$WebinarRegistrationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string | null
+      userId: string | null
+      webinarRegistrationId: string | null
+      phoneNumber: string
+      customerName: string | null
+      provider: string
+      providerCallId: string | null
+      agentId: string | null
+      status: $Enums.TrialCallStatus
+      subStatus: string | null
+      callDirection: $Enums.TrialCallDirection
+      durationSeconds: number | null
+      recordingUrl: string | null
+      transcript: string | null
+      outcome: string | null
+      outcomeData: Prisma.JsonValue | null
+      initiatedAt: Date | null
+      startedAt: Date | null
+      completedAt: Date | null
+      failedAt: Date | null
+      failureReason: string | null
+      lastWebhookAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["trialCall"]>
+    composites: {}
+  }
+
+  type TrialCallGetPayload<S extends boolean | null | undefined | TrialCallDefaultArgs> = $Result.GetResult<Prisma.$TrialCallPayload, S>
+
+  type TrialCallCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TrialCallFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TrialCallCountAggregateInputType | true
+    }
+
+  export interface TrialCallDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TrialCall'], meta: { name: 'TrialCall' } }
+    /**
+     * Find zero or one TrialCall that matches the filter.
+     * @param {TrialCallFindUniqueArgs} args - Arguments to find a TrialCall
+     * @example
+     * // Get one TrialCall
+     * const trialCall = await prisma.trialCall.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TrialCallFindUniqueArgs>(args: SelectSubset<T, TrialCallFindUniqueArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TrialCall that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TrialCallFindUniqueOrThrowArgs} args - Arguments to find a TrialCall
+     * @example
+     * // Get one TrialCall
+     * const trialCall = await prisma.trialCall.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TrialCallFindUniqueOrThrowArgs>(args: SelectSubset<T, TrialCallFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrialCall that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallFindFirstArgs} args - Arguments to find a TrialCall
+     * @example
+     * // Get one TrialCall
+     * const trialCall = await prisma.trialCall.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TrialCallFindFirstArgs>(args?: SelectSubset<T, TrialCallFindFirstArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrialCall that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallFindFirstOrThrowArgs} args - Arguments to find a TrialCall
+     * @example
+     * // Get one TrialCall
+     * const trialCall = await prisma.trialCall.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TrialCallFindFirstOrThrowArgs>(args?: SelectSubset<T, TrialCallFindFirstOrThrowArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TrialCalls that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TrialCalls
+     * const trialCalls = await prisma.trialCall.findMany()
+     * 
+     * // Get first 10 TrialCalls
+     * const trialCalls = await prisma.trialCall.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const trialCallWithIdOnly = await prisma.trialCall.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TrialCallFindManyArgs>(args?: SelectSubset<T, TrialCallFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TrialCall.
+     * @param {TrialCallCreateArgs} args - Arguments to create a TrialCall.
+     * @example
+     * // Create one TrialCall
+     * const TrialCall = await prisma.trialCall.create({
+     *   data: {
+     *     // ... data to create a TrialCall
+     *   }
+     * })
+     * 
+     */
+    create<T extends TrialCallCreateArgs>(args: SelectSubset<T, TrialCallCreateArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TrialCalls.
+     * @param {TrialCallCreateManyArgs} args - Arguments to create many TrialCalls.
+     * @example
+     * // Create many TrialCalls
+     * const trialCall = await prisma.trialCall.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TrialCallCreateManyArgs>(args?: SelectSubset<T, TrialCallCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TrialCalls and returns the data saved in the database.
+     * @param {TrialCallCreateManyAndReturnArgs} args - Arguments to create many TrialCalls.
+     * @example
+     * // Create many TrialCalls
+     * const trialCall = await prisma.trialCall.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TrialCalls and only return the `id`
+     * const trialCallWithIdOnly = await prisma.trialCall.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TrialCallCreateManyAndReturnArgs>(args?: SelectSubset<T, TrialCallCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TrialCall.
+     * @param {TrialCallDeleteArgs} args - Arguments to delete one TrialCall.
+     * @example
+     * // Delete one TrialCall
+     * const TrialCall = await prisma.trialCall.delete({
+     *   where: {
+     *     // ... filter to delete one TrialCall
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TrialCallDeleteArgs>(args: SelectSubset<T, TrialCallDeleteArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TrialCall.
+     * @param {TrialCallUpdateArgs} args - Arguments to update one TrialCall.
+     * @example
+     * // Update one TrialCall
+     * const trialCall = await prisma.trialCall.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TrialCallUpdateArgs>(args: SelectSubset<T, TrialCallUpdateArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TrialCalls.
+     * @param {TrialCallDeleteManyArgs} args - Arguments to filter TrialCalls to delete.
+     * @example
+     * // Delete a few TrialCalls
+     * const { count } = await prisma.trialCall.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TrialCallDeleteManyArgs>(args?: SelectSubset<T, TrialCallDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrialCalls.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TrialCalls
+     * const trialCall = await prisma.trialCall.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TrialCallUpdateManyArgs>(args: SelectSubset<T, TrialCallUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrialCalls and returns the data updated in the database.
+     * @param {TrialCallUpdateManyAndReturnArgs} args - Arguments to update many TrialCalls.
+     * @example
+     * // Update many TrialCalls
+     * const trialCall = await prisma.trialCall.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TrialCalls and only return the `id`
+     * const trialCallWithIdOnly = await prisma.trialCall.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TrialCallUpdateManyAndReturnArgs>(args: SelectSubset<T, TrialCallUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TrialCall.
+     * @param {TrialCallUpsertArgs} args - Arguments to update or create a TrialCall.
+     * @example
+     * // Update or create a TrialCall
+     * const trialCall = await prisma.trialCall.upsert({
+     *   create: {
+     *     // ... data to create a TrialCall
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TrialCall we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TrialCallUpsertArgs>(args: SelectSubset<T, TrialCallUpsertArgs<ExtArgs>>): Prisma__TrialCallClient<$Result.GetResult<Prisma.$TrialCallPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TrialCalls.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallCountArgs} args - Arguments to filter TrialCalls to count.
+     * @example
+     * // Count the number of TrialCalls
+     * const count = await prisma.trialCall.count({
+     *   where: {
+     *     // ... the filter for the TrialCalls we want to count
+     *   }
+     * })
+    **/
+    count<T extends TrialCallCountArgs>(
+      args?: Subset<T, TrialCallCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TrialCallCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TrialCall.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TrialCallAggregateArgs>(args: Subset<T, TrialCallAggregateArgs>): Prisma.PrismaPromise<GetTrialCallAggregateType<T>>
+
+    /**
+     * Group by TrialCall.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TrialCallGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TrialCallGroupByArgs['orderBy'] }
+        : { orderBy?: TrialCallGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TrialCallGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTrialCallGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TrialCall model
+   */
+  readonly fields: TrialCallFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TrialCall.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TrialCallClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TrialCall$tenantArgs<ExtArgs> = {}>(args?: Subset<T, TrialCall$tenantArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends TrialCall$userArgs<ExtArgs> = {}>(args?: Subset<T, TrialCall$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    webinarRegistration<T extends TrialCall$webinarRegistrationArgs<ExtArgs> = {}>(args?: Subset<T, TrialCall$webinarRegistrationArgs<ExtArgs>>): Prisma__WebinarRegistrationClient<$Result.GetResult<Prisma.$WebinarRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TrialCall model
+   */
+  interface TrialCallFieldRefs {
+    readonly id: FieldRef<"TrialCall", 'String'>
+    readonly tenantId: FieldRef<"TrialCall", 'String'>
+    readonly userId: FieldRef<"TrialCall", 'String'>
+    readonly webinarRegistrationId: FieldRef<"TrialCall", 'String'>
+    readonly phoneNumber: FieldRef<"TrialCall", 'String'>
+    readonly customerName: FieldRef<"TrialCall", 'String'>
+    readonly provider: FieldRef<"TrialCall", 'String'>
+    readonly providerCallId: FieldRef<"TrialCall", 'String'>
+    readonly agentId: FieldRef<"TrialCall", 'String'>
+    readonly status: FieldRef<"TrialCall", 'TrialCallStatus'>
+    readonly subStatus: FieldRef<"TrialCall", 'String'>
+    readonly callDirection: FieldRef<"TrialCall", 'TrialCallDirection'>
+    readonly durationSeconds: FieldRef<"TrialCall", 'Int'>
+    readonly recordingUrl: FieldRef<"TrialCall", 'String'>
+    readonly transcript: FieldRef<"TrialCall", 'String'>
+    readonly outcome: FieldRef<"TrialCall", 'String'>
+    readonly outcomeData: FieldRef<"TrialCall", 'Json'>
+    readonly initiatedAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly startedAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly completedAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly failedAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly failureReason: FieldRef<"TrialCall", 'String'>
+    readonly lastWebhookAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly createdAt: FieldRef<"TrialCall", 'DateTime'>
+    readonly updatedAt: FieldRef<"TrialCall", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TrialCall findUnique
+   */
+  export type TrialCallFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter, which TrialCall to fetch.
+     */
+    where: TrialCallWhereUniqueInput
+  }
+
+  /**
+   * TrialCall findUniqueOrThrow
+   */
+  export type TrialCallFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter, which TrialCall to fetch.
+     */
+    where: TrialCallWhereUniqueInput
+  }
+
+  /**
+   * TrialCall findFirst
+   */
+  export type TrialCallFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter, which TrialCall to fetch.
+     */
+    where?: TrialCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCalls to fetch.
+     */
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrialCalls.
+     */
+    cursor?: TrialCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrialCalls.
+     */
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCall findFirstOrThrow
+   */
+  export type TrialCallFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter, which TrialCall to fetch.
+     */
+    where?: TrialCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCalls to fetch.
+     */
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrialCalls.
+     */
+    cursor?: TrialCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrialCalls.
+     */
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCall findMany
+   */
+  export type TrialCallFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter, which TrialCalls to fetch.
+     */
+    where?: TrialCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCalls to fetch.
+     */
+    orderBy?: TrialCallOrderByWithRelationInput | TrialCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TrialCalls.
+     */
+    cursor?: TrialCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCalls.
+     */
+    skip?: number
+    distinct?: TrialCallScalarFieldEnum | TrialCallScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCall create
+   */
+  export type TrialCallCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TrialCall.
+     */
+    data: XOR<TrialCallCreateInput, TrialCallUncheckedCreateInput>
+  }
+
+  /**
+   * TrialCall createMany
+   */
+  export type TrialCallCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TrialCalls.
+     */
+    data: TrialCallCreateManyInput | TrialCallCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TrialCall createManyAndReturn
+   */
+  export type TrialCallCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * The data used to create many TrialCalls.
+     */
+    data: TrialCallCreateManyInput | TrialCallCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TrialCall update
+   */
+  export type TrialCallUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TrialCall.
+     */
+    data: XOR<TrialCallUpdateInput, TrialCallUncheckedUpdateInput>
+    /**
+     * Choose, which TrialCall to update.
+     */
+    where: TrialCallWhereUniqueInput
+  }
+
+  /**
+   * TrialCall updateMany
+   */
+  export type TrialCallUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TrialCalls.
+     */
+    data: XOR<TrialCallUpdateManyMutationInput, TrialCallUncheckedUpdateManyInput>
+    /**
+     * Filter which TrialCalls to update
+     */
+    where?: TrialCallWhereInput
+    /**
+     * Limit how many TrialCalls to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrialCall updateManyAndReturn
+   */
+  export type TrialCallUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * The data used to update TrialCalls.
+     */
+    data: XOR<TrialCallUpdateManyMutationInput, TrialCallUncheckedUpdateManyInput>
+    /**
+     * Filter which TrialCalls to update
+     */
+    where?: TrialCallWhereInput
+    /**
+     * Limit how many TrialCalls to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TrialCall upsert
+   */
+  export type TrialCallUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TrialCall to update in case it exists.
+     */
+    where: TrialCallWhereUniqueInput
+    /**
+     * In case the TrialCall found by the `where` argument doesn't exist, create a new TrialCall with this data.
+     */
+    create: XOR<TrialCallCreateInput, TrialCallUncheckedCreateInput>
+    /**
+     * In case the TrialCall was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TrialCallUpdateInput, TrialCallUncheckedUpdateInput>
+  }
+
+  /**
+   * TrialCall delete
+   */
+  export type TrialCallDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+    /**
+     * Filter which TrialCall to delete.
+     */
+    where: TrialCallWhereUniqueInput
+  }
+
+  /**
+   * TrialCall deleteMany
+   */
+  export type TrialCallDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrialCalls to delete
+     */
+    where?: TrialCallWhereInput
+    /**
+     * Limit how many TrialCalls to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrialCall.tenant
+   */
+  export type TrialCall$tenantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tenant
+     */
+    select?: TenantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tenant
+     */
+    omit?: TenantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TenantInclude<ExtArgs> | null
+    where?: TenantWhereInput
+  }
+
+  /**
+   * TrialCall.user
+   */
+  export type TrialCall$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * TrialCall.webinarRegistration
+   */
+  export type TrialCall$webinarRegistrationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebinarRegistration
+     */
+    select?: WebinarRegistrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebinarRegistration
+     */
+    omit?: WebinarRegistrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebinarRegistrationInclude<ExtArgs> | null
+    where?: WebinarRegistrationWhereInput
+  }
+
+  /**
+   * TrialCall without action
+   */
+  export type TrialCallDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCall
+     */
+    select?: TrialCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCall
+     */
+    omit?: TrialCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrialCallInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TrialCallWebhookEvent
+   */
+
+  export type AggregateTrialCallWebhookEvent = {
+    _count: TrialCallWebhookEventCountAggregateOutputType | null
+    _min: TrialCallWebhookEventMinAggregateOutputType | null
+    _max: TrialCallWebhookEventMaxAggregateOutputType | null
+  }
+
+  export type TrialCallWebhookEventMinAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    eventId: string | null
+    eventType: string | null
+    providerCallId: string | null
+    receivedAt: Date | null
+    processedAt: Date | null
+    processingStatus: $Enums.TrialCallWebhookStatus | null
+    errorMessage: string | null
+    idempotencyKey: string | null
+  }
+
+  export type TrialCallWebhookEventMaxAggregateOutputType = {
+    id: string | null
+    provider: string | null
+    eventId: string | null
+    eventType: string | null
+    providerCallId: string | null
+    receivedAt: Date | null
+    processedAt: Date | null
+    processingStatus: $Enums.TrialCallWebhookStatus | null
+    errorMessage: string | null
+    idempotencyKey: string | null
+  }
+
+  export type TrialCallWebhookEventCountAggregateOutputType = {
+    id: number
+    provider: number
+    eventId: number
+    eventType: number
+    providerCallId: number
+    payload: number
+    receivedAt: number
+    processedAt: number
+    processingStatus: number
+    errorMessage: number
+    idempotencyKey: number
+    _all: number
+  }
+
+
+  export type TrialCallWebhookEventMinAggregateInputType = {
+    id?: true
+    provider?: true
+    eventId?: true
+    eventType?: true
+    providerCallId?: true
+    receivedAt?: true
+    processedAt?: true
+    processingStatus?: true
+    errorMessage?: true
+    idempotencyKey?: true
+  }
+
+  export type TrialCallWebhookEventMaxAggregateInputType = {
+    id?: true
+    provider?: true
+    eventId?: true
+    eventType?: true
+    providerCallId?: true
+    receivedAt?: true
+    processedAt?: true
+    processingStatus?: true
+    errorMessage?: true
+    idempotencyKey?: true
+  }
+
+  export type TrialCallWebhookEventCountAggregateInputType = {
+    id?: true
+    provider?: true
+    eventId?: true
+    eventType?: true
+    providerCallId?: true
+    payload?: true
+    receivedAt?: true
+    processedAt?: true
+    processingStatus?: true
+    errorMessage?: true
+    idempotencyKey?: true
+    _all?: true
+  }
+
+  export type TrialCallWebhookEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrialCallWebhookEvent to aggregate.
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCallWebhookEvents to fetch.
+     */
+    orderBy?: TrialCallWebhookEventOrderByWithRelationInput | TrialCallWebhookEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TrialCallWebhookEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCallWebhookEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCallWebhookEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TrialCallWebhookEvents
+    **/
+    _count?: true | TrialCallWebhookEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TrialCallWebhookEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TrialCallWebhookEventMaxAggregateInputType
+  }
+
+  export type GetTrialCallWebhookEventAggregateType<T extends TrialCallWebhookEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateTrialCallWebhookEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTrialCallWebhookEvent[P]>
+      : GetScalarType<T[P], AggregateTrialCallWebhookEvent[P]>
+  }
+
+
+
+
+  export type TrialCallWebhookEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrialCallWebhookEventWhereInput
+    orderBy?: TrialCallWebhookEventOrderByWithAggregationInput | TrialCallWebhookEventOrderByWithAggregationInput[]
+    by: TrialCallWebhookEventScalarFieldEnum[] | TrialCallWebhookEventScalarFieldEnum
+    having?: TrialCallWebhookEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TrialCallWebhookEventCountAggregateInputType | true
+    _min?: TrialCallWebhookEventMinAggregateInputType
+    _max?: TrialCallWebhookEventMaxAggregateInputType
+  }
+
+  export type TrialCallWebhookEventGroupByOutputType = {
+    id: string
+    provider: string
+    eventId: string | null
+    eventType: string
+    providerCallId: string | null
+    payload: JsonValue
+    receivedAt: Date
+    processedAt: Date | null
+    processingStatus: $Enums.TrialCallWebhookStatus
+    errorMessage: string | null
+    idempotencyKey: string
+    _count: TrialCallWebhookEventCountAggregateOutputType | null
+    _min: TrialCallWebhookEventMinAggregateOutputType | null
+    _max: TrialCallWebhookEventMaxAggregateOutputType | null
+  }
+
+  type GetTrialCallWebhookEventGroupByPayload<T extends TrialCallWebhookEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TrialCallWebhookEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TrialCallWebhookEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TrialCallWebhookEventGroupByOutputType[P]>
+            : GetScalarType<T[P], TrialCallWebhookEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TrialCallWebhookEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    providerCallId?: boolean
+    payload?: boolean
+    receivedAt?: boolean
+    processedAt?: boolean
+    processingStatus?: boolean
+    errorMessage?: boolean
+    idempotencyKey?: boolean
+  }, ExtArgs["result"]["trialCallWebhookEvent"]>
+
+  export type TrialCallWebhookEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    providerCallId?: boolean
+    payload?: boolean
+    receivedAt?: boolean
+    processedAt?: boolean
+    processingStatus?: boolean
+    errorMessage?: boolean
+    idempotencyKey?: boolean
+  }, ExtArgs["result"]["trialCallWebhookEvent"]>
+
+  export type TrialCallWebhookEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    providerCallId?: boolean
+    payload?: boolean
+    receivedAt?: boolean
+    processedAt?: boolean
+    processingStatus?: boolean
+    errorMessage?: boolean
+    idempotencyKey?: boolean
+  }, ExtArgs["result"]["trialCallWebhookEvent"]>
+
+  export type TrialCallWebhookEventSelectScalar = {
+    id?: boolean
+    provider?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    providerCallId?: boolean
+    payload?: boolean
+    receivedAt?: boolean
+    processedAt?: boolean
+    processingStatus?: boolean
+    errorMessage?: boolean
+    idempotencyKey?: boolean
+  }
+
+  export type TrialCallWebhookEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "eventId" | "eventType" | "providerCallId" | "payload" | "receivedAt" | "processedAt" | "processingStatus" | "errorMessage" | "idempotencyKey", ExtArgs["result"]["trialCallWebhookEvent"]>
+
+  export type $TrialCallWebhookEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TrialCallWebhookEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      provider: string
+      eventId: string | null
+      eventType: string
+      providerCallId: string | null
+      payload: Prisma.JsonValue
+      receivedAt: Date
+      processedAt: Date | null
+      processingStatus: $Enums.TrialCallWebhookStatus
+      errorMessage: string | null
+      idempotencyKey: string
+    }, ExtArgs["result"]["trialCallWebhookEvent"]>
+    composites: {}
+  }
+
+  type TrialCallWebhookEventGetPayload<S extends boolean | null | undefined | TrialCallWebhookEventDefaultArgs> = $Result.GetResult<Prisma.$TrialCallWebhookEventPayload, S>
+
+  type TrialCallWebhookEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TrialCallWebhookEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TrialCallWebhookEventCountAggregateInputType | true
+    }
+
+  export interface TrialCallWebhookEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TrialCallWebhookEvent'], meta: { name: 'TrialCallWebhookEvent' } }
+    /**
+     * Find zero or one TrialCallWebhookEvent that matches the filter.
+     * @param {TrialCallWebhookEventFindUniqueArgs} args - Arguments to find a TrialCallWebhookEvent
+     * @example
+     * // Get one TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TrialCallWebhookEventFindUniqueArgs>(args: SelectSubset<T, TrialCallWebhookEventFindUniqueArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TrialCallWebhookEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TrialCallWebhookEventFindUniqueOrThrowArgs} args - Arguments to find a TrialCallWebhookEvent
+     * @example
+     * // Get one TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TrialCallWebhookEventFindUniqueOrThrowArgs>(args: SelectSubset<T, TrialCallWebhookEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrialCallWebhookEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventFindFirstArgs} args - Arguments to find a TrialCallWebhookEvent
+     * @example
+     * // Get one TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TrialCallWebhookEventFindFirstArgs>(args?: SelectSubset<T, TrialCallWebhookEventFindFirstArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrialCallWebhookEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventFindFirstOrThrowArgs} args - Arguments to find a TrialCallWebhookEvent
+     * @example
+     * // Get one TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TrialCallWebhookEventFindFirstOrThrowArgs>(args?: SelectSubset<T, TrialCallWebhookEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TrialCallWebhookEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TrialCallWebhookEvents
+     * const trialCallWebhookEvents = await prisma.trialCallWebhookEvent.findMany()
+     * 
+     * // Get first 10 TrialCallWebhookEvents
+     * const trialCallWebhookEvents = await prisma.trialCallWebhookEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const trialCallWebhookEventWithIdOnly = await prisma.trialCallWebhookEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TrialCallWebhookEventFindManyArgs>(args?: SelectSubset<T, TrialCallWebhookEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TrialCallWebhookEvent.
+     * @param {TrialCallWebhookEventCreateArgs} args - Arguments to create a TrialCallWebhookEvent.
+     * @example
+     * // Create one TrialCallWebhookEvent
+     * const TrialCallWebhookEvent = await prisma.trialCallWebhookEvent.create({
+     *   data: {
+     *     // ... data to create a TrialCallWebhookEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends TrialCallWebhookEventCreateArgs>(args: SelectSubset<T, TrialCallWebhookEventCreateArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TrialCallWebhookEvents.
+     * @param {TrialCallWebhookEventCreateManyArgs} args - Arguments to create many TrialCallWebhookEvents.
+     * @example
+     * // Create many TrialCallWebhookEvents
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TrialCallWebhookEventCreateManyArgs>(args?: SelectSubset<T, TrialCallWebhookEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TrialCallWebhookEvents and returns the data saved in the database.
+     * @param {TrialCallWebhookEventCreateManyAndReturnArgs} args - Arguments to create many TrialCallWebhookEvents.
+     * @example
+     * // Create many TrialCallWebhookEvents
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TrialCallWebhookEvents and only return the `id`
+     * const trialCallWebhookEventWithIdOnly = await prisma.trialCallWebhookEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TrialCallWebhookEventCreateManyAndReturnArgs>(args?: SelectSubset<T, TrialCallWebhookEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TrialCallWebhookEvent.
+     * @param {TrialCallWebhookEventDeleteArgs} args - Arguments to delete one TrialCallWebhookEvent.
+     * @example
+     * // Delete one TrialCallWebhookEvent
+     * const TrialCallWebhookEvent = await prisma.trialCallWebhookEvent.delete({
+     *   where: {
+     *     // ... filter to delete one TrialCallWebhookEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TrialCallWebhookEventDeleteArgs>(args: SelectSubset<T, TrialCallWebhookEventDeleteArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TrialCallWebhookEvent.
+     * @param {TrialCallWebhookEventUpdateArgs} args - Arguments to update one TrialCallWebhookEvent.
+     * @example
+     * // Update one TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TrialCallWebhookEventUpdateArgs>(args: SelectSubset<T, TrialCallWebhookEventUpdateArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TrialCallWebhookEvents.
+     * @param {TrialCallWebhookEventDeleteManyArgs} args - Arguments to filter TrialCallWebhookEvents to delete.
+     * @example
+     * // Delete a few TrialCallWebhookEvents
+     * const { count } = await prisma.trialCallWebhookEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TrialCallWebhookEventDeleteManyArgs>(args?: SelectSubset<T, TrialCallWebhookEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrialCallWebhookEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TrialCallWebhookEvents
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TrialCallWebhookEventUpdateManyArgs>(args: SelectSubset<T, TrialCallWebhookEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrialCallWebhookEvents and returns the data updated in the database.
+     * @param {TrialCallWebhookEventUpdateManyAndReturnArgs} args - Arguments to update many TrialCallWebhookEvents.
+     * @example
+     * // Update many TrialCallWebhookEvents
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TrialCallWebhookEvents and only return the `id`
+     * const trialCallWebhookEventWithIdOnly = await prisma.trialCallWebhookEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TrialCallWebhookEventUpdateManyAndReturnArgs>(args: SelectSubset<T, TrialCallWebhookEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TrialCallWebhookEvent.
+     * @param {TrialCallWebhookEventUpsertArgs} args - Arguments to update or create a TrialCallWebhookEvent.
+     * @example
+     * // Update or create a TrialCallWebhookEvent
+     * const trialCallWebhookEvent = await prisma.trialCallWebhookEvent.upsert({
+     *   create: {
+     *     // ... data to create a TrialCallWebhookEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TrialCallWebhookEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TrialCallWebhookEventUpsertArgs>(args: SelectSubset<T, TrialCallWebhookEventUpsertArgs<ExtArgs>>): Prisma__TrialCallWebhookEventClient<$Result.GetResult<Prisma.$TrialCallWebhookEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TrialCallWebhookEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventCountArgs} args - Arguments to filter TrialCallWebhookEvents to count.
+     * @example
+     * // Count the number of TrialCallWebhookEvents
+     * const count = await prisma.trialCallWebhookEvent.count({
+     *   where: {
+     *     // ... the filter for the TrialCallWebhookEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends TrialCallWebhookEventCountArgs>(
+      args?: Subset<T, TrialCallWebhookEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TrialCallWebhookEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TrialCallWebhookEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TrialCallWebhookEventAggregateArgs>(args: Subset<T, TrialCallWebhookEventAggregateArgs>): Prisma.PrismaPromise<GetTrialCallWebhookEventAggregateType<T>>
+
+    /**
+     * Group by TrialCallWebhookEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrialCallWebhookEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TrialCallWebhookEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TrialCallWebhookEventGroupByArgs['orderBy'] }
+        : { orderBy?: TrialCallWebhookEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TrialCallWebhookEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTrialCallWebhookEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TrialCallWebhookEvent model
+   */
+  readonly fields: TrialCallWebhookEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TrialCallWebhookEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TrialCallWebhookEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TrialCallWebhookEvent model
+   */
+  interface TrialCallWebhookEventFieldRefs {
+    readonly id: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly provider: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly eventId: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly eventType: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly providerCallId: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly payload: FieldRef<"TrialCallWebhookEvent", 'Json'>
+    readonly receivedAt: FieldRef<"TrialCallWebhookEvent", 'DateTime'>
+    readonly processedAt: FieldRef<"TrialCallWebhookEvent", 'DateTime'>
+    readonly processingStatus: FieldRef<"TrialCallWebhookEvent", 'TrialCallWebhookStatus'>
+    readonly errorMessage: FieldRef<"TrialCallWebhookEvent", 'String'>
+    readonly idempotencyKey: FieldRef<"TrialCallWebhookEvent", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TrialCallWebhookEvent findUnique
+   */
+  export type TrialCallWebhookEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter, which TrialCallWebhookEvent to fetch.
+     */
+    where: TrialCallWebhookEventWhereUniqueInput
+  }
+
+  /**
+   * TrialCallWebhookEvent findUniqueOrThrow
+   */
+  export type TrialCallWebhookEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter, which TrialCallWebhookEvent to fetch.
+     */
+    where: TrialCallWebhookEventWhereUniqueInput
+  }
+
+  /**
+   * TrialCallWebhookEvent findFirst
+   */
+  export type TrialCallWebhookEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter, which TrialCallWebhookEvent to fetch.
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCallWebhookEvents to fetch.
+     */
+    orderBy?: TrialCallWebhookEventOrderByWithRelationInput | TrialCallWebhookEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrialCallWebhookEvents.
+     */
+    cursor?: TrialCallWebhookEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCallWebhookEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCallWebhookEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrialCallWebhookEvents.
+     */
+    distinct?: TrialCallWebhookEventScalarFieldEnum | TrialCallWebhookEventScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCallWebhookEvent findFirstOrThrow
+   */
+  export type TrialCallWebhookEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter, which TrialCallWebhookEvent to fetch.
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCallWebhookEvents to fetch.
+     */
+    orderBy?: TrialCallWebhookEventOrderByWithRelationInput | TrialCallWebhookEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrialCallWebhookEvents.
+     */
+    cursor?: TrialCallWebhookEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCallWebhookEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCallWebhookEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrialCallWebhookEvents.
+     */
+    distinct?: TrialCallWebhookEventScalarFieldEnum | TrialCallWebhookEventScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCallWebhookEvent findMany
+   */
+  export type TrialCallWebhookEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter, which TrialCallWebhookEvents to fetch.
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrialCallWebhookEvents to fetch.
+     */
+    orderBy?: TrialCallWebhookEventOrderByWithRelationInput | TrialCallWebhookEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TrialCallWebhookEvents.
+     */
+    cursor?: TrialCallWebhookEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrialCallWebhookEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrialCallWebhookEvents.
+     */
+    skip?: number
+    distinct?: TrialCallWebhookEventScalarFieldEnum | TrialCallWebhookEventScalarFieldEnum[]
+  }
+
+  /**
+   * TrialCallWebhookEvent create
+   */
+  export type TrialCallWebhookEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TrialCallWebhookEvent.
+     */
+    data: XOR<TrialCallWebhookEventCreateInput, TrialCallWebhookEventUncheckedCreateInput>
+  }
+
+  /**
+   * TrialCallWebhookEvent createMany
+   */
+  export type TrialCallWebhookEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TrialCallWebhookEvents.
+     */
+    data: TrialCallWebhookEventCreateManyInput | TrialCallWebhookEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TrialCallWebhookEvent createManyAndReturn
+   */
+  export type TrialCallWebhookEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many TrialCallWebhookEvents.
+     */
+    data: TrialCallWebhookEventCreateManyInput | TrialCallWebhookEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TrialCallWebhookEvent update
+   */
+  export type TrialCallWebhookEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TrialCallWebhookEvent.
+     */
+    data: XOR<TrialCallWebhookEventUpdateInput, TrialCallWebhookEventUncheckedUpdateInput>
+    /**
+     * Choose, which TrialCallWebhookEvent to update.
+     */
+    where: TrialCallWebhookEventWhereUniqueInput
+  }
+
+  /**
+   * TrialCallWebhookEvent updateMany
+   */
+  export type TrialCallWebhookEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TrialCallWebhookEvents.
+     */
+    data: XOR<TrialCallWebhookEventUpdateManyMutationInput, TrialCallWebhookEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TrialCallWebhookEvents to update
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * Limit how many TrialCallWebhookEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrialCallWebhookEvent updateManyAndReturn
+   */
+  export type TrialCallWebhookEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * The data used to update TrialCallWebhookEvents.
+     */
+    data: XOR<TrialCallWebhookEventUpdateManyMutationInput, TrialCallWebhookEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TrialCallWebhookEvents to update
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * Limit how many TrialCallWebhookEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrialCallWebhookEvent upsert
+   */
+  export type TrialCallWebhookEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TrialCallWebhookEvent to update in case it exists.
+     */
+    where: TrialCallWebhookEventWhereUniqueInput
+    /**
+     * In case the TrialCallWebhookEvent found by the `where` argument doesn't exist, create a new TrialCallWebhookEvent with this data.
+     */
+    create: XOR<TrialCallWebhookEventCreateInput, TrialCallWebhookEventUncheckedCreateInput>
+    /**
+     * In case the TrialCallWebhookEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TrialCallWebhookEventUpdateInput, TrialCallWebhookEventUncheckedUpdateInput>
+  }
+
+  /**
+   * TrialCallWebhookEvent delete
+   */
+  export type TrialCallWebhookEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
+    /**
+     * Filter which TrialCallWebhookEvent to delete.
+     */
+    where: TrialCallWebhookEventWhereUniqueInput
+  }
+
+  /**
+   * TrialCallWebhookEvent deleteMany
+   */
+  export type TrialCallWebhookEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrialCallWebhookEvents to delete
+     */
+    where?: TrialCallWebhookEventWhereInput
+    /**
+     * Limit how many TrialCallWebhookEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrialCallWebhookEvent without action
+   */
+  export type TrialCallWebhookEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrialCallWebhookEvent
+     */
+    select?: TrialCallWebhookEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrialCallWebhookEvent
+     */
+    omit?: TrialCallWebhookEventOmit<ExtArgs> | null
   }
 
 
@@ -42247,12 +45165,67 @@ export namespace Prisma {
     utmMedium: 'utmMedium',
     utmCampaign: 'utmCampaign',
     fbclid: 'fbclid',
+    fbp: 'fbp',
+    fbc: 'fbc',
+    utmContent: 'utmContent',
+    utmTerm: 'utmTerm',
     gclid: 'gclid',
+    metaCampaignId: 'metaCampaignId',
+    metaAdsetId: 'metaAdsetId',
+    metaAdId: 'metaAdId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type WebinarRegistrationScalarFieldEnum = (typeof WebinarRegistrationScalarFieldEnum)[keyof typeof WebinarRegistrationScalarFieldEnum]
+
+
+  export const TrialCallScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    userId: 'userId',
+    webinarRegistrationId: 'webinarRegistrationId',
+    phoneNumber: 'phoneNumber',
+    customerName: 'customerName',
+    provider: 'provider',
+    providerCallId: 'providerCallId',
+    agentId: 'agentId',
+    status: 'status',
+    subStatus: 'subStatus',
+    callDirection: 'callDirection',
+    durationSeconds: 'durationSeconds',
+    recordingUrl: 'recordingUrl',
+    transcript: 'transcript',
+    outcome: 'outcome',
+    outcomeData: 'outcomeData',
+    initiatedAt: 'initiatedAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    failedAt: 'failedAt',
+    failureReason: 'failureReason',
+    lastWebhookAt: 'lastWebhookAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TrialCallScalarFieldEnum = (typeof TrialCallScalarFieldEnum)[keyof typeof TrialCallScalarFieldEnum]
+
+
+  export const TrialCallWebhookEventScalarFieldEnum: {
+    id: 'id',
+    provider: 'provider',
+    eventId: 'eventId',
+    eventType: 'eventType',
+    providerCallId: 'providerCallId',
+    payload: 'payload',
+    receivedAt: 'receivedAt',
+    processedAt: 'processedAt',
+    processingStatus: 'processingStatus',
+    errorMessage: 'errorMessage',
+    idempotencyKey: 'idempotencyKey'
+  };
+
+  export type TrialCallWebhookEventScalarFieldEnum = (typeof TrialCallWebhookEventScalarFieldEnum)[keyof typeof TrialCallWebhookEventScalarFieldEnum]
 
 
   export const WebinarScalarFieldEnum: {
@@ -42813,6 +45786,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TrialCallStatus'
+   */
+  export type EnumTrialCallStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TrialCallStatus[]'
+   */
+  export type ListEnumTrialCallStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TrialCallDirection'
+   */
+  export type EnumTrialCallDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallDirection'>
+    
+
+
+  /**
+   * Reference to a field of type 'TrialCallDirection[]'
+   */
+  export type ListEnumTrialCallDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallDirection[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TrialCallWebhookStatus'
+   */
+  export type EnumTrialCallWebhookStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallWebhookStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TrialCallWebhookStatus[]'
+   */
+  export type ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrialCallWebhookStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'WebinarStatus'
    */
   export type EnumWebinarStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WebinarStatus'>
@@ -42876,6 +45891,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderListRelationFilter
     paymentReconciliations?: PaymentReconciliationListRelationFilter
     paymentWebhooks?: PaymentWebhookEventListRelationFilter
+    trialCalls?: TrialCallListRelationFilter
     transcriptSegments?: TranscriptSegmentListRelationFilter
     usageRecords?: UsageRecordListRelationFilter
     users?: UserListRelationFilter
@@ -42913,6 +45929,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderOrderByRelationAggregateInput
     paymentReconciliations?: PaymentReconciliationOrderByRelationAggregateInput
     paymentWebhooks?: PaymentWebhookEventOrderByRelationAggregateInput
+    trialCalls?: TrialCallOrderByRelationAggregateInput
     transcriptSegments?: TranscriptSegmentOrderByRelationAggregateInput
     usageRecords?: UsageRecordOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
@@ -42953,6 +45970,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderListRelationFilter
     paymentReconciliations?: PaymentReconciliationListRelationFilter
     paymentWebhooks?: PaymentWebhookEventListRelationFilter
+    trialCalls?: TrialCallListRelationFilter
     transcriptSegments?: TranscriptSegmentListRelationFilter
     usageRecords?: UsageRecordListRelationFilter
     users?: UserListRelationFilter
@@ -43025,6 +46043,7 @@ export namespace Prisma {
     avatar?: StringNullableFilter<"User"> | string | null
     googleId?: StringNullableFilter<"User"> | string | null
     provider?: StringFilter<"User"> | string
+    trialCalls?: TrialCallListRelationFilter
     authSessions?: AuthSessionListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
@@ -43046,6 +46065,7 @@ export namespace Prisma {
     avatar?: SortOrderInput | SortOrder
     googleId?: SortOrderInput | SortOrder
     provider?: SortOrder
+    trialCalls?: TrialCallOrderByRelationAggregateInput
     authSessions?: AuthSessionOrderByRelationAggregateInput
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput
     tenant?: TenantOrderByWithRelationInput
@@ -43070,6 +46090,7 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     avatar?: StringNullableFilter<"User"> | string | null
     provider?: StringFilter<"User"> | string
+    trialCalls?: TrialCallListRelationFilter
     authSessions?: AuthSessionListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
@@ -45410,11 +48431,19 @@ export namespace Prisma {
     utmMedium?: StringNullableFilter<"WebinarRegistration"> | string | null
     utmCampaign?: StringNullableFilter<"WebinarRegistration"> | string | null
     fbclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbp?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbc?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmContent?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmTerm?: StringNullableFilter<"WebinarRegistration"> | string | null
     gclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaCampaignId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdsetId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdId?: StringNullableFilter<"WebinarRegistration"> | string | null
     createdAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventListRelationFilter
     WebinarNotification?: WebinarNotificationListRelationFilter
+    trialCalls?: TrialCallListRelationFilter
     Webinar?: XOR<WebinarScalarRelationFilter, WebinarWhereInput>
   }
 
@@ -45435,11 +48464,19 @@ export namespace Prisma {
     utmMedium?: SortOrderInput | SortOrder
     utmCampaign?: SortOrderInput | SortOrder
     fbclid?: SortOrderInput | SortOrder
+    fbp?: SortOrderInput | SortOrder
+    fbc?: SortOrderInput | SortOrder
+    utmContent?: SortOrderInput | SortOrder
+    utmTerm?: SortOrderInput | SortOrder
     gclid?: SortOrderInput | SortOrder
+    metaCampaignId?: SortOrderInput | SortOrder
+    metaAdsetId?: SortOrderInput | SortOrder
+    metaAdId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     WebinarPaymentEvent?: WebinarPaymentEventOrderByRelationAggregateInput
     WebinarNotification?: WebinarNotificationOrderByRelationAggregateInput
+    trialCalls?: TrialCallOrderByRelationAggregateInput
     Webinar?: WebinarOrderByWithRelationInput
   }
 
@@ -45463,11 +48500,19 @@ export namespace Prisma {
     utmMedium?: StringNullableFilter<"WebinarRegistration"> | string | null
     utmCampaign?: StringNullableFilter<"WebinarRegistration"> | string | null
     fbclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbp?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbc?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmContent?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmTerm?: StringNullableFilter<"WebinarRegistration"> | string | null
     gclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaCampaignId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdsetId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdId?: StringNullableFilter<"WebinarRegistration"> | string | null
     createdAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventListRelationFilter
     WebinarNotification?: WebinarNotificationListRelationFilter
+    trialCalls?: TrialCallListRelationFilter
     Webinar?: XOR<WebinarScalarRelationFilter, WebinarWhereInput>
   }, "id">
 
@@ -45488,7 +48533,14 @@ export namespace Prisma {
     utmMedium?: SortOrderInput | SortOrder
     utmCampaign?: SortOrderInput | SortOrder
     fbclid?: SortOrderInput | SortOrder
+    fbp?: SortOrderInput | SortOrder
+    fbc?: SortOrderInput | SortOrder
+    utmContent?: SortOrderInput | SortOrder
+    utmTerm?: SortOrderInput | SortOrder
     gclid?: SortOrderInput | SortOrder
+    metaCampaignId?: SortOrderInput | SortOrder
+    metaAdsetId?: SortOrderInput | SortOrder
+    metaAdId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WebinarRegistrationCountOrderByAggregateInput
@@ -45516,9 +48568,261 @@ export namespace Prisma {
     utmMedium?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
     utmCampaign?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
     fbclid?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    fbp?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    fbc?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    utmContent?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    utmTerm?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
     gclid?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    metaCampaignId?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    metaAdsetId?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
+    metaAdId?: StringNullableWithAggregatesFilter<"WebinarRegistration"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"WebinarRegistration"> | Date | string
+  }
+
+  export type TrialCallWhereInput = {
+    AND?: TrialCallWhereInput | TrialCallWhereInput[]
+    OR?: TrialCallWhereInput[]
+    NOT?: TrialCallWhereInput | TrialCallWhereInput[]
+    id?: StringFilter<"TrialCall"> | string
+    tenantId?: StringNullableFilter<"TrialCall"> | string | null
+    userId?: StringNullableFilter<"TrialCall"> | string | null
+    webinarRegistrationId?: StringNullableFilter<"TrialCall"> | string | null
+    phoneNumber?: StringFilter<"TrialCall"> | string
+    customerName?: StringNullableFilter<"TrialCall"> | string | null
+    provider?: StringFilter<"TrialCall"> | string
+    providerCallId?: StringNullableFilter<"TrialCall"> | string | null
+    agentId?: StringNullableFilter<"TrialCall"> | string | null
+    status?: EnumTrialCallStatusFilter<"TrialCall"> | $Enums.TrialCallStatus
+    subStatus?: StringNullableFilter<"TrialCall"> | string | null
+    callDirection?: EnumTrialCallDirectionFilter<"TrialCall"> | $Enums.TrialCallDirection
+    durationSeconds?: IntNullableFilter<"TrialCall"> | number | null
+    recordingUrl?: StringNullableFilter<"TrialCall"> | string | null
+    transcript?: StringNullableFilter<"TrialCall"> | string | null
+    outcome?: StringNullableFilter<"TrialCall"> | string | null
+    outcomeData?: JsonNullableFilter<"TrialCall">
+    initiatedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failureReason?: StringNullableFilter<"TrialCall"> | string | null
+    lastWebhookAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    createdAt?: DateTimeFilter<"TrialCall"> | Date | string
+    updatedAt?: DateTimeFilter<"TrialCall"> | Date | string
+    tenant?: XOR<TenantNullableScalarRelationFilter, TenantWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    webinarRegistration?: XOR<WebinarRegistrationNullableScalarRelationFilter, WebinarRegistrationWhereInput> | null
+  }
+
+  export type TrialCallOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    webinarRegistrationId?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrder
+    customerName?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    providerCallId?: SortOrderInput | SortOrder
+    agentId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    subStatus?: SortOrderInput | SortOrder
+    callDirection?: SortOrder
+    durationSeconds?: SortOrderInput | SortOrder
+    recordingUrl?: SortOrderInput | SortOrder
+    transcript?: SortOrderInput | SortOrder
+    outcome?: SortOrderInput | SortOrder
+    outcomeData?: SortOrderInput | SortOrder
+    initiatedAt?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    failedAt?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
+    lastWebhookAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    webinarRegistration?: WebinarRegistrationOrderByWithRelationInput
+  }
+
+  export type TrialCallWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TrialCallWhereInput | TrialCallWhereInput[]
+    OR?: TrialCallWhereInput[]
+    NOT?: TrialCallWhereInput | TrialCallWhereInput[]
+    tenantId?: StringNullableFilter<"TrialCall"> | string | null
+    userId?: StringNullableFilter<"TrialCall"> | string | null
+    webinarRegistrationId?: StringNullableFilter<"TrialCall"> | string | null
+    phoneNumber?: StringFilter<"TrialCall"> | string
+    customerName?: StringNullableFilter<"TrialCall"> | string | null
+    provider?: StringFilter<"TrialCall"> | string
+    providerCallId?: StringNullableFilter<"TrialCall"> | string | null
+    agentId?: StringNullableFilter<"TrialCall"> | string | null
+    status?: EnumTrialCallStatusFilter<"TrialCall"> | $Enums.TrialCallStatus
+    subStatus?: StringNullableFilter<"TrialCall"> | string | null
+    callDirection?: EnumTrialCallDirectionFilter<"TrialCall"> | $Enums.TrialCallDirection
+    durationSeconds?: IntNullableFilter<"TrialCall"> | number | null
+    recordingUrl?: StringNullableFilter<"TrialCall"> | string | null
+    transcript?: StringNullableFilter<"TrialCall"> | string | null
+    outcome?: StringNullableFilter<"TrialCall"> | string | null
+    outcomeData?: JsonNullableFilter<"TrialCall">
+    initiatedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failureReason?: StringNullableFilter<"TrialCall"> | string | null
+    lastWebhookAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    createdAt?: DateTimeFilter<"TrialCall"> | Date | string
+    updatedAt?: DateTimeFilter<"TrialCall"> | Date | string
+    tenant?: XOR<TenantNullableScalarRelationFilter, TenantWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    webinarRegistration?: XOR<WebinarRegistrationNullableScalarRelationFilter, WebinarRegistrationWhereInput> | null
+  }, "id">
+
+  export type TrialCallOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    webinarRegistrationId?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrder
+    customerName?: SortOrderInput | SortOrder
+    provider?: SortOrder
+    providerCallId?: SortOrderInput | SortOrder
+    agentId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    subStatus?: SortOrderInput | SortOrder
+    callDirection?: SortOrder
+    durationSeconds?: SortOrderInput | SortOrder
+    recordingUrl?: SortOrderInput | SortOrder
+    transcript?: SortOrderInput | SortOrder
+    outcome?: SortOrderInput | SortOrder
+    outcomeData?: SortOrderInput | SortOrder
+    initiatedAt?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    failedAt?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
+    lastWebhookAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TrialCallCountOrderByAggregateInput
+    _avg?: TrialCallAvgOrderByAggregateInput
+    _max?: TrialCallMaxOrderByAggregateInput
+    _min?: TrialCallMinOrderByAggregateInput
+    _sum?: TrialCallSumOrderByAggregateInput
+  }
+
+  export type TrialCallScalarWhereWithAggregatesInput = {
+    AND?: TrialCallScalarWhereWithAggregatesInput | TrialCallScalarWhereWithAggregatesInput[]
+    OR?: TrialCallScalarWhereWithAggregatesInput[]
+    NOT?: TrialCallScalarWhereWithAggregatesInput | TrialCallScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TrialCall"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    webinarRegistrationId?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    phoneNumber?: StringWithAggregatesFilter<"TrialCall"> | string
+    customerName?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    provider?: StringWithAggregatesFilter<"TrialCall"> | string
+    providerCallId?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    agentId?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    status?: EnumTrialCallStatusWithAggregatesFilter<"TrialCall"> | $Enums.TrialCallStatus
+    subStatus?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    callDirection?: EnumTrialCallDirectionWithAggregatesFilter<"TrialCall"> | $Enums.TrialCallDirection
+    durationSeconds?: IntNullableWithAggregatesFilter<"TrialCall"> | number | null
+    recordingUrl?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    transcript?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    outcome?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    outcomeData?: JsonNullableWithAggregatesFilter<"TrialCall">
+    initiatedAt?: DateTimeNullableWithAggregatesFilter<"TrialCall"> | Date | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"TrialCall"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"TrialCall"> | Date | string | null
+    failedAt?: DateTimeNullableWithAggregatesFilter<"TrialCall"> | Date | string | null
+    failureReason?: StringNullableWithAggregatesFilter<"TrialCall"> | string | null
+    lastWebhookAt?: DateTimeNullableWithAggregatesFilter<"TrialCall"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"TrialCall"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TrialCall"> | Date | string
+  }
+
+  export type TrialCallWebhookEventWhereInput = {
+    AND?: TrialCallWebhookEventWhereInput | TrialCallWebhookEventWhereInput[]
+    OR?: TrialCallWebhookEventWhereInput[]
+    NOT?: TrialCallWebhookEventWhereInput | TrialCallWebhookEventWhereInput[]
+    id?: StringFilter<"TrialCallWebhookEvent"> | string
+    provider?: StringFilter<"TrialCallWebhookEvent"> | string
+    eventId?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+    eventType?: StringFilter<"TrialCallWebhookEvent"> | string
+    providerCallId?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+    payload?: JsonFilter<"TrialCallWebhookEvent">
+    receivedAt?: DateTimeFilter<"TrialCallWebhookEvent"> | Date | string
+    processedAt?: DateTimeNullableFilter<"TrialCallWebhookEvent"> | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFilter<"TrialCallWebhookEvent"> | $Enums.TrialCallWebhookStatus
+    errorMessage?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+    idempotencyKey?: StringFilter<"TrialCallWebhookEvent"> | string
+  }
+
+  export type TrialCallWebhookEventOrderByWithRelationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    eventId?: SortOrderInput | SortOrder
+    eventType?: SortOrder
+    providerCallId?: SortOrderInput | SortOrder
+    payload?: SortOrder
+    receivedAt?: SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    processingStatus?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrder
+  }
+
+  export type TrialCallWebhookEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    idempotencyKey?: string
+    AND?: TrialCallWebhookEventWhereInput | TrialCallWebhookEventWhereInput[]
+    OR?: TrialCallWebhookEventWhereInput[]
+    NOT?: TrialCallWebhookEventWhereInput | TrialCallWebhookEventWhereInput[]
+    provider?: StringFilter<"TrialCallWebhookEvent"> | string
+    eventId?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+    eventType?: StringFilter<"TrialCallWebhookEvent"> | string
+    providerCallId?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+    payload?: JsonFilter<"TrialCallWebhookEvent">
+    receivedAt?: DateTimeFilter<"TrialCallWebhookEvent"> | Date | string
+    processedAt?: DateTimeNullableFilter<"TrialCallWebhookEvent"> | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFilter<"TrialCallWebhookEvent"> | $Enums.TrialCallWebhookStatus
+    errorMessage?: StringNullableFilter<"TrialCallWebhookEvent"> | string | null
+  }, "id" | "idempotencyKey">
+
+  export type TrialCallWebhookEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    eventId?: SortOrderInput | SortOrder
+    eventType?: SortOrder
+    providerCallId?: SortOrderInput | SortOrder
+    payload?: SortOrder
+    receivedAt?: SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    processingStatus?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrder
+    _count?: TrialCallWebhookEventCountOrderByAggregateInput
+    _max?: TrialCallWebhookEventMaxOrderByAggregateInput
+    _min?: TrialCallWebhookEventMinOrderByAggregateInput
+  }
+
+  export type TrialCallWebhookEventScalarWhereWithAggregatesInput = {
+    AND?: TrialCallWebhookEventScalarWhereWithAggregatesInput | TrialCallWebhookEventScalarWhereWithAggregatesInput[]
+    OR?: TrialCallWebhookEventScalarWhereWithAggregatesInput[]
+    NOT?: TrialCallWebhookEventScalarWhereWithAggregatesInput | TrialCallWebhookEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TrialCallWebhookEvent"> | string
+    provider?: StringWithAggregatesFilter<"TrialCallWebhookEvent"> | string
+    eventId?: StringNullableWithAggregatesFilter<"TrialCallWebhookEvent"> | string | null
+    eventType?: StringWithAggregatesFilter<"TrialCallWebhookEvent"> | string
+    providerCallId?: StringNullableWithAggregatesFilter<"TrialCallWebhookEvent"> | string | null
+    payload?: JsonWithAggregatesFilter<"TrialCallWebhookEvent">
+    receivedAt?: DateTimeWithAggregatesFilter<"TrialCallWebhookEvent"> | Date | string
+    processedAt?: DateTimeNullableWithAggregatesFilter<"TrialCallWebhookEvent"> | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusWithAggregatesFilter<"TrialCallWebhookEvent"> | $Enums.TrialCallWebhookStatus
+    errorMessage?: StringNullableWithAggregatesFilter<"TrialCallWebhookEvent"> | string | null
+    idempotencyKey?: StringWithAggregatesFilter<"TrialCallWebhookEvent"> | string
   }
 
   export type WebinarWhereInput = {
@@ -45937,6 +49241,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -45974,6 +49279,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -46011,6 +49317,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -46048,6 +49355,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -46127,6 +49435,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     tenant: TenantCreateNestedOneWithoutUsersInput
@@ -46148,6 +49457,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
@@ -46167,6 +49477,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
@@ -46188,6 +49499,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -48810,11 +52122,19 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
     WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallCreateNestedManyWithoutWebinarRegistrationInput
     Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
   }
 
@@ -48835,11 +52155,19 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
     WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationUpdateInput = {
@@ -48858,11 +52186,19 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
     WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutWebinarRegistrationNestedInput
     Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
   }
 
@@ -48883,11 +52219,19 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
     WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationCreateManyInput = {
@@ -48907,7 +52251,14 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -48928,7 +52279,14 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48950,9 +52308,307 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallCreateInput = {
+    id?: string
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant?: TenantCreateNestedOneWithoutTrialCallsInput
+    user?: UserCreateNestedOneWithoutTrialCallsInput
+    webinarRegistration?: WebinarRegistrationCreateNestedOneWithoutTrialCallsInput
+  }
+
+  export type TrialCallUncheckedCreateInput = {
+    id?: string
+    tenantId?: string | null
+    userId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneWithoutTrialCallsNestedInput
+    user?: UserUpdateOneWithoutTrialCallsNestedInput
+    webinarRegistration?: WebinarRegistrationUpdateOneWithoutTrialCallsNestedInput
+  }
+
+  export type TrialCallUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallCreateManyInput = {
+    id?: string
+    tenantId?: string | null
+    userId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallWebhookEventCreateInput = {
+    id?: string
+    provider: string
+    eventId?: string | null
+    eventType: string
+    providerCallId?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    receivedAt?: Date | string
+    processedAt?: Date | string | null
+    processingStatus?: $Enums.TrialCallWebhookStatus
+    errorMessage?: string | null
+    idempotencyKey: string
+  }
+
+  export type TrialCallWebhookEventUncheckedCreateInput = {
+    id?: string
+    provider: string
+    eventId?: string | null
+    eventType: string
+    providerCallId?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    receivedAt?: Date | string
+    processedAt?: Date | string | null
+    processingStatus?: $Enums.TrialCallWebhookStatus
+    errorMessage?: string | null
+    idempotencyKey: string
+  }
+
+  export type TrialCallWebhookEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    eventId?: NullableStringFieldUpdateOperationsInput | string | null
+    eventType?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFieldUpdateOperationsInput | $Enums.TrialCallWebhookStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TrialCallWebhookEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    eventId?: NullableStringFieldUpdateOperationsInput | string | null
+    eventType?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFieldUpdateOperationsInput | $Enums.TrialCallWebhookStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TrialCallWebhookEventCreateManyInput = {
+    id?: string
+    provider: string
+    eventId?: string | null
+    eventType: string
+    providerCallId?: string | null
+    payload: JsonNullValueInput | InputJsonValue
+    receivedAt?: Date | string
+    processedAt?: Date | string | null
+    processingStatus?: $Enums.TrialCallWebhookStatus
+    errorMessage?: string | null
+    idempotencyKey: string
+  }
+
+  export type TrialCallWebhookEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    eventId?: NullableStringFieldUpdateOperationsInput | string | null
+    eventType?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFieldUpdateOperationsInput | $Enums.TrialCallWebhookStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TrialCallWebhookEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: StringFieldUpdateOperationsInput | string
+    eventId?: NullableStringFieldUpdateOperationsInput | string | null
+    eventType?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: JsonNullValueInput | InputJsonValue
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStatus?: EnumTrialCallWebhookStatusFieldUpdateOperationsInput | $Enums.TrialCallWebhookStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
   }
 
   export type WebinarCreateInput = {
@@ -49583,6 +53239,12 @@ export namespace Prisma {
     none?: PaymentWebhookEventWhereInput
   }
 
+  export type TrialCallListRelationFilter = {
+    every?: TrialCallWhereInput
+    some?: TrialCallWhereInput
+    none?: TrialCallWhereInput
+  }
+
   export type TranscriptSegmentListRelationFilter = {
     every?: TranscriptSegmentWhereInput
     some?: TranscriptSegmentWhereInput
@@ -49667,6 +53329,10 @@ export namespace Prisma {
   }
 
   export type PaymentWebhookEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TrialCallOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51784,7 +55450,14 @@ export namespace Prisma {
     utmMedium?: SortOrder
     utmCampaign?: SortOrder
     fbclid?: SortOrder
+    fbp?: SortOrder
+    fbc?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
     gclid?: SortOrder
+    metaCampaignId?: SortOrder
+    metaAdsetId?: SortOrder
+    metaAdId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51806,7 +55479,14 @@ export namespace Prisma {
     utmMedium?: SortOrder
     utmCampaign?: SortOrder
     fbclid?: SortOrder
+    fbp?: SortOrder
+    fbc?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
     gclid?: SortOrder
+    metaCampaignId?: SortOrder
+    metaAdsetId?: SortOrder
+    metaAdId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51828,7 +55508,14 @@ export namespace Prisma {
     utmMedium?: SortOrder
     utmCampaign?: SortOrder
     fbclid?: SortOrder
+    fbp?: SortOrder
+    fbc?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
     gclid?: SortOrder
+    metaCampaignId?: SortOrder
+    metaAdsetId?: SortOrder
+    metaAdId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51841,6 +55528,197 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRegistrationStatusFilter<$PrismaModel>
     _max?: NestedEnumRegistrationStatusFilter<$PrismaModel>
+  }
+
+  export type EnumTrialCallStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallStatus | EnumTrialCallStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallStatusFilter<$PrismaModel> | $Enums.TrialCallStatus
+  }
+
+  export type EnumTrialCallDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallDirection | EnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallDirectionFilter<$PrismaModel> | $Enums.TrialCallDirection
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type WebinarRegistrationNullableScalarRelationFilter = {
+    is?: WebinarRegistrationWhereInput | null
+    isNot?: WebinarRegistrationWhereInput | null
+  }
+
+  export type TrialCallCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    webinarRegistrationId?: SortOrder
+    phoneNumber?: SortOrder
+    customerName?: SortOrder
+    provider?: SortOrder
+    providerCallId?: SortOrder
+    agentId?: SortOrder
+    status?: SortOrder
+    subStatus?: SortOrder
+    callDirection?: SortOrder
+    durationSeconds?: SortOrder
+    recordingUrl?: SortOrder
+    transcript?: SortOrder
+    outcome?: SortOrder
+    outcomeData?: SortOrder
+    initiatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
+    lastWebhookAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TrialCallAvgOrderByAggregateInput = {
+    durationSeconds?: SortOrder
+  }
+
+  export type TrialCallMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    webinarRegistrationId?: SortOrder
+    phoneNumber?: SortOrder
+    customerName?: SortOrder
+    provider?: SortOrder
+    providerCallId?: SortOrder
+    agentId?: SortOrder
+    status?: SortOrder
+    subStatus?: SortOrder
+    callDirection?: SortOrder
+    durationSeconds?: SortOrder
+    recordingUrl?: SortOrder
+    transcript?: SortOrder
+    outcome?: SortOrder
+    initiatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
+    lastWebhookAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TrialCallMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    webinarRegistrationId?: SortOrder
+    phoneNumber?: SortOrder
+    customerName?: SortOrder
+    provider?: SortOrder
+    providerCallId?: SortOrder
+    agentId?: SortOrder
+    status?: SortOrder
+    subStatus?: SortOrder
+    callDirection?: SortOrder
+    durationSeconds?: SortOrder
+    recordingUrl?: SortOrder
+    transcript?: SortOrder
+    outcome?: SortOrder
+    initiatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
+    lastWebhookAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TrialCallSumOrderByAggregateInput = {
+    durationSeconds?: SortOrder
+  }
+
+  export type EnumTrialCallStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallStatus | EnumTrialCallStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallStatusFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallStatusFilter<$PrismaModel>
+  }
+
+  export type EnumTrialCallDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallDirection | EnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallDirectionWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallDirectionFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallDirectionFilter<$PrismaModel>
+  }
+
+  export type EnumTrialCallWebhookStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallWebhookStatus | EnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel> | $Enums.TrialCallWebhookStatus
+  }
+
+  export type TrialCallWebhookEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    providerCallId?: SortOrder
+    payload?: SortOrder
+    receivedAt?: SortOrder
+    processedAt?: SortOrder
+    processingStatus?: SortOrder
+    errorMessage?: SortOrder
+    idempotencyKey?: SortOrder
+  }
+
+  export type TrialCallWebhookEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    providerCallId?: SortOrder
+    receivedAt?: SortOrder
+    processedAt?: SortOrder
+    processingStatus?: SortOrder
+    errorMessage?: SortOrder
+    idempotencyKey?: SortOrder
+  }
+
+  export type TrialCallWebhookEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    providerCallId?: SortOrder
+    receivedAt?: SortOrder
+    processedAt?: SortOrder
+    processingStatus?: SortOrder
+    errorMessage?: SortOrder
+    idempotencyKey?: SortOrder
+  }
+
+  export type EnumTrialCallWebhookStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallWebhookStatus | EnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallWebhookStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallWebhookStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel>
   }
 
   export type EnumWebinarStatusFilter<$PrismaModel = never> = {
@@ -51974,11 +55852,6 @@ export namespace Prisma {
     razorpayEventId?: SortOrder
     eventType?: SortOrder
     processedAt?: SortOrder
-  }
-
-  export type WebinarRegistrationNullableScalarRelationFilter = {
-    is?: WebinarRegistrationWhereInput | null
-    isNot?: WebinarRegistrationWhereInput | null
   }
 
   export type WebinarNotificationCountOrderByAggregateInput = {
@@ -52185,6 +56058,13 @@ export namespace Prisma {
     connect?: PaymentWebhookEventWhereUniqueInput | PaymentWebhookEventWhereUniqueInput[]
   }
 
+  export type TrialCallCreateNestedManyWithoutTenantInput = {
+    create?: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput> | TrialCallCreateWithoutTenantInput[] | TrialCallUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutTenantInput | TrialCallCreateOrConnectWithoutTenantInput[]
+    createMany?: TrialCallCreateManyTenantInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+  }
+
   export type TranscriptSegmentCreateNestedManyWithoutTenantInput = {
     create?: XOR<TranscriptSegmentCreateWithoutTenantInput, TranscriptSegmentUncheckedCreateWithoutTenantInput> | TranscriptSegmentCreateWithoutTenantInput[] | TranscriptSegmentUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: TranscriptSegmentCreateOrConnectWithoutTenantInput | TranscriptSegmentCreateOrConnectWithoutTenantInput[]
@@ -52309,6 +56189,13 @@ export namespace Prisma {
     connectOrCreate?: PaymentWebhookEventCreateOrConnectWithoutTenantInput | PaymentWebhookEventCreateOrConnectWithoutTenantInput[]
     createMany?: PaymentWebhookEventCreateManyTenantInputEnvelope
     connect?: PaymentWebhookEventWhereUniqueInput | PaymentWebhookEventWhereUniqueInput[]
+  }
+
+  export type TrialCallUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput> | TrialCallCreateWithoutTenantInput[] | TrialCallUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutTenantInput | TrialCallCreateOrConnectWithoutTenantInput[]
+    createMany?: TrialCallCreateManyTenantInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
   }
 
   export type TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput = {
@@ -52554,6 +56441,20 @@ export namespace Prisma {
     update?: PaymentWebhookEventUpdateWithWhereUniqueWithoutTenantInput | PaymentWebhookEventUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: PaymentWebhookEventUpdateManyWithWhereWithoutTenantInput | PaymentWebhookEventUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: PaymentWebhookEventScalarWhereInput | PaymentWebhookEventScalarWhereInput[]
+  }
+
+  export type TrialCallUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput> | TrialCallCreateWithoutTenantInput[] | TrialCallUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutTenantInput | TrialCallCreateOrConnectWithoutTenantInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutTenantInput | TrialCallUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: TrialCallCreateManyTenantInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutTenantInput | TrialCallUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutTenantInput | TrialCallUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
   }
 
   export type TranscriptSegmentUpdateManyWithoutTenantNestedInput = {
@@ -52808,6 +56709,20 @@ export namespace Prisma {
     deleteMany?: PaymentWebhookEventScalarWhereInput | PaymentWebhookEventScalarWhereInput[]
   }
 
+  export type TrialCallUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput> | TrialCallCreateWithoutTenantInput[] | TrialCallUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutTenantInput | TrialCallCreateOrConnectWithoutTenantInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutTenantInput | TrialCallUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: TrialCallCreateManyTenantInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutTenantInput | TrialCallUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutTenantInput | TrialCallUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
+  }
+
   export type TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<TranscriptSegmentCreateWithoutTenantInput, TranscriptSegmentUncheckedCreateWithoutTenantInput> | TranscriptSegmentCreateWithoutTenantInput[] | TranscriptSegmentUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: TranscriptSegmentCreateOrConnectWithoutTenantInput | TranscriptSegmentCreateOrConnectWithoutTenantInput[]
@@ -52878,6 +56793,13 @@ export namespace Prisma {
     deleteMany?: WalletTransactionScalarWhereInput | WalletTransactionScalarWhereInput[]
   }
 
+  export type TrialCallCreateNestedManyWithoutUserInput = {
+    create?: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput> | TrialCallCreateWithoutUserInput[] | TrialCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutUserInput | TrialCallCreateOrConnectWithoutUserInput[]
+    createMany?: TrialCallCreateManyUserInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+  }
+
   export type AuthSessionCreateNestedManyWithoutUserInput = {
     create?: XOR<AuthSessionCreateWithoutUserInput, AuthSessionUncheckedCreateWithoutUserInput> | AuthSessionCreateWithoutUserInput[] | AuthSessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuthSessionCreateOrConnectWithoutUserInput | AuthSessionCreateOrConnectWithoutUserInput[]
@@ -52898,6 +56820,13 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput
   }
 
+  export type TrialCallUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput> | TrialCallCreateWithoutUserInput[] | TrialCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutUserInput | TrialCallCreateOrConnectWithoutUserInput[]
+    createMany?: TrialCallCreateManyUserInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+  }
+
   export type AuthSessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AuthSessionCreateWithoutUserInput, AuthSessionUncheckedCreateWithoutUserInput> | AuthSessionCreateWithoutUserInput[] | AuthSessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuthSessionCreateOrConnectWithoutUserInput | AuthSessionCreateOrConnectWithoutUserInput[]
@@ -52910,6 +56839,20 @@ export namespace Prisma {
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
     createMany?: RefreshTokenCreateManyUserInputEnvelope
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+  }
+
+  export type TrialCallUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput> | TrialCallCreateWithoutUserInput[] | TrialCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutUserInput | TrialCallCreateOrConnectWithoutUserInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutUserInput | TrialCallUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TrialCallCreateManyUserInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutUserInput | TrialCallUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutUserInput | TrialCallUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
   }
 
   export type AuthSessionUpdateManyWithoutUserNestedInput = {
@@ -52946,6 +56889,20 @@ export namespace Prisma {
     upsert?: TenantUpsertWithoutUsersInput
     connect?: TenantWhereUniqueInput
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutUsersInput, TenantUpdateWithoutUsersInput>, TenantUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type TrialCallUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput> | TrialCallCreateWithoutUserInput[] | TrialCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutUserInput | TrialCallCreateOrConnectWithoutUserInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutUserInput | TrialCallUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TrialCallCreateManyUserInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutUserInput | TrialCallUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutUserInput | TrialCallUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
   }
 
   export type AuthSessionUncheckedUpdateManyWithoutUserNestedInput = {
@@ -54262,6 +58219,13 @@ export namespace Prisma {
     connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
   }
 
+  export type TrialCallCreateNestedManyWithoutWebinarRegistrationInput = {
+    create?: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput> | TrialCallCreateWithoutWebinarRegistrationInput[] | TrialCallUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutWebinarRegistrationInput | TrialCallCreateOrConnectWithoutWebinarRegistrationInput[]
+    createMany?: TrialCallCreateManyWebinarRegistrationInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+  }
+
   export type WebinarCreateNestedOneWithoutWebinarRegistrationInput = {
     create?: XOR<WebinarCreateWithoutWebinarRegistrationInput, WebinarUncheckedCreateWithoutWebinarRegistrationInput>
     connectOrCreate?: WebinarCreateOrConnectWithoutWebinarRegistrationInput
@@ -54280,6 +58244,13 @@ export namespace Prisma {
     connectOrCreate?: WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput | WebinarNotificationCreateOrConnectWithoutWebinarRegistrationInput[]
     createMany?: WebinarNotificationCreateManyWebinarRegistrationInputEnvelope
     connect?: WebinarNotificationWhereUniqueInput | WebinarNotificationWhereUniqueInput[]
+  }
+
+  export type TrialCallUncheckedCreateNestedManyWithoutWebinarRegistrationInput = {
+    create?: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput> | TrialCallCreateWithoutWebinarRegistrationInput[] | TrialCallUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutWebinarRegistrationInput | TrialCallCreateOrConnectWithoutWebinarRegistrationInput[]
+    createMany?: TrialCallCreateManyWebinarRegistrationInputEnvelope
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
   }
 
   export type EnumRegistrationStatusFieldUpdateOperationsInput = {
@@ -54312,6 +58283,20 @@ export namespace Prisma {
     update?: WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
     updateMany?: WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput[]
     deleteMany?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
+  }
+
+  export type TrialCallUpdateManyWithoutWebinarRegistrationNestedInput = {
+    create?: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput> | TrialCallCreateWithoutWebinarRegistrationInput[] | TrialCallUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutWebinarRegistrationInput | TrialCallCreateOrConnectWithoutWebinarRegistrationInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutWebinarRegistrationInput | TrialCallUpsertWithWhereUniqueWithoutWebinarRegistrationInput[]
+    createMany?: TrialCallCreateManyWebinarRegistrationInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutWebinarRegistrationInput | TrialCallUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutWebinarRegistrationInput | TrialCallUpdateManyWithWhereWithoutWebinarRegistrationInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
   }
 
   export type WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput = {
@@ -54348,6 +58333,80 @@ export namespace Prisma {
     update?: WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput | WebinarNotificationUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
     updateMany?: WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput | WebinarNotificationUpdateManyWithWhereWithoutWebinarRegistrationInput[]
     deleteMany?: WebinarNotificationScalarWhereInput | WebinarNotificationScalarWhereInput[]
+  }
+
+  export type TrialCallUncheckedUpdateManyWithoutWebinarRegistrationNestedInput = {
+    create?: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput> | TrialCallCreateWithoutWebinarRegistrationInput[] | TrialCallUncheckedCreateWithoutWebinarRegistrationInput[]
+    connectOrCreate?: TrialCallCreateOrConnectWithoutWebinarRegistrationInput | TrialCallCreateOrConnectWithoutWebinarRegistrationInput[]
+    upsert?: TrialCallUpsertWithWhereUniqueWithoutWebinarRegistrationInput | TrialCallUpsertWithWhereUniqueWithoutWebinarRegistrationInput[]
+    createMany?: TrialCallCreateManyWebinarRegistrationInputEnvelope
+    set?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    disconnect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    delete?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    connect?: TrialCallWhereUniqueInput | TrialCallWhereUniqueInput[]
+    update?: TrialCallUpdateWithWhereUniqueWithoutWebinarRegistrationInput | TrialCallUpdateWithWhereUniqueWithoutWebinarRegistrationInput[]
+    updateMany?: TrialCallUpdateManyWithWhereWithoutWebinarRegistrationInput | TrialCallUpdateManyWithWhereWithoutWebinarRegistrationInput[]
+    deleteMany?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
+  }
+
+  export type TenantCreateNestedOneWithoutTrialCallsInput = {
+    create?: XOR<TenantCreateWithoutTrialCallsInput, TenantUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutTrialCallsInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTrialCallsInput = {
+    create?: XOR<UserCreateWithoutTrialCallsInput, UserUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTrialCallsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WebinarRegistrationCreateNestedOneWithoutTrialCallsInput = {
+    create?: XOR<WebinarRegistrationCreateWithoutTrialCallsInput, WebinarRegistrationUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: WebinarRegistrationCreateOrConnectWithoutTrialCallsInput
+    connect?: WebinarRegistrationWhereUniqueInput
+  }
+
+  export type EnumTrialCallStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TrialCallStatus
+  }
+
+  export type EnumTrialCallDirectionFieldUpdateOperationsInput = {
+    set?: $Enums.TrialCallDirection
+  }
+
+  export type TenantUpdateOneWithoutTrialCallsNestedInput = {
+    create?: XOR<TenantCreateWithoutTrialCallsInput, TenantUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutTrialCallsInput
+    upsert?: TenantUpsertWithoutTrialCallsInput
+    disconnect?: TenantWhereInput | boolean
+    delete?: TenantWhereInput | boolean
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutTrialCallsInput, TenantUpdateWithoutTrialCallsInput>, TenantUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type UserUpdateOneWithoutTrialCallsNestedInput = {
+    create?: XOR<UserCreateWithoutTrialCallsInput, UserUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTrialCallsInput
+    upsert?: UserUpsertWithoutTrialCallsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTrialCallsInput, UserUpdateWithoutTrialCallsInput>, UserUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type WebinarRegistrationUpdateOneWithoutTrialCallsNestedInput = {
+    create?: XOR<WebinarRegistrationCreateWithoutTrialCallsInput, WebinarRegistrationUncheckedCreateWithoutTrialCallsInput>
+    connectOrCreate?: WebinarRegistrationCreateOrConnectWithoutTrialCallsInput
+    upsert?: WebinarRegistrationUpsertWithoutTrialCallsInput
+    disconnect?: WebinarRegistrationWhereInput | boolean
+    delete?: WebinarRegistrationWhereInput | boolean
+    connect?: WebinarRegistrationWhereUniqueInput
+    update?: XOR<XOR<WebinarRegistrationUpdateToOneWithWhereWithoutTrialCallsInput, WebinarRegistrationUpdateWithoutTrialCallsInput>, WebinarRegistrationUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type EnumTrialCallWebhookStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TrialCallWebhookStatus
   }
 
   export type WebinarRegistrationCreateNestedManyWithoutWebinarInput = {
@@ -55138,6 +59197,57 @@ export namespace Prisma {
     _max?: NestedEnumRegistrationStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumTrialCallStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallStatus | EnumTrialCallStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallStatusFilter<$PrismaModel> | $Enums.TrialCallStatus
+  }
+
+  export type NestedEnumTrialCallDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallDirection | EnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallDirectionFilter<$PrismaModel> | $Enums.TrialCallDirection
+  }
+
+  export type NestedEnumTrialCallStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallStatus | EnumTrialCallStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallStatus[] | ListEnumTrialCallStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallStatusFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTrialCallDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallDirection | EnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallDirection[] | ListEnumTrialCallDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallDirectionWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallDirectionFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallDirectionFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTrialCallWebhookStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallWebhookStatus | EnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel> | $Enums.TrialCallWebhookStatus
+  }
+
+  export type NestedEnumTrialCallWebhookStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TrialCallWebhookStatus | EnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TrialCallWebhookStatus[] | ListEnumTrialCallWebhookStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTrialCallWebhookStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrialCallWebhookStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel>
+    _max?: NestedEnumTrialCallWebhookStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumWebinarStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.WebinarStatus | EnumWebinarStatusFieldRefInput<$PrismaModel>
     in?: $Enums.WebinarStatus[] | ListEnumWebinarStatusFieldRefInput<$PrismaModel>
@@ -55716,6 +59826,70 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TrialCallCreateWithoutTenantInput = {
+    id?: string
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutTrialCallsInput
+    webinarRegistration?: WebinarRegistrationCreateNestedOneWithoutTrialCallsInput
+  }
+
+  export type TrialCallUncheckedCreateWithoutTenantInput = {
+    id?: string
+    userId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallCreateOrConnectWithoutTenantInput = {
+    where: TrialCallWhereUniqueInput
+    create: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput>
+  }
+
+  export type TrialCallCreateManyTenantInputEnvelope = {
+    data: TrialCallCreateManyTenantInput | TrialCallCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TranscriptSegmentCreateWithoutTenantInput = {
     id?: string
     speaker: $Enums.Speaker
@@ -55803,6 +59977,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
   }
@@ -55822,6 +59997,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
@@ -56363,6 +60539,53 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"PaymentWebhookEvent"> | Date | string
   }
 
+  export type TrialCallUpsertWithWhereUniqueWithoutTenantInput = {
+    where: TrialCallWhereUniqueInput
+    update: XOR<TrialCallUpdateWithoutTenantInput, TrialCallUncheckedUpdateWithoutTenantInput>
+    create: XOR<TrialCallCreateWithoutTenantInput, TrialCallUncheckedCreateWithoutTenantInput>
+  }
+
+  export type TrialCallUpdateWithWhereUniqueWithoutTenantInput = {
+    where: TrialCallWhereUniqueInput
+    data: XOR<TrialCallUpdateWithoutTenantInput, TrialCallUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type TrialCallUpdateManyWithWhereWithoutTenantInput = {
+    where: TrialCallScalarWhereInput
+    data: XOR<TrialCallUpdateManyMutationInput, TrialCallUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type TrialCallScalarWhereInput = {
+    AND?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
+    OR?: TrialCallScalarWhereInput[]
+    NOT?: TrialCallScalarWhereInput | TrialCallScalarWhereInput[]
+    id?: StringFilter<"TrialCall"> | string
+    tenantId?: StringNullableFilter<"TrialCall"> | string | null
+    userId?: StringNullableFilter<"TrialCall"> | string | null
+    webinarRegistrationId?: StringNullableFilter<"TrialCall"> | string | null
+    phoneNumber?: StringFilter<"TrialCall"> | string
+    customerName?: StringNullableFilter<"TrialCall"> | string | null
+    provider?: StringFilter<"TrialCall"> | string
+    providerCallId?: StringNullableFilter<"TrialCall"> | string | null
+    agentId?: StringNullableFilter<"TrialCall"> | string | null
+    status?: EnumTrialCallStatusFilter<"TrialCall"> | $Enums.TrialCallStatus
+    subStatus?: StringNullableFilter<"TrialCall"> | string | null
+    callDirection?: EnumTrialCallDirectionFilter<"TrialCall"> | $Enums.TrialCallDirection
+    durationSeconds?: IntNullableFilter<"TrialCall"> | number | null
+    recordingUrl?: StringNullableFilter<"TrialCall"> | string | null
+    transcript?: StringNullableFilter<"TrialCall"> | string | null
+    outcome?: StringNullableFilter<"TrialCall"> | string | null
+    outcomeData?: JsonNullableFilter<"TrialCall">
+    initiatedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    failureReason?: StringNullableFilter<"TrialCall"> | string | null
+    lastWebhookAt?: DateTimeNullableFilter<"TrialCall"> | Date | string | null
+    createdAt?: DateTimeFilter<"TrialCall"> | Date | string
+    updatedAt?: DateTimeFilter<"TrialCall"> | Date | string
+  }
+
   export type TranscriptSegmentUpsertWithWhereUniqueWithoutTenantInput = {
     where: TranscriptSegmentWhereUniqueInput
     update: XOR<TranscriptSegmentUpdateWithoutTenantInput, TranscriptSegmentUncheckedUpdateWithoutTenantInput>
@@ -56530,6 +60753,70 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"WalletTransaction"> | Date | string
   }
 
+  export type TrialCallCreateWithoutUserInput = {
+    id?: string
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant?: TenantCreateNestedOneWithoutTrialCallsInput
+    webinarRegistration?: WebinarRegistrationCreateNestedOneWithoutTrialCallsInput
+  }
+
+  export type TrialCallUncheckedCreateWithoutUserInput = {
+    id?: string
+    tenantId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallCreateOrConnectWithoutUserInput = {
+    where: TrialCallWhereUniqueInput
+    create: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput>
+  }
+
+  export type TrialCallCreateManyUserInputEnvelope = {
+    data: TrialCallCreateManyUserInput | TrialCallCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AuthSessionCreateWithoutUserInput = {
     id?: string
     refreshTokenHash: string
@@ -56632,6 +60919,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountCreateNestedManyWithoutTenantInput
@@ -56668,6 +60956,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountUncheckedCreateNestedManyWithoutTenantInput
@@ -56677,6 +60966,22 @@ export namespace Prisma {
   export type TenantCreateOrConnectWithoutUsersInput = {
     where: TenantWhereUniqueInput
     create: XOR<TenantCreateWithoutUsersInput, TenantUncheckedCreateWithoutUsersInput>
+  }
+
+  export type TrialCallUpsertWithWhereUniqueWithoutUserInput = {
+    where: TrialCallWhereUniqueInput
+    update: XOR<TrialCallUpdateWithoutUserInput, TrialCallUncheckedUpdateWithoutUserInput>
+    create: XOR<TrialCallCreateWithoutUserInput, TrialCallUncheckedCreateWithoutUserInput>
+  }
+
+  export type TrialCallUpdateWithWhereUniqueWithoutUserInput = {
+    where: TrialCallWhereUniqueInput
+    data: XOR<TrialCallUpdateWithoutUserInput, TrialCallUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TrialCallUpdateManyWithWhereWithoutUserInput = {
+    where: TrialCallScalarWhereInput
+    data: XOR<TrialCallUpdateManyMutationInput, TrialCallUncheckedUpdateManyWithoutUserInput>
   }
 
   export type AuthSessionUpsertWithWhereUniqueWithoutUserInput = {
@@ -56785,6 +61090,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUpdateManyWithoutTenantNestedInput
@@ -56821,6 +61127,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUncheckedUpdateManyWithoutTenantNestedInput
@@ -56842,6 +61149,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     tenant: TenantCreateNestedOneWithoutUsersInput
   }
@@ -56862,6 +61170,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -56928,6 +61237,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
   }
@@ -56948,6 +61258,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -57017,6 +61328,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionCreateNestedManyWithoutUserInput
     tenant: TenantCreateNestedOneWithoutUsersInput
   }
@@ -57037,6 +61349,7 @@ export namespace Prisma {
     avatar?: string | null
     googleId?: string | null
     provider?: string
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutUserInput
     authSessions?: AuthSessionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -57112,6 +61425,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUpdateManyWithoutUserNestedInput
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
   }
@@ -57132,6 +61446,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -57244,6 +61559,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -57280,6 +61596,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -57567,6 +61884,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -57603,6 +61921,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -57833,6 +62152,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -57869,6 +62189,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -57996,6 +62317,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -58032,6 +62354,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -58138,6 +62461,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountCreateNestedManyWithoutTenantInput
@@ -58174,6 +62498,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountUncheckedCreateNestedManyWithoutTenantInput
@@ -58301,6 +62626,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUpdateManyWithoutTenantNestedInput
@@ -58337,6 +62663,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUncheckedUpdateManyWithoutTenantNestedInput
@@ -58441,6 +62768,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -58477,6 +62805,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -58604,6 +62933,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -58640,6 +62970,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -58676,6 +63007,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -58712,6 +63044,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -58820,6 +63153,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -58856,6 +63190,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -59020,6 +63355,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -59056,6 +63392,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -59216,6 +63553,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -59252,6 +63590,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -59384,6 +63723,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -59420,6 +63760,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -59580,6 +63921,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -59616,6 +63958,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -59653,6 +63996,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -59689,6 +64033,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -59741,6 +64086,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -59777,6 +64123,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -59857,6 +64204,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -59893,6 +64241,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -60013,6 +64362,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -60049,6 +64399,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -60445,6 +64796,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -60481,6 +64833,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -60684,6 +65037,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -60720,6 +65074,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -60886,6 +65241,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -60922,6 +65278,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -61042,6 +65399,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -61078,6 +65436,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -61179,6 +65538,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -61215,6 +65575,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -61322,6 +65683,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -61358,6 +65720,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -61394,6 +65757,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptCreateNestedManyWithoutTenantInput
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -61430,6 +65794,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedCreateNestedManyWithoutTenantInput
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -61482,6 +65847,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUpdateManyWithoutTenantNestedInput
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -61518,6 +65884,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedUpdateManyWithoutTenantNestedInput
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -61554,6 +65921,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptCreateNestedManyWithoutTenantInput
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -61590,6 +65958,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedCreateNestedManyWithoutTenantInput
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -61642,6 +66011,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUpdateManyWithoutTenantNestedInput
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -61678,6 +66048,7 @@ export namespace Prisma {
     paymentAttempts?: PaymentAttemptUncheckedUpdateManyWithoutTenantNestedInput
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -61783,6 +66154,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -61819,6 +66191,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -61946,6 +66319,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -61982,6 +66356,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -62088,6 +66463,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountCreateNestedManyWithoutTenantInput
@@ -62124,6 +66500,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
     walletAccounts?: WalletAccountUncheckedCreateNestedManyWithoutTenantInput
@@ -62251,6 +66628,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUpdateManyWithoutTenantNestedInput
@@ -62287,6 +66665,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
     walletAccounts?: WalletAccountUncheckedUpdateManyWithoutTenantNestedInput
@@ -62322,6 +66701,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
     users?: UserCreateNestedManyWithoutTenantInput
@@ -62358,6 +66738,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
     paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
     paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutTenantInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
     usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
@@ -62410,6 +66791,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
@@ -62446,6 +66828,7 @@ export namespace Prisma {
     paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
     paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
     paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutTenantNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
     usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
@@ -62516,6 +66899,70 @@ export namespace Prisma {
 
   export type WebinarNotificationCreateManyWebinarRegistrationInputEnvelope = {
     data: WebinarNotificationCreateManyWebinarRegistrationInput | WebinarNotificationCreateManyWebinarRegistrationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TrialCallCreateWithoutWebinarRegistrationInput = {
+    id?: string
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant?: TenantCreateNestedOneWithoutTrialCallsInput
+    user?: UserCreateNestedOneWithoutTrialCallsInput
+  }
+
+  export type TrialCallUncheckedCreateWithoutWebinarRegistrationInput = {
+    id?: string
+    tenantId?: string | null
+    userId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallCreateOrConnectWithoutWebinarRegistrationInput = {
+    where: TrialCallWhereUniqueInput
+    create: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput>
+  }
+
+  export type TrialCallCreateManyWebinarRegistrationInputEnvelope = {
+    data: TrialCallCreateManyWebinarRegistrationInput | TrialCallCreateManyWebinarRegistrationInput[]
     skipDuplicates?: boolean
   }
 
@@ -62639,6 +67086,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"WebinarNotification"> | Date | string
   }
 
+  export type TrialCallUpsertWithWhereUniqueWithoutWebinarRegistrationInput = {
+    where: TrialCallWhereUniqueInput
+    update: XOR<TrialCallUpdateWithoutWebinarRegistrationInput, TrialCallUncheckedUpdateWithoutWebinarRegistrationInput>
+    create: XOR<TrialCallCreateWithoutWebinarRegistrationInput, TrialCallUncheckedCreateWithoutWebinarRegistrationInput>
+  }
+
+  export type TrialCallUpdateWithWhereUniqueWithoutWebinarRegistrationInput = {
+    where: TrialCallWhereUniqueInput
+    data: XOR<TrialCallUpdateWithoutWebinarRegistrationInput, TrialCallUncheckedUpdateWithoutWebinarRegistrationInput>
+  }
+
+  export type TrialCallUpdateManyWithWhereWithoutWebinarRegistrationInput = {
+    where: TrialCallScalarWhereInput
+    data: XOR<TrialCallUpdateManyMutationInput, TrialCallUncheckedUpdateManyWithoutWebinarRegistrationInput>
+  }
+
   export type WebinarUpsertWithoutWebinarRegistrationInput = {
     update: XOR<WebinarUpdateWithoutWebinarRegistrationInput, WebinarUncheckedUpdateWithoutWebinarRegistrationInput>
     create: XOR<WebinarCreateWithoutWebinarRegistrationInput, WebinarUncheckedCreateWithoutWebinarRegistrationInput>
@@ -62702,6 +67165,406 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TenantCreateWithoutTrialCallsInput = {
+    id?: string
+    name?: string | null
+    plan?: $Enums.PlanKey
+    workspaceConfigJson?: NullableJsonNullValueInput | InputJsonValue
+    featuresJson?: NullableJsonNullValueInput | InputJsonValue
+    walletBalancePaise?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletionStatus?: string
+    deletionRequestedAt?: Date | string | null
+    deletionScheduledAt?: Date | string | null
+    deletionRestoreUntil?: Date | string | null
+    deletedAt?: Date | string | null
+    deletionCompletedAt?: Date | string | null
+    deletionReason?: string | null
+    capabilitiesJson?: NullableJsonNullValueInput | InputJsonValue
+    deletionRequests?: AccountDeletionRequestCreateNestedManyWithoutTenantInput
+    callBillingTransactions?: CallBillingTransactionCreateNestedManyWithoutTenantInput
+    callEvents?: CallEventCreateNestedManyWithoutTenantInput
+    callSessions?: CallSessionCreateNestedManyWithoutTenantInput
+    campaigns?: CampaignCreateNestedManyWithoutTenantInput
+    campaignCalls?: CampaignCallCreateNestedManyWithoutTenantInput
+    campaignContacts?: CampaignContactCreateNestedManyWithoutTenantInput
+    leadExtractions?: LeadExtractionCreateNestedManyWithoutTenantInput
+    outboundCallRequests?: OutboundCallRequestCreateNestedManyWithoutTenantInput
+    paymentAttempts?: PaymentAttemptCreateNestedManyWithoutTenantInput
+    paymentOrders?: PaymentOrderCreateNestedManyWithoutTenantInput
+    paymentReconciliations?: PaymentReconciliationCreateNestedManyWithoutTenantInput
+    paymentWebhooks?: PaymentWebhookEventCreateNestedManyWithoutTenantInput
+    transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutTenantInput
+    usageRecords?: UsageRecordCreateNestedManyWithoutTenantInput
+    users?: UserCreateNestedManyWithoutTenantInput
+    walletAccounts?: WalletAccountCreateNestedManyWithoutTenantInput
+    walletTransactions?: WalletTransactionCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutTrialCallsInput = {
+    id?: string
+    name?: string | null
+    plan?: $Enums.PlanKey
+    workspaceConfigJson?: NullableJsonNullValueInput | InputJsonValue
+    featuresJson?: NullableJsonNullValueInput | InputJsonValue
+    walletBalancePaise?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletionStatus?: string
+    deletionRequestedAt?: Date | string | null
+    deletionScheduledAt?: Date | string | null
+    deletionRestoreUntil?: Date | string | null
+    deletedAt?: Date | string | null
+    deletionCompletedAt?: Date | string | null
+    deletionReason?: string | null
+    capabilitiesJson?: NullableJsonNullValueInput | InputJsonValue
+    deletionRequests?: AccountDeletionRequestUncheckedCreateNestedManyWithoutTenantInput
+    callBillingTransactions?: CallBillingTransactionUncheckedCreateNestedManyWithoutTenantInput
+    callEvents?: CallEventUncheckedCreateNestedManyWithoutTenantInput
+    callSessions?: CallSessionUncheckedCreateNestedManyWithoutTenantInput
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutTenantInput
+    campaignCalls?: CampaignCallUncheckedCreateNestedManyWithoutTenantInput
+    campaignContacts?: CampaignContactUncheckedCreateNestedManyWithoutTenantInput
+    leadExtractions?: LeadExtractionUncheckedCreateNestedManyWithoutTenantInput
+    outboundCallRequests?: OutboundCallRequestUncheckedCreateNestedManyWithoutTenantInput
+    paymentAttempts?: PaymentAttemptUncheckedCreateNestedManyWithoutTenantInput
+    paymentOrders?: PaymentOrderUncheckedCreateNestedManyWithoutTenantInput
+    paymentReconciliations?: PaymentReconciliationUncheckedCreateNestedManyWithoutTenantInput
+    paymentWebhooks?: PaymentWebhookEventUncheckedCreateNestedManyWithoutTenantInput
+    transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutTenantInput
+    usageRecords?: UsageRecordUncheckedCreateNestedManyWithoutTenantInput
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    walletAccounts?: WalletAccountUncheckedCreateNestedManyWithoutTenantInput
+    walletTransactions?: WalletTransactionUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutTrialCallsInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutTrialCallsInput, TenantUncheckedCreateWithoutTrialCallsInput>
+  }
+
+  export type UserCreateWithoutTrialCallsInput = {
+    id?: string
+    email: string
+    fullName: string
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletionStatus?: string
+    deletedAt?: Date | string | null
+    deletionRequestedAt?: Date | string | null
+    authRevokedAt?: Date | string | null
+    role?: string
+    avatar?: string | null
+    googleId?: string | null
+    provider?: string
+    authSessions?: AuthSessionCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    tenant: TenantCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutTrialCallsInput = {
+    id?: string
+    tenantId: string
+    email: string
+    fullName: string
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletionStatus?: string
+    deletedAt?: Date | string | null
+    deletionRequestedAt?: Date | string | null
+    authRevokedAt?: Date | string | null
+    role?: string
+    avatar?: string | null
+    googleId?: string | null
+    provider?: string
+    authSessions?: AuthSessionUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTrialCallsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTrialCallsInput, UserUncheckedCreateWithoutTrialCallsInput>
+  }
+
+  export type WebinarRegistrationCreateWithoutTrialCallsInput = {
+    id?: string
+    name: string
+    email: string
+    phone: string
+    company?: string | null
+    city?: string | null
+    monthlyLeads?: string | null
+    status?: $Enums.RegistrationStatus
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    razorpaySignature?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
+    Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
+  }
+
+  export type WebinarRegistrationUncheckedCreateWithoutTrialCallsInput = {
+    id?: string
+    webinarId: string
+    name: string
+    email: string
+    phone: string
+    company?: string | null
+    city?: string | null
+    monthlyLeads?: string | null
+    status?: $Enums.RegistrationStatus
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    razorpaySignature?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+  }
+
+  export type WebinarRegistrationCreateOrConnectWithoutTrialCallsInput = {
+    where: WebinarRegistrationWhereUniqueInput
+    create: XOR<WebinarRegistrationCreateWithoutTrialCallsInput, WebinarRegistrationUncheckedCreateWithoutTrialCallsInput>
+  }
+
+  export type TenantUpsertWithoutTrialCallsInput = {
+    update: XOR<TenantUpdateWithoutTrialCallsInput, TenantUncheckedUpdateWithoutTrialCallsInput>
+    create: XOR<TenantCreateWithoutTrialCallsInput, TenantUncheckedCreateWithoutTrialCallsInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutTrialCallsInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutTrialCallsInput, TenantUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type TenantUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanKeyFieldUpdateOperationsInput | $Enums.PlanKey
+    workspaceConfigJson?: NullableJsonNullValueInput | InputJsonValue
+    featuresJson?: NullableJsonNullValueInput | InputJsonValue
+    walletBalancePaise?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletionStatus?: StringFieldUpdateOperationsInput | string
+    deletionRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionRestoreUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    capabilitiesJson?: NullableJsonNullValueInput | InputJsonValue
+    deletionRequests?: AccountDeletionRequestUpdateManyWithoutTenantNestedInput
+    callBillingTransactions?: CallBillingTransactionUpdateManyWithoutTenantNestedInput
+    callEvents?: CallEventUpdateManyWithoutTenantNestedInput
+    callSessions?: CallSessionUpdateManyWithoutTenantNestedInput
+    campaigns?: CampaignUpdateManyWithoutTenantNestedInput
+    campaignCalls?: CampaignCallUpdateManyWithoutTenantNestedInput
+    campaignContacts?: CampaignContactUpdateManyWithoutTenantNestedInput
+    leadExtractions?: LeadExtractionUpdateManyWithoutTenantNestedInput
+    outboundCallRequests?: OutboundCallRequestUpdateManyWithoutTenantNestedInput
+    paymentAttempts?: PaymentAttemptUpdateManyWithoutTenantNestedInput
+    paymentOrders?: PaymentOrderUpdateManyWithoutTenantNestedInput
+    paymentReconciliations?: PaymentReconciliationUpdateManyWithoutTenantNestedInput
+    paymentWebhooks?: PaymentWebhookEventUpdateManyWithoutTenantNestedInput
+    transcriptSegments?: TranscriptSegmentUpdateManyWithoutTenantNestedInput
+    usageRecords?: UsageRecordUpdateManyWithoutTenantNestedInput
+    users?: UserUpdateManyWithoutTenantNestedInput
+    walletAccounts?: WalletAccountUpdateManyWithoutTenantNestedInput
+    walletTransactions?: WalletTransactionUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumPlanKeyFieldUpdateOperationsInput | $Enums.PlanKey
+    workspaceConfigJson?: NullableJsonNullValueInput | InputJsonValue
+    featuresJson?: NullableJsonNullValueInput | InputJsonValue
+    walletBalancePaise?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletionStatus?: StringFieldUpdateOperationsInput | string
+    deletionRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionRestoreUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    capabilitiesJson?: NullableJsonNullValueInput | InputJsonValue
+    deletionRequests?: AccountDeletionRequestUncheckedUpdateManyWithoutTenantNestedInput
+    callBillingTransactions?: CallBillingTransactionUncheckedUpdateManyWithoutTenantNestedInput
+    callEvents?: CallEventUncheckedUpdateManyWithoutTenantNestedInput
+    callSessions?: CallSessionUncheckedUpdateManyWithoutTenantNestedInput
+    campaigns?: CampaignUncheckedUpdateManyWithoutTenantNestedInput
+    campaignCalls?: CampaignCallUncheckedUpdateManyWithoutTenantNestedInput
+    campaignContacts?: CampaignContactUncheckedUpdateManyWithoutTenantNestedInput
+    leadExtractions?: LeadExtractionUncheckedUpdateManyWithoutTenantNestedInput
+    outboundCallRequests?: OutboundCallRequestUncheckedUpdateManyWithoutTenantNestedInput
+    paymentAttempts?: PaymentAttemptUncheckedUpdateManyWithoutTenantNestedInput
+    paymentOrders?: PaymentOrderUncheckedUpdateManyWithoutTenantNestedInput
+    paymentReconciliations?: PaymentReconciliationUncheckedUpdateManyWithoutTenantNestedInput
+    paymentWebhooks?: PaymentWebhookEventUncheckedUpdateManyWithoutTenantNestedInput
+    transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutTenantNestedInput
+    usageRecords?: UsageRecordUncheckedUpdateManyWithoutTenantNestedInput
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    walletAccounts?: WalletAccountUncheckedUpdateManyWithoutTenantNestedInput
+    walletTransactions?: WalletTransactionUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserUpsertWithoutTrialCallsInput = {
+    update: XOR<UserUpdateWithoutTrialCallsInput, UserUncheckedUpdateWithoutTrialCallsInput>
+    create: XOR<UserCreateWithoutTrialCallsInput, UserUncheckedCreateWithoutTrialCallsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTrialCallsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTrialCallsInput, UserUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type UserUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletionStatus?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authRevokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    authSessions?: AuthSessionUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletionStatus?: StringFieldUpdateOperationsInput | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletionRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authRevokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    authSessions?: AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type WebinarRegistrationUpsertWithoutTrialCallsInput = {
+    update: XOR<WebinarRegistrationUpdateWithoutTrialCallsInput, WebinarRegistrationUncheckedUpdateWithoutTrialCallsInput>
+    create: XOR<WebinarRegistrationCreateWithoutTrialCallsInput, WebinarRegistrationUncheckedCreateWithoutTrialCallsInput>
+    where?: WebinarRegistrationWhereInput
+  }
+
+  export type WebinarRegistrationUpdateToOneWithWhereWithoutTrialCallsInput = {
+    where?: WebinarRegistrationWhereInput
+    data: XOR<WebinarRegistrationUpdateWithoutTrialCallsInput, WebinarRegistrationUncheckedUpdateWithoutTrialCallsInput>
+  }
+
+  export type WebinarRegistrationUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    monthlyLeads?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpaySignature?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
+    Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
+  }
+
+  export type WebinarRegistrationUncheckedUpdateWithoutTrialCallsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    webinarId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    monthlyLeads?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpaySignature?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+  }
+
   export type WebinarRegistrationCreateWithoutWebinarInput = {
     id?: string
     name: string
@@ -62718,11 +67581,19 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
     WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationUncheckedCreateWithoutWebinarInput = {
@@ -62741,11 +67612,19 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
     WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationCreateOrConnectWithoutWebinarInput = {
@@ -62794,7 +67673,14 @@ export namespace Prisma {
     utmMedium?: StringNullableFilter<"WebinarRegistration"> | string | null
     utmCampaign?: StringNullableFilter<"WebinarRegistration"> | string | null
     fbclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbp?: StringNullableFilter<"WebinarRegistration"> | string | null
+    fbc?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmContent?: StringNullableFilter<"WebinarRegistration"> | string | null
+    utmTerm?: StringNullableFilter<"WebinarRegistration"> | string | null
     gclid?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaCampaignId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdsetId?: StringNullableFilter<"WebinarRegistration"> | string | null
+    metaAdId?: StringNullableFilter<"WebinarRegistration"> | string | null
     createdAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
     updatedAt?: DateTimeFilter<"WebinarRegistration"> | Date | string
   }
@@ -62815,10 +67701,18 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarNotification?: WebinarNotificationCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallCreateNestedManyWithoutWebinarRegistrationInput
     Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
   }
 
@@ -62839,10 +67733,18 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarNotification?: WebinarNotificationUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationCreateOrConnectWithoutWebinarPaymentEventInput = {
@@ -62877,10 +67779,18 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutWebinarRegistrationNestedInput
     Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
   }
 
@@ -62901,10 +67811,18 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationCreateWithoutWebinarNotificationInput = {
@@ -62923,10 +67841,18 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallCreateNestedManyWithoutWebinarRegistrationInput
     Webinar: WebinarCreateNestedOneWithoutWebinarRegistrationInput
   }
 
@@ -62947,10 +67873,18 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedCreateNestedManyWithoutWebinarRegistrationInput
+    trialCalls?: TrialCallUncheckedCreateNestedManyWithoutWebinarRegistrationInput
   }
 
   export type WebinarRegistrationCreateOrConnectWithoutWebinarNotificationInput = {
@@ -62985,10 +67919,18 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutWebinarRegistrationNestedInput
     Webinar?: WebinarUpdateOneRequiredWithoutWebinarRegistrationNestedInput
   }
 
@@ -63009,10 +67951,18 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type AccountDeletionRequestCreateManyTenantInput = {
@@ -63206,6 +68156,33 @@ export namespace Prisma {
     processingStatus?: $Enums.WebhookProcessingStatus
     processingError?: string | null
     idempotencyKey: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TrialCallCreateManyTenantInput = {
+    id?: string
+    userId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63886,6 +68863,87 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TrialCallUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutTrialCallsNestedInput
+    webinarRegistration?: WebinarRegistrationUpdateOneWithoutTrialCallsNestedInput
+  }
+
+  export type TrialCallUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TranscriptSegmentUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
     speaker?: EnumSpeakerFieldUpdateOperationsInput | $Enums.Speaker
@@ -63979,6 +69037,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
@@ -63998,6 +69057,7 @@ export namespace Prisma {
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     googleId?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: StringFieldUpdateOperationsInput | string
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutUserNestedInput
     authSessions?: AuthSessionUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -64095,6 +69155,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TrialCallCreateManyUserInput = {
+    id?: string
+    tenantId?: string | null
+    webinarRegistrationId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AuthSessionCreateManyUserInput = {
     id?: string
     refreshTokenHash: string
@@ -64118,6 +69205,87 @@ export namespace Prisma {
     revokedAt?: Date | string | null
     replacedByTokenHash?: string | null
     createdAt?: Date | string
+  }
+
+  export type TrialCallUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneWithoutTrialCallsNestedInput
+    webinarRegistration?: WebinarRegistrationUpdateOneWithoutTrialCallsNestedInput
+  }
+
+  export type TrialCallUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    webinarRegistrationId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuthSessionUpdateWithoutUserInput = {
@@ -64980,6 +70148,33 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TrialCallCreateManyWebinarRegistrationInput = {
+    id?: string
+    tenantId?: string | null
+    userId?: string | null
+    phoneNumber: string
+    customerName?: string | null
+    provider: string
+    providerCallId?: string | null
+    agentId?: string | null
+    status?: $Enums.TrialCallStatus
+    subStatus?: string | null
+    callDirection?: $Enums.TrialCallDirection
+    durationSeconds?: number | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    outcome?: string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+    lastWebhookAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type WebinarPaymentEventUpdateWithoutWebinarRegistrationInput = {
     id?: StringFieldUpdateOperationsInput | string
     razorpayEventId?: StringFieldUpdateOperationsInput | string
@@ -65049,6 +70244,87 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TrialCallUpdateWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneWithoutTrialCallsNestedInput
+    user?: UserUpdateOneWithoutTrialCallsNestedInput
+  }
+
+  export type TrialCallUncheckedUpdateWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrialCallUncheckedUpdateManyWithoutWebinarRegistrationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: StringFieldUpdateOperationsInput | string
+    providerCallId?: NullableStringFieldUpdateOperationsInput | string | null
+    agentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTrialCallStatusFieldUpdateOperationsInput | $Enums.TrialCallStatus
+    subStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    callDirection?: EnumTrialCallDirectionFieldUpdateOperationsInput | $Enums.TrialCallDirection
+    durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    outcomeData?: NullableJsonNullValueInput | InputJsonValue
+    initiatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    lastWebhookAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WebinarRegistrationCreateManyWebinarInput = {
     id?: string
     name: string
@@ -65065,7 +70341,14 @@ export namespace Prisma {
     utmMedium?: string | null
     utmCampaign?: string | null
     fbclid?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
     gclid?: string | null
+    metaCampaignId?: string | null
+    metaAdsetId?: string | null
+    metaAdId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -65086,11 +70369,19 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUpdateManyWithoutWebinarRegistrationNestedInput
     WebinarNotification?: WebinarNotificationUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationUncheckedUpdateWithoutWebinarInput = {
@@ -65109,11 +70400,19 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     WebinarPaymentEvent?: WebinarPaymentEventUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
     WebinarNotification?: WebinarNotificationUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
+    trialCalls?: TrialCallUncheckedUpdateManyWithoutWebinarRegistrationNestedInput
   }
 
   export type WebinarRegistrationUncheckedUpdateManyWithoutWebinarInput = {
@@ -65132,7 +70431,14 @@ export namespace Prisma {
     utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
     utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
     fbclid?: NullableStringFieldUpdateOperationsInput | string | null
+    fbp?: NullableStringFieldUpdateOperationsInput | string | null
+    fbc?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
     gclid?: NullableStringFieldUpdateOperationsInput | string | null
+    metaCampaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdsetId?: NullableStringFieldUpdateOperationsInput | string | null
+    metaAdId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

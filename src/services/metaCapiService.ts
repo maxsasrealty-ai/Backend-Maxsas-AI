@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { config } from '../lib/config';
 
 interface PurchaseData {
   email: string;
@@ -9,11 +10,12 @@ interface PurchaseData {
 }
 
 export async function sendMetaPurchaseEvent(data: PurchaseData) {
-  const pixelId = process.env.META_PIXEL_ID;
-  const accessToken = process.env.META_CAPI_ACCESS_TOKEN;
+  const pixelId = config.META_PIXEL_ID;
+  const accessToken = config.META_CAPI_ACCESS_TOKEN;
+  const eventId = `webinar_${data.registrationId}`;
 
   if (!pixelId || !accessToken) {
-    console.log('Meta Pixel ID or Access Token missing, skipping CAPI event.');
+    console.warn('Meta CAPI Purchase skipped: META_PIXEL_ID or META_CAPI_ACCESS_TOKEN is not configured.');
     return;
   }
 
@@ -31,7 +33,7 @@ export async function sendMetaPurchaseEvent(data: PurchaseData) {
         event_name: 'Purchase',
         event_time: Math.floor(Date.now() / 1000),
         action_source: 'website',
-        event_id: `webinar_${data.registrationId}`, // For Deduplication with Client Pixel
+        event_id: eventId,
         user_data: {
           em: [hash(data.email)],
           ph: [hash(formattedPhone)],
@@ -48,7 +50,7 @@ export async function sendMetaPurchaseEvent(data: PurchaseData) {
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${accessToken}`,
+      `https://graph.facebook.com/${config.META_GRAPH_API_VERSION}/${pixelId}/events?access_token=${accessToken}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,13 +58,21 @@ export async function sendMetaPurchaseEvent(data: PurchaseData) {
       }
     );
 
-    const result = await response.json();
     if (response.ok) {
-      console.log('Meta CAPI Purchase Event tracked successfully:', result);
+      console.info('Meta CAPI Purchase sent successfully.', {
+        eventId,
+        status: response.status,
+      });
     } else {
-      console.error('Meta CAPI Error:', result);
+      console.error('Meta CAPI Purchase failed.', {
+        eventId,
+        status: response.status,
+      });
     }
   } catch (error) {
-    console.error('Failed to trigger Meta CAPI event:', error);
+    console.error('Meta CAPI Purchase request failed.', {
+      eventId,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 }

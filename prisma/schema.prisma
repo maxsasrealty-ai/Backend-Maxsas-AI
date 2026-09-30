@@ -38,6 +38,7 @@ model Tenant {
   paymentOrders           PaymentOrder[]
   paymentReconciliations  PaymentReconciliation[]
   paymentWebhooks         PaymentWebhookEvent[]
+  trialCalls              TrialCall[]
   transcriptSegments      TranscriptSegment[]
   usageRecords            UsageRecord[]
   users                   User[]
@@ -64,6 +65,7 @@ model User {
   avatar              String?
   googleId            String?        @unique
   provider            String         @default("local")
+  trialCalls          TrialCall[]
   authSessions        AuthSession[]
   refreshTokens       RefreshToken[]
   tenant              Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -602,14 +604,76 @@ model WebinarRegistration {
   utmMedium           String?
   utmCampaign         String?
   fbclid              String?
+  fbp                 String?
+  fbc                 String?
+  utmContent          String?
+  utmTerm             String?
   gclid               String?
+  metaCampaignId      String?
+  metaAdsetId         String?
+  metaAdId            String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   WebinarPaymentEvent WebinarPaymentEvent[]
   WebinarNotification WebinarNotification[]
+  trialCalls          TrialCall[]
   Webinar             Webinar               @relation(fields: [webinarId], references: [id], onDelete: Cascade)
 
   @@index([webinarId, status])
+}
+
+model TrialCall {
+  id                    String               @id @default(uuid())
+  tenantId              String?
+  userId                String?
+  webinarRegistrationId String?
+  phoneNumber           String
+  customerName          String?
+  provider              String
+  providerCallId        String?
+  agentId               String?
+  status                TrialCallStatus      @default(QUEUED)
+  subStatus             String?
+  callDirection         TrialCallDirection   @default(OUTBOUND)
+  durationSeconds       Int?
+  recordingUrl          String?
+  transcript            String?
+  outcome               String?
+  outcomeData           Json?
+  initiatedAt           DateTime?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  failedAt              DateTime?
+  failureReason         String?
+  lastWebhookAt         DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  tenant                Tenant?              @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user                  User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  webinarRegistration   WebinarRegistration? @relation(fields: [webinarRegistrationId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([webinarRegistrationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([provider, providerCallId])
+  @@index([status, createdAt])
+}
+
+model TrialCallWebhookEvent {
+  id               String                 @id @default(uuid())
+  provider         String
+  eventId          String?
+  eventType        String
+  providerCallId   String?
+  payload          Json
+  receivedAt       DateTime               @default(now())
+  processedAt      DateTime?
+  processingStatus TrialCallWebhookStatus @default(RECEIVED)
+  errorMessage     String?
+  idempotencyKey   String                 @unique
+
+  @@index([provider, providerCallId, receivedAt])
+  @@index([processingStatus, receivedAt])
 }
 
 model Webinar {
@@ -722,6 +786,29 @@ enum CallLifecycleStatus {
   active
   completed
   failed
+}
+
+enum TrialCallStatus {
+  QUEUED
+  INITIATING
+  RINGING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum TrialCallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum TrialCallWebhookStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
+  IGNORED
 }
 
 enum VoiceEventType {

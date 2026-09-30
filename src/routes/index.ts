@@ -17,6 +17,7 @@ import payuPaymentRouter from "./payuPayment";
 import realtimeRouter from "./realtime";
 import webinarRouter from "./webinar";
 import walletLedgerRouter from "./walletLedger";
+import { trialCallsRouter, voiceProviderWebhookRouter } from "./trialCalls";
 
 const apiRouter = Router();
 
@@ -33,6 +34,8 @@ apiRouter.use("/calls", callsRouter);
 apiRouter.use("/leads", leadsModuleRouter);
 apiRouter.use("/realtime", realtimeRouter);
 apiRouter.use("/webhooks", voiceEventsRouter);
+apiRouter.use("/webhooks/voice-provider", voiceProviderWebhookRouter);
+apiRouter.use("/master-control/trial-calls", trialCallsRouter);
 
 // PayU payment routes (webhook needs raw body)
 apiRouter.use(

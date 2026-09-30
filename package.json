@@ -14,6 +14,7 @@
     "prisma:pull": "npx prisma db pull --schema=./prisma/schema.prisma",
     "test:lead-normalization": "npx tsx scripts/test-lead-normalization.ts",
     "test:voice-webhook": "node ./scripts/test-voice-webhook.mjs",
+    "test:trial-calls": "node --import dotenv/config --import tsx --test src/tests/trialCalls.test.ts",
     "test:outbound-call": "node ./scripts/test-outbound-call.mjs",
     "test:dispatch-contract": "node --import dotenv/config --import tsx ./scripts/test-dispatch-contract-wiring.ts",
     "test:e2e": "node ./scripts/test-e2e.mjs",

@@ -40,6 +40,25 @@ import {
 } from "../services/adminLiveEventsService";
 import { RoomServiceClient } from "livekit-server-sdk";
 import { getCallEventsForKeys } from "../services/callObservabilityService";
+import { discoverMetaAssets } from "../services/metaAssetDiscoveryService";
+import { discoverMetaAds } from "../services/metaAdsDiscoveryService";
+import { checkMetaGraphConnection } from "../services/metaGraphService";
+import { getMetaInsights, MetaInsightsQueryError } from "../services/metaInsightsService";
+import {
+  buildMetaAttributionPagination,
+  buildMetaAttributionSummary,
+  buildMetaAttributionWhere,
+  metaAttributionSignalWhere,
+  metaAttributionUnresolvedWhere,
+  MetaAttributionQueryError,
+  parseMetaAttributionQuery,
+  toMetaAttributionRow,
+} from "../services/metaAttributionService";
+import {
+  getMetaMarketingAnalytics,
+  MetaMarketingAnalyticsDatabaseError,
+  MetaMarketingAnalyticsQueryError,
+} from "../services/metaMarketingAnalyticsService";
 import {
   cloneTenantIntoEnterprise,
   convertTenantToEnterprise,
@@ -1155,6 +1174,209 @@ async function runDevMonitorCommand(rawCommand: string) {
 }
 
 import webinarRouter from "./webinar";
+adminRouter.get("/meta/connection", async (_req: Request, res: Response) => {
+  try {
+    const data = await checkMetaGraphConnection();
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch {
+    console.error("Meta Graph connection check crashed.", {
+      category: "unexpected_error",
+    });
+    res.status(503).json({
+      success: false,
+      error: {
+        code: "META_CONNECTION_CHECK_FAILED",
+        message: "Meta connection check failed",
+      },
+    });
+  }
+});
+
+adminRouter.get("/meta/assets", async (_req: Request, res: Response) => {
+  try {
+    const data = await discoverMetaAssets();
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch {
+    console.error("Meta asset discovery failed.", {
+      category: "unexpected_error",
+    });
+    res.status(503).json({
+      success: false,
+      error: {
+        code: "META_ASSET_DISCOVERY_FAILED",
+        message: "Meta asset discovery failed",
+      },
+    });
+  }
+});
+
+adminRouter.get("/meta/ads", async (_req: Request, res: Response) => {
+  try {
+    const data = await discoverMetaAds();
+    res.json({
+      success: true,
+      data,
+    });
+  } catch {
+    console.error("Meta Ads discovery failed.", {
+      category: "unexpected_error",
+    });
+    res.statusCode = 503;
+    res.json({
+      success: false,
+      error: {
+        code: "META_ADS_DISCOVERY_FAILED",
+        message: "Meta Ads discovery failed",
+      },
+    });
+  }
+});
+
+adminRouter.get("/meta/insights", async (req: any, res: any) => {
+  try {
+    const data = await getMetaInsights(req.query);
+    res.json({ success: true, data });
+  } catch (error) {
+    if (error instanceof MetaInsightsQueryError) {
+      res.statusCode = 400;
+      res.json({
+        success: false,
+        error: { code: error.code, message: error.message },
+      });
+      return;
+    }
+
+    console.error("Meta Insights discovery failed.", { category: "unexpected_error" });
+    res.statusCode = 503;
+    res.json({
+      success: false,
+      error: { code: "META_INSIGHTS_FAILED", message: "Meta Insights request failed" },
+    });
+  }
+});
+
+adminRouter.get("/meta/attribution", async (req: Request, res: Response) => {
+  let query;
+  try {
+    query = parseMetaAttributionQuery(req.query);
+  } catch (error) {
+    if (error instanceof MetaAttributionQueryError) {
+      res.status(400).json({
+        success: false,
+        error: { code: error.code, message: error.message },
+      });
+      return;
+    }
+    res.status(400).json({
+      success: false,
+      error: { code: "INVALID_QUERY", message: "Invalid attribution filters" },
+    });
+    return;
+  }
+
+  const filterWhere = buildMetaAttributionWhere(query) as Prisma.WebinarRegistrationWhereInput;
+  const attributedWhere = {
+    AND: [filterWhere, metaAttributionSignalWhere()],
+  } as Prisma.WebinarRegistrationWhereInput;
+  const unresolvedWhere = {
+    AND: [filterWhere, metaAttributionUnresolvedWhere()],
+  } as Prisma.WebinarRegistrationWhereInput;
+  const paidWhere = {
+    AND: [filterWhere, { status: RegistrationStatus.PAID }],
+  } as Prisma.WebinarRegistrationWhereInput;
+  const paidAttributedWhere = {
+    AND: [attributedWhere, { status: RegistrationStatus.PAID }],
+  } as Prisma.WebinarRegistrationWhereInput;
+
+  try {
+    const [totalRegistrations, attributedRegistrations, unresolvedAttributions, paidRegistrations, paidAttributedRegistrations, registrations] = await Promise.all([
+      prisma.webinarRegistration.count({ where: filterWhere }),
+      prisma.webinarRegistration.count({ where: attributedWhere }),
+      prisma.webinarRegistration.count({ where: unresolvedWhere }),
+      prisma.webinarRegistration.count({ where: paidWhere }),
+      prisma.webinarRegistration.count({ where: paidAttributedWhere }),
+      prisma.webinarRegistration.findMany({
+        where: filterWhere,
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        skip: query.skip,
+        take: query.limit,
+        select: {
+          id: true,
+          createdAt: true,
+          status: true,
+          utmSource: true,
+          utmMedium: true,
+          utmCampaign: true,
+          utmContent: true,
+          utmTerm: true,
+          fbclid: true,
+          fbp: true,
+          fbc: true,
+          metaCampaignId: true,
+          metaAdsetId: true,
+          metaAdId: true,
+        },
+      }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        rows: registrations.map(toMetaAttributionRow),
+        summary: buildMetaAttributionSummary({
+          totalRegistrations,
+          attributedRegistrations,
+          unresolvedAttributions,
+          paidRegistrations,
+          paidAttributedRegistrations,
+        }),
+        pagination: buildMetaAttributionPagination(query.page, query.limit, totalRegistrations),
+      },
+    });
+  } catch {
+    console.error("Meta attribution lookup failed.", { category: "database_error" });
+    res.status(503).json({
+      success: false,
+      error: { code: "DATABASE_ERROR", message: "Attribution records could not be loaded" },
+    });
+  }
+});
+
+adminRouter.get("/meta/marketing-analytics", async (req: Request, res: Response) => {
+  try {
+    const data = await getMetaMarketingAnalytics(req.query);
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    if (error instanceof MetaMarketingAnalyticsQueryError) {
+      res.status(400).json({
+        success: false,
+        error: { code: error.code, message: error.message },
+      });
+      return;
+    }
+
+    if (error instanceof MetaMarketingAnalyticsDatabaseError) {
+      res.status(503).json({
+        success: false,
+        error: { code: "DATABASE_ERROR", message: "Marketing analytics data could not be loaded" },
+      });
+      return;
+    }
+
+    console.error("Meta marketing analytics failed.", { category: "analytics_unavailable" });
+    res.status(503).json({
+      success: false,
+      error: { code: "ANALYTICS_UNAVAILABLE", message: "Marketing analytics could not be loaded" },
+    });
+  }
+});
+
 adminRouter.get("/live-events/stream", async (req: Request, res: Response) => {
   // Manual admin key check for SSE endpoint
   const configuredKey = process.env.ADMIN_API_KEY || "dev-admin-key";

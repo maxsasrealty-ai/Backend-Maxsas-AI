@@ -32,6 +32,11 @@ const router = Router();
 const WEBINAR_SLUG = 'maxsas-ai-voice-agent-workshop-2026';
 const DEFAULT_WEBINAR_DATE = new Date('2026-08-25T16:00:00+05:30');
 
+function optionalAttributionValue(value: unknown): string | undefined {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized ? normalized.slice(0, 2048) : undefined;
+}
+
 const DEFAULT_WEBINAR_CONFIG: WebinarConfigRecord = {
   title: 'Maxsas AI Voice Agent Workshop',
   subTitle: 'Live workshop on AI voice agents for real estate teams',
@@ -442,6 +447,14 @@ router.post(
         company,
         city,
         monthlyLeads,
+        fbclid,
+        fbp,
+        fbc,
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmContent,
+        utmTerm,
       } = req.body as {
         fullName?: string;
         phone?: string;
@@ -449,6 +462,14 @@ router.post(
         company?: string;
         city?: string;
         monthlyLeads?: string;
+        fbclid?: string;
+        fbp?: string;
+        fbc?: string;
+        utmSource?: string;
+        utmMedium?: string;
+        utmCampaign?: string;
+        utmContent?: string;
+        utmTerm?: string;
       };
 
       if (!fullName || !phone || !email) {
@@ -476,6 +497,14 @@ router.post(
             company,
             city,
             monthlyLeads,
+            fbclid: optionalAttributionValue(fbclid),
+            fbp: optionalAttributionValue(fbp),
+            fbc: optionalAttributionValue(fbc),
+            utmSource: optionalAttributionValue(utmSource),
+            utmMedium: optionalAttributionValue(utmMedium),
+            utmCampaign: optionalAttributionValue(utmCampaign),
+            utmContent: optionalAttributionValue(utmContent),
+            utmTerm: optionalAttributionValue(utmTerm),
             status: RegistrationStatus.REGISTERED,
             razorpayOrderId: order.id,
           },
@@ -556,16 +585,32 @@ router.post(
         });
       }
 
-      const updated =
-        await prisma.webinarRegistration.update({
-          where: { id: registration.id },
+      const paymentClaim =
+        await prisma.webinarRegistration.updateMany({
+          where: {
+            id: registration.id,
+            status: { not: RegistrationStatus.PAID },
+          },
           data: {
             status: RegistrationStatus.PAID,
             razorpayPaymentId,
             razorpaySignature,
           },
+        });
+
+      const updated =
+        await prisma.webinarRegistration.findUnique({
+          where: { id: registration.id },
           include: { Webinar: true },
         });
+
+      if (!updated) {
+        return res.status(404).json({
+          error: 'Webinar registration not found after payment update',
+        });
+      }
+
+      const shouldSendMetaPurchase = paymentClaim.count === 1;
 
       /**
        * Always fetch the latest WebinarConfig from
@@ -642,13 +687,15 @@ router.post(
             '',
         }),
 
-        sendMetaPurchaseEvent({
-          fullName: updated.name,
-          email: updated.email,
-          phone: updated.phone,
-          amount: amountInRupees,
-          registrationId: updated.id,
-        }),
+        shouldSendMetaPurchase
+          ? sendMetaPurchaseEvent({
+              fullName: updated.name,
+              email: updated.email,
+              phone: updated.phone,
+              amount: amountInRupees,
+              registrationId: updated.id,
+            })
+          : Promise.resolve(),
       ]);
 
       try {

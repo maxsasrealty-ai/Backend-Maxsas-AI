@@ -7,9 +7,15 @@ window.MCRouter = (function () {
     'voice-ops':      () => window.MCModVoiceOps?.render(),
     'monitor':        () => window.MCModMonitor?.render(),
     'tenant-control': () => window.MCModTenantControl?.render(),
+    'portfolio':      () => window.MCModPortfolio?.render(),
+    'voice-trials':   () => window.MCModVoiceTrials?.render(),
     'finance':        () => window.MCModFinance?.render(),
     'dev-tools':      () => window.MCModDevTools?.render(),
     'analytics':      () => window.MCModAnalytics?.render(),
+    'meta-assets':    () => window.MCModMetaAssets?.render(),
+    'meta-ads':       () => window.MCModMetaAds?.render(),
+    'meta-insights':  () => window.MCModMetaInsights?.render(),
+    'meta-marketing': () => window.MCModMetaMarketing?.render(),
     'webinar':        () => window.MCModWebinar?.render(),
     'system':         () => window.MCModSystem?.render(),
     'agent-runtime':  () => window.MCModAgentRuntime?.render(),
@@ -22,9 +28,15 @@ window.MCRouter = (function () {
       case 'voice-ops': return window.MCModVoiceOps;
       case 'monitor': return window.MCModMonitor;
       case 'tenant-control': return window.MCModTenantControl;
+      case 'portfolio': return window.MCModPortfolio;
+      case 'voice-trials': return window.MCModVoiceTrials;
       case 'finance': return window.MCModFinance;
       case 'dev-tools': return window.MCModDevTools;
       case 'analytics': return window.MCModAnalytics;
+      case 'meta-assets': return window.MCModMetaAssets;
+      case 'meta-ads': return window.MCModMetaAds;
+      case 'meta-insights': return window.MCModMetaInsights;
+      case 'meta-marketing': return window.MCModMetaMarketing;
       case 'webinar': return window.MCModWebinar;
       case 'system': return window.MCModSystem;
       case 'agent-runtime': return window.MCModAgentRuntime;

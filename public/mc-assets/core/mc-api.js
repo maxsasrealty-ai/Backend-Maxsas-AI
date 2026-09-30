@@ -1,20 +1,26 @@
 window.MCApi = (function () {
   function base() { return window.location.origin + '/api/admin'; }
+  function trialBase() { return window.location.origin + '/api/master-control/trial-calls'; }
   function headers() { return { 'Content-Type': 'application/json', 'x-admin-key': MCState.adminKey || '' }; }
-  async function request(method, path, body) {
-    const url = base() + path;
+  async function requestAt(root, method, path, body, notify = true) {
+    const url = root + path;
     const opts = { method, headers: headers() };
     if (body) opts.body = JSON.stringify(body);
     try {
       const res = await fetch(url, opts);
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error?.message || 'HTTP ' + res.status);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const error = new Error(json?.error?.message || 'Request failed');
+        error.status = res.status;
+        throw error;
+      }
       return json;
     } catch (err) {
-      if (window.MCToast) MCToast.error('API Error: ' + err.message);
+      if (notify && window.MCToast) MCToast.error('API Error: ' + err.message);
       throw err;
     }
   }
+  function request(method, path, body) { return requestAt(base(), method, path, body); }
   return {
     request: request,
     getLiveEvents(limit = 50)      { return request('GET', '/live-events/recent?limit=' + limit); },
@@ -52,6 +58,17 @@ window.MCApi = (function () {
     getWebinarConfig() { return request('GET', '/webinar/config'); },
     updateWebinarConfig(body) { return request('PUT', '/webinar/config', body); },
     updateWebinarRegistration(id, body) { return request('PATCH', '/webinar-registrations/' + encodeURIComponent(id), body); },
+    getTrialCalls(params = {}) {
+      const query = new URLSearchParams();
+      if (params.status) query.set('status', params.status);
+      if (params.tenantId) query.set('tenantId', params.tenantId);
+      if (params.take) query.set('take', String(params.take));
+      return requestAt(trialBase(), 'GET', query.toString() ? '?' + query.toString() : '', undefined, false);
+    },
+    getTrialCall(id) { return requestAt(trialBase(), 'GET', '/' + encodeURIComponent(id), undefined, false); },
+    createTrialCall(body) { return requestAt(trialBase(), 'POST', '', body, false); },
+    triggerTrialCall(id) { return requestAt(trialBase(), 'POST', '/' + encodeURIComponent(id) + '/trigger', {}, false); },
+    getTrialRecording(id) { return requestAt(trialBase(), 'GET', '/' + encodeURIComponent(id) + '/recording', undefined, false); },
     convertEnterprise(id, body)    { return request('POST', '/tenants/' + id + '/enterprise/convert', body); },
     cloneEnterprise(id, body)      { return request('POST', '/tenants/' + id + '/enterprise/clone', body); },
     getBackendControl()            { return request('GET', '/backend-control?role=' + MCState.role); },
@@ -59,5 +76,22 @@ window.MCApi = (function () {
     resetBackendControl()          { return request('POST', '/backend-control/reset', { actor: 'master-control' }); },
     runAction(action)              { return request('POST', '/backend-control/actions/' + action, { actor: 'master-control' }); },
     getUsers(q = '', limit = 50)   { return request('GET', '/users?query=' + encodeURIComponent(q) + '&limit=' + limit); },
+    getMetaAssets()                { return request('GET', '/meta/assets'); },
+    getMetaAds()                   { return request('GET', '/meta/ads'); },
+    getMetaInsights(params = {}) {
+      const query = new URLSearchParams();
+      if (params.since) query.set('since', params.since);
+      if (params.until) query.set('until', params.until);
+      if (params.breakdown) query.set('breakdown', params.breakdown);
+      if (params.granularity) query.set('granularity', params.granularity);
+      return request('GET', '/meta/insights?' + query.toString());
+    },
+    getMetaMarketingAnalytics(params = {}) {
+      const query = new URLSearchParams();
+      if (params.since) query.set('since', params.since);
+      if (params.until) query.set('until', params.until);
+      if (params.breakdown) query.set('breakdown', params.breakdown);
+      return request('GET', '/meta/marketing-analytics?' + query.toString());
+    },
   };
 })();
