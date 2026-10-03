@@ -31,6 +31,8 @@ const router = Router();
 
 const WEBINAR_SLUG = 'maxsas-ai-voice-agent-workshop-2026';
 const DEFAULT_WEBINAR_DATE = new Date('2026-08-25T16:00:00+05:30');
+const WEBINAR_PRICE_IN_PAISE = 49900;
+const WEBINAR_CURRENCY = 'INR';
 
 function optionalAttributionValue(value: unknown): string | undefined {
   const normalized = typeof value === 'string' ? value.trim() : '';
@@ -43,7 +45,7 @@ const DEFAULT_WEBINAR_CONFIG: WebinarConfigRecord = {
   eventDate: DEFAULT_WEBINAR_DATE,
   eventTime: '4:00 PM IST',
   hostName: 'Anubhav Chaudhary',
-  ticketPrice: 19900,
+  ticketPrice: WEBINAR_PRICE_IN_PAISE,
   zoomLink: process.env.ZOOM_WEBINAR_LINK || '',
   whatsappGroupLink: process.env.WHATSAPP_GROUP_LINK || '',
   status: WebinarConfigStatus.OPEN,
@@ -121,16 +123,6 @@ function parseDate(value: unknown, fallback: Date): Date {
   return fallback;
 }
 
-function parseTicketPrice(value: unknown, fallback: number): number {
-  const parsed = typeof value === 'number' ? value : Number(value);
-
-  if (Number.isFinite(parsed) && parsed >= 0) {
-    return Math.round(parsed);
-  }
-
-  return fallback;
-}
-
 function parseStatus(value: unknown): WebinarConfigStatusValue {
   const raw =
     typeof value === 'string' ? value.trim().toUpperCase() : '';
@@ -192,7 +184,7 @@ async function getWebinarConfigRecord(): Promise<WebinarConfigRecord | null> {
           eventDate: record.eventDate,
           eventTime: record.eventTime,
           hostName: record.hostName,
-          ticketPrice: record.ticketPrice,
+          ticketPrice: WEBINAR_PRICE_IN_PAISE,
           zoomLink: record.zoomLink,
           whatsappGroupLink: record.whatsappGroupLink,
           status: record.status as WebinarConfigStatusValue,
@@ -335,10 +327,7 @@ router.put(
             ? req.body.hostName.trim()
             : fallback.hostName,
 
-        ticketPrice: parseTicketPrice(
-          req.body?.ticketPrice,
-          fallback.ticketPrice
-        ),
+        ticketPrice: WEBINAR_PRICE_IN_PAISE,
 
         zoomLink:
           typeof req.body?.zoomLink === 'string'
@@ -479,11 +468,11 @@ router.post(
       }
 
       const webinar = await ensureWebinar();
-      const amount = webinar.priceInPaise;
+      const amount = WEBINAR_PRICE_IN_PAISE;
 
       const order = await getRazorpayClient().orders.create({
         amount,
-        currency: 'INR',
+        currency: WEBINAR_CURRENCY,
         receipt: `webinar_${Date.now()}`,
       });
 
@@ -572,6 +561,23 @@ router.post(
         });
       }
 
+      const razorpay = getRazorpayClient();
+      const order = await razorpay.orders.fetch(razorpayOrderId);
+      const payment = await razorpay.payments.fetch(razorpayPaymentId);
+
+      if (
+        order.amount !== WEBINAR_PRICE_IN_PAISE ||
+        order.currency !== WEBINAR_CURRENCY ||
+        payment.order_id !== razorpayOrderId ||
+        payment.amount !== WEBINAR_PRICE_IN_PAISE ||
+        payment.currency !== WEBINAR_CURRENCY ||
+        payment.status !== 'captured'
+      ) {
+        return res.status(400).json({
+          error: 'Payment amount, currency, or capture status is invalid',
+        });
+      }
+
       const registration =
         await prisma.webinarRegistration.findFirst({
           where: { razorpayOrderId },
@@ -620,8 +626,7 @@ router.post(
       const webinarConfig =
         await resolveWebinarConfig();
 
-      const amountInRupees =
-        updated.Webinar.priceInPaise / 100;
+      const amountInRupees = WEBINAR_PRICE_IN_PAISE / 100;
 
       /**
        * Convert the current webinar date into a clean
@@ -715,6 +720,9 @@ router.post(
 
       return res.json({
         success: true,
+        amount: WEBINAR_PRICE_IN_PAISE,
+        currency: WEBINAR_CURRENCY,
+        eventId: `webinar_${updated.id}`,
         registration: updated,
       });
     } catch (error) {
